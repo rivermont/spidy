@@ -3,6 +3,10 @@ Python Web Crawler
 Built by rivermont and FalconWarriorr
 '''
 
+##########
+## INIT ##
+##########
+
 print('[INIT]: Importing libraries...')
 
 #Import required libraries
@@ -20,30 +24,36 @@ errorCount = 0
 
 print('[INIT]: Reading arguments...')
 
-#
+#Read variables from arguments or set to defaults.
 
 try:
-	saveCount = int(sys.argv[1])
-except:
-	saveCount = 1000
-	pass
-
-try:
-	todoFile = sys.argv[2]
+	todoFile = sys.argv[1]
 except:
 	todoFile = 'crawler_todo.txt'
 	pass
 
 try:
-	doneFile = sys.argv[3]
+	doneFile = sys.argv[2]
 except:
 	doneFile = 'crawler_done.txt'
 	pass
 
 try:
-	logFile = sys.argv[4]
+	logFile = sys.argv[3]
 except:
 	logFile = 'crawler_log.txt'
+	pass
+
+try:
+	saveCount = int(sys.argv[4])
+except:
+	saveCount = 100
+	pass
+
+try:
+	maxErrors = int(sys.argv[5])
+except:
+	maxErrors = 10
 	pass
 
 print('[INIT]: Loading save files...')
@@ -77,7 +87,7 @@ def check(item):
 
 def files_save():
 	'''
-	Save
+	Saves the TODO and done lists into their respective files.
 	'''
 	#Open save files
 	todoList = open(todoFile, 'w')
@@ -101,7 +111,6 @@ def info_log():
 	print('[LOG]: URLs in TODO: {0}.'.format(len(todo)))
 	print('[LOG]: URLs in done: {0}.'.format(len(done)))
 	print('[LOG]: Errors thrown so far: {0}.'.format(errorCount))
-	print('[LOG]: Likely next link: {0}'.format(todo[0]))
 	pass
 
 def err_log(error):
@@ -116,9 +125,9 @@ def err_log(error):
 	log.seek(0) #Go to the first line
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	try:
-		log.write('\nSITE: {0}\nTIME: {1}\nERROR: {2}\n'.format(todo[0], time, str(error)))
+		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}\n'.format(todo[0], time, str(error)))
 	except: #If an error (usually UnicodeEncodeError), write encoded log
-		log.write('\nSITE: {0}\nTIME: {1}\nERROR: {2}\n'.format(str(todo[0].encode('utf-8')), time, str(error)))
+		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}\n'.format(str(todo[0].encode('utf-8')), time, str(error)))
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
 
@@ -143,17 +152,22 @@ print('[INIT]: TODO first value: {0}'.format(todo[0]))
 
 print('[INIT]: Starting crawler...')
 
+#########
+## RUN ##
+#########
+
 while len(todo) != 0: #While there are links to check
-	#RUN
 	try:
 		if counter >= saveCount:
-			print('[LOG]: Queried {0} links. Automatically saving files...'.format(str(counter)))
+			print('[LOG]: Queried {0} links. Saving files...'.format(str(counter)))
 			#for link in todo:
 			#	if check(link):
 			#		todo.remove(link)
 			files_save()
 			info_log()
 			counter = 0
+		elif errorCount >= maxErrors:
+			print('[ERR]: Too many errors have been caught, stopping crawler.')
 		elif check(todo[0]):
 			todo.remove(todo[0])
 		else: #Otherwise it must be valid and new, so
@@ -173,7 +187,7 @@ while len(todo) != 0: #While there are links to check
 		counter = counter + 1
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
-		print('[ERR]: User performed a KeyboardInterrupt, saving files...')
+		print('[ERR]: User performed a KeyboardInterrupt, stopping crawler...')
 		files_save()
 		exit()
 	except requests.exceptions.HTTPError as e:
