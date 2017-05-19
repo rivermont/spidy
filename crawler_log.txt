@@ -1,0 +1,28 @@
+'charmap' codec can't encode characters
+36
+HTTPConnectionPool: Max retries exceeded with url
+18
+Connection aborted, ConnectionResetError
+2
+Connection aborted, TimeoutError
+3
+Exceeded 30 redirects.
+3
+Document is empty
+1
+Connection broken: ConnectionResetError
+1
+Received response with content-encoding: gzip, but failed to decode it.
+1
+Element script embeds close tag
+1
+SSL: CERTIFICATE_VERIFY_FAILED
+15
+EOF occurred in violation of protocol
+1
+Connection aborted, RemoteDisconnected
+1
+hostname 'x' doesn't match either of 'y', 'z'
+1
+
+=========
