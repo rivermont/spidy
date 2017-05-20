@@ -117,6 +117,7 @@ def info_log():
 	print('[LOG]: {0}'.format(time))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
 	print('[LOG]: {0} links in done.'.format(len(done)))
+	print('[LOG]: {0} bad links removed.'.format(removedCount))
 	print('[LOG]: {0} new errors caught.'.format(newErrorCount))
 	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
 	pass
@@ -160,6 +161,7 @@ if len(todo) == 0:
 
 after = before - len(todo)
 print('[INIT]: {0} invalid links removed from TODO.'.format(after))
+removedCount += after
 
 print('[INIT]: TODO first value: {0}'.format(todo[0]))
 
@@ -186,7 +188,6 @@ while len(todo) != 0: #While there are links to check
 		if check(todo[0]):
 			todo.remove(todo[0])
 		else: #Otherwise it must be valid and new, so
-			#print('[CRAWL]: Connecting to {0}'.format(todo[0]))
 			page = requests.get(todo[0]) #Scrape the link's full content
 			tree = html.fromstring(page.content) #Get the link's XPath
 			links = list(tree.xpath('//a/@href')) #Grab all links inside anchor tags
@@ -197,7 +198,7 @@ while len(todo) != 0: #While there are links to check
 					continue
 				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
 			after = before - len(links)
-			removedCount = removedCount + after
+			removedCount += after
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			print('[CRAWL]: Successfully found {0} links on {1}'.format(len(links), todo[0])) #Announce which link was crawled
@@ -205,56 +206,39 @@ while len(todo) != 0: #While there are links to check
 		rand = set(todo)  #Convert TODO to set
 		todo = list(rand) #and back to list.
 						  #This both removes duplicates and mixes up the list, as sets are unordered collections without duplicates
-		counter = counter + 1
+		counter += 1
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		print('[ERR]: User performed a KeyboardInterrupt, stopping crawler...')
 		files_save()
 		exit()
-	# except requests.exceptions.HTTPError as e:
-		# knownErrorCount = knownErrorCount + 1
-		# err_print()
-		# print('[ERR]: An HTTPError occurred. Link must have returned a bad response code.')
-		# err_log(e)
-		# err_saved_message()
 	except UnicodeEncodeError as e:
-		knownErrorCount = knownErrorCount + 1
+		knownErrorCount += 1
 		err_print()
 		print('[ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.')
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.SSLError as e:
-		knownErrorCount = knownErrorCount + 1
+		knownErrorCount += 1
 		err_print()
 		print('[ERR]: snfkjngjsk')
 		err_log(e)
 		err_saved_message()
-	# except ParserError as e:
-		# knownErrorCount = knownErrorCount + 1
-		# err_print()
-		# print('[ERR]: an XMLParseError occurred. Most likely an image or other non-html document.')
-		# err_log(e)
-		# err_saved_message()
-	# except requests.exceptions.ConnectionError as e:
-		# knownErrorCount = knownErrorCount + 1
-		# err_print()
-		# print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
-		# err_log(e)
-		# err_saved_message()
-	# except requests.exceptions.Timeout as e:
-		# knownErrorCount = knownErrorCount + 1
-		# err_print()
-		# print('[ERR]: A Timeout exception occurred. Link may be down or part of a redirect loop.')
-		# err_log(e)
-		# err_saved_message()
-	# except XMLSyntaxError as e:
-		# knownErrorCount = knownErrorCount + 1
-		# err_print()
-		# print('[ERR]: An XMLSyntaxError occurred. Some web dev missed a close tag.')
-		# err_log(e)
+	except requests.exceptions.TooManyRedirects as e:
+		knownErrorCount += 1
+		err_print()
+		print('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
+		err_log(e)
+		err_saved_message()
+	except requests.exceptions.ConnectionError as e:
+		knownErrorCount += 1
+		err_print()
+		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
+		err_log(e)
+		err_saved_message()
 		err_saved_message()
 	except Exception as e: #If any other error is raised
-		newErrorCount = newErrorCount + 1
+		newErrorCount += 1
 		err_print()
 		print('[ERR]: An unkown error happened. New debugging material!')
 		err_log(e)
