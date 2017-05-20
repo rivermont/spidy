@@ -1,11 +1,14 @@
 HTTPConnectionPool: Max retries exceeded with url
-89
+98
 
 'charmap' codec can't encode characters
 64
 
 SSL: CERTIFICATE_VERIFY_FAILED
 40
+
+HTTPSConnectionPool: Max entries exceeded with url
+34
 
 Exceeded 30 redirects.
 20
@@ -17,15 +20,15 @@ Document is empty
 9
 
 Connection aborted, ConnectionResetError
-7
-
-HTTPSConnectionPool: Max entries exceeded with url
-7
+8
 
 Tag 'x' invalid
 4
 
 Connection aborted, TimeoutError
+3
+
+Received response with content-encoding: gzip, but failed to decode it.
 3
 
 Element script embeds close tag
@@ -35,9 +38,6 @@ hostname 'x' doesn't match either of 'y', 'z'
 2
 
 Invalid URL 'x': No host supplied
-2
-
-Received response with content-encoding: gzip, but failed to decode it.
 2
 
 htmlParseEntityRef: expecting ';'
@@ -59,4 +59,7 @@ htmlParseEntityRef: no name
 1
 
 No connection adapters were found for 'x'
+1
+
+Opening and ending tag mismatch: 'x' and 'y'
 1
