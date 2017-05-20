@@ -209,7 +209,7 @@ while len(todo) != 0: #While there are links to check
 			removedCount += after
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
-			print('[CRAWL]: Successfully found {0} links on {1}'.format(len(links), todo[0])) #Announce which link was crawled
+			print('[CRAWL]: Found {0} links on {1}'.format(len(links), todo[0])) #Announce which link was crawled
 			todo.remove(todo[0]) #Remove crawled link from TODO list
 		rand = set(todo)  #Convert TODO to set
 		todo = list(rand) #and back to list.
@@ -242,6 +242,12 @@ while len(todo) != 0: #While there are links to check
 		knownErrorCount += 1
 		err_print()
 		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
+		err_log(e)
+		err_saved_message()
+	except etree.XMLSyntaxError as e:
+		knownErrorCount += 1
+		err_print()
+		print('[ERR]: An XMLSyntaxError occurred. A web dev screwed up somewhere.')
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e:
