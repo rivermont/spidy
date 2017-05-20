@@ -17,6 +17,8 @@ import time as t
 
 print('[INIT]: Creating variables...')
 
+#Initialize required variables
+
 home = ['http://www.shodor.org/~wbennett/crawler-home.html']
 
 counter = 0
@@ -58,12 +60,12 @@ except:
 
 print('[INIT]: Loading save files...')
 
-#Open saved TODO file
+#Import saved TODO file data
 with open(todoFile, 'r') as f:
 	todo = f.readlines()
 todo = [x.strip() for x in todo]
 
-#Open saved done file
+#Import saved done file data
 with open(doneFile, 'r') as f:
 	done = f.readlines()
 done = [x.strip() for x in done]
@@ -94,8 +96,6 @@ def files_save():
 	#Open save files
 	todoList = open(todoFile, 'w')
 	doneList = open(doneFile, 'w')
-	todoList.seek(0)
-	doneList.seek(0)
 	#Save
 	for site in todo:
 		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n')
@@ -108,11 +108,14 @@ def files_save():
 	doneList.close()
 
 def info_log():
+	'''
+	Logs important information to the console.
+	'''
 	time = t.strftime('%H:%M:%S')
 	print('[LOG]: {0}'.format(time))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
 	print('[LOG]: {0} links done.'.format(len(done)))
-	print('[LOG]: {0} new errors thrown.'.format(newErrorCount))
+	print('[LOG]: {0} new errors caught.'.format(newErrorCount))
 	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
 	pass
 
@@ -134,6 +137,9 @@ def err_log(error):
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
 
+def err_print():
+	print('[ERR]: An error was raised trying to connect to {0}'.format(todo[0]))
+
 def err_saved_message():
 	print('[LOG]: Saved error message and timestamp to {0}'.format(logFile))
 
@@ -141,10 +147,12 @@ print('[INIT]: Pruning invalid links from TODO...')
 
 before = len(todo)
 
+#Remove invalid links from TODO list
 for link in todo:
 	if check(link):
 		todo.remove(link)
 
+#If TODO list is empty, add default start page
 if len(todo) == 0:
 	todo += home
 
@@ -169,7 +177,7 @@ while len(todo) != 0: #While there are links to check
 			files_save()
 			info_log()
 			counter = 0
-		elif newErrorCount >= maxNewErrors or KnownErrorCount >= maxKnownErrors:
+		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors:
 			print('[ERR]: Too many errors have accumulated, stopping crawler.')
 			files_save()
 			exit()
@@ -195,24 +203,38 @@ while len(todo) != 0: #While there are links to check
 		files_save()
 		exit()
 	except requests.exceptions.HTTPError as e:
-		KnownEerrorCount = knownErrorCount + 1
-		print('[ERR]: An HTTPError occured, there is probably something wrong with the link.')
-		err_log(e)
-		err_saved_message()
-	except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
 		knownErrorCount = knownErrorCount + 1
-		print('[ERR]: A connection error occured, the link may be down.')
+		err_print()
+		print('[ERR]: An HTTPError occured. Link must have returned a bad response code.')
 		err_log(e)
 		err_saved_message()
 	except UnicodeEncodeError as e:
 		knownErrorCount = knownErrorCount + 1
-		print('[ERR]: A UnicodeEncodeError occured, most likely a foreign character in the link title.')
+		err_print()
+		print('[ERR]: A UnicodeEncodeError occured. URL had a foreign character or something.')
 		err_log(e)
 		err_saved_message()
-		continue
+	except ssl.SSLError as e:
+		knownErrorCount = knownErrorCount + 1
+		err_print()
+		print('[ERR]: an SSLError occured. URL was using a bad certificate.')
+		err_log(e)
+		err_saved_message()
+	except requests.exceptions.ConnectionError as e:
+		knownErrorCount = knownErrorCount + 1
+		err_print()
+		print('[ERR]: A ConnectionError occured. There is something wrong with somebody\'s network.')
+		err_log(e)
+		err_saved_message()
+	except requests.exceptions.Timeout as e:
+		knownErrorCount = knownErrorCount + 1
+		err_print()
+		print('[ERR]: A Timeout exception occured. Link may be down or part of a redirect loop.')
+		err_log(e)
+		err_saved_message()
 	except Exception as e: #If any other error is raised
 		newErrorCount = newErrorCount + 1
-		print('[ERR]: An error happened that I haven\'t seen before. New debugging material!')
+		print('[ERR]: An unkown error happened. New debugging material!')
 		err_log(e)
 		err_saved_message()
 		continue #Keep going like nothing happened
