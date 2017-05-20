@@ -104,7 +104,7 @@ def files_save():
 	print('[LOG]: Saved TODO list to {0}'.format(todoFile))
 	for site in done:
 		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n')
-	print('[LOG]: Saved finished list to {0}'.format(doneFile))
+	print('[LOG]: Saved done list to {0}'.format(doneFile))
 	#Close things
 	todoList.close()
 	doneList.close()
@@ -124,9 +124,9 @@ def info_log():
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
 	log = open(logFile, 'a')
-	log.write('\n\n===AUTOSAVE===')
+	log.write('\n\n====AUTOSAVE===')
 	log.write('\nTIME: {0}\nTODO: {1}\nDONE: {2}\nREMOVED: {3}\nNEW ERRORS: {4}\nOLD ERRORS: {5}'.format(time, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
-	log.write('\n===END===')
+	log.write('\n======END======')
 	pass
 
 def err_log(error):
@@ -185,9 +185,6 @@ while len(todo) != 0: #While there are links to check
 	try:
 		if counter >= saveCount:
 			print('[LOG]: Queried {0} links. Saving files...'.format(str(counter)))
-			#for link in todo:
-			#	if check(link):
-			#		todo.remove(link)
 			files_save()
 			info_log()
 			counter = 0
@@ -197,6 +194,7 @@ while len(todo) != 0: #While there are links to check
 			exit()
 		if check(todo[0]):
 			todo.remove(todo[0])
+			removedCount += 1
 		else: #Otherwise it must be valid and new, so
 			page = requests.get(todo[0]) #Scrape the link's full content
 			tree = html.fromstring(page.content) #Get the link's XPath
@@ -246,6 +244,11 @@ while len(todo) != 0: #While there are links to check
 		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
 		err_log(e)
 		err_saved_message()
+	except requests.exceptions.ContentDecodingError as e:
+		knownErrorCount += 1
+		err_print()
+		print('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
+		err_log(e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
 		newErrorCount += 1
@@ -255,9 +258,6 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 		raise
 		# continue #Keep going like nothing happened
-	except:
-		files_save()
-		raise
 	#finally: #For debugging purposes, to check one link and then stop
 	#	files_save()
 	#	exit()
