@@ -19,7 +19,7 @@ print('[INIT]: Creating variables...')
 
 #Initialize required variables
 
-home = ['http://www.shodor.org/~wbennett/crawler-home.html']
+start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
 
 counter = 0
 
@@ -167,7 +167,7 @@ for link in todo:
 
 #If TODO list is empty, add default start page
 if len(todo) == 0:
-	todo += home
+	todo += start
 
 after = before - len(todo)
 print('[INIT]: {0} invalid links removed from TODO.'.format(after))
@@ -197,8 +197,9 @@ while len(todo) != 0: #While there are links to check
 			removedCount += 1
 		else: #Otherwise it must be valid and new, so
 			page = requests.get(todo[0]) #Scrape the link's full content
-			tree = html.fromstring(page.content) #Get the link's XPath
-			links = list(tree.xpath('//a/@href')) #Grab all links inside anchor tags
+			links = []
+			for element, attribute, link, pos in html.iterlinks(page.content):
+				links.append(link)
 			before = len(links)
 			for link in links:
 				if check(link):
@@ -244,12 +245,6 @@ while len(todo) != 0: #While there are links to check
 		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
 		err_log(e)
 		err_saved_message()
-	except etree.XMLSyntaxError as e:
-		knownErrorCount += 1
-		err_print()
-		print('[ERR]: An XMLSyntaxError occurred. A web dev screwed up somewhere.')
-		err_log(e)
-		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e:
 		knownErrorCount += 1
 		err_print()
@@ -264,9 +259,9 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 		raise
 		# continue #Keep going like nothing happened
-	#finally: #For debugging purposes, to check one link and then stop
-	#	files_save()
-	#	exit()
+	# finally: #For debugging purposes, to check one link and then stop
+		# files_save()
+		# exit()
 
 print('[GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
 files_save()
