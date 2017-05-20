@@ -1,5 +1,5 @@
 HTTPConnectionPool: Max retries exceeded with url
-79
+83
 
 'charmap' codec can't encode characters
 64
@@ -7,16 +7,16 @@ HTTPConnectionPool: Max retries exceeded with url
 SSL: CERTIFICATE_VERIFY_FAILED
 35
 
+Exceeded 30 redirects.
+19
+
 Connection aborted, RemoteDisconnected
 16
 
-Exceeded 30 redirects.
-17
+Document is empty
+8
 
 Connection aborted, ConnectionResetError
-7
-
-Document is empty
 7
 
 HTTPSConnectionPool: Max entries exceeded with url
@@ -32,6 +32,9 @@ hostname 'x' doesn't match either of 'y', 'z'
 2
 
 Invalid URL 'x': No host supplied
+2
+
+Received response with content-encoding: gzip, but failed to decode it.
 2
 
 Tag footer invalid
@@ -53,9 +56,6 @@ htmlParseEntityRef: no name
 1
 
 No connection adapters were found for 'x'
-1
-
-Received response with content-encoding: gzip, but failed to decode it.
 1
 
 Tag path invalid
