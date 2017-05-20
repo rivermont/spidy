@@ -1,8 +1,8 @@
 HTTPConnectionPool: Max retries exceeded with url
-75
+79
 
 'charmap' codec can't encode characters
-63
+64
 
 SSL: CERTIFICATE_VERIFY_FAILED
 35
@@ -11,13 +11,13 @@ Connection aborted, RemoteDisconnected
 16
 
 Exceeded 30 redirects.
-15
+17
+
+Connection aborted, ConnectionResetError
+7
 
 Document is empty
 7
-
-Connection aborted, ConnectionResetError
-6
 
 HTTPSConnectionPool: Max entries exceeded with url
 5
