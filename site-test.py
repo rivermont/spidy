@@ -126,7 +126,7 @@ def save():
     for site in todo: #adds all todo sites into saved todo file
             todoList.write(str(site.encode('utf-8')) + '\n')
     for word in text:
-            textList.write(str(word.encode('utf-8')) + '\n')
+            textList.write(str(word.encode('utf-8'))[2:-1] + '\n')
     doneList.close()
     todoList.close()
 
@@ -166,7 +166,7 @@ def restart():
 def textFromHtml(link):
     print('Parsing')
     with urlopen(link) as url:
-        html =  url.read
+        html =  url.read()
     soup = BeautifulSoup(html)
     
     # kill all script and style elements
@@ -181,9 +181,14 @@ def textFromHtml(link):
     # break multi-headlines into a line each
     chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
     # drop blank lines
-    t = '\n'.join(chunk for chunk in chunks if chunk)
-    for line in t:
-        text.append(line)
+    #t = '\n'.join(chunk for chunk in chunks if chunk)
+    t = t.split()
+    for word in t:
+        if len(word) < 18 and len(word) > 3:
+            word = str(word.encode('utf-8'))[2:-1]
+            word.replace("\\", "")
+            text.append(word)
+    
     
 todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile = start()
 print('[INIT]: Starting Crawler...')
@@ -261,7 +266,7 @@ while len(todo) != 0:
         errors += 1
         print('[ERROR]: An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
         todo.remove(todo[0]) #Remove unliked link from todo
-        continue #Keep going like nothing happened
+        raise #Keep going like nothing happened
     #autosaves
     if count > 1000:
         count =0;
