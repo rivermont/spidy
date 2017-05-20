@@ -181,16 +181,19 @@ while len(todo) != 0: #While there are links to check
 			print('[ERR]: Too many errors have accumulated, stopping crawler.')
 			files_save()
 			exit()
-		elif check(todo[0]):
+		if check(todo[0]):
 			todo.remove(todo[0])
 		else: #Otherwise it must be valid and new, so
 			#print('[CRAWL]: Connecting to {0}'.format(todo[0]))
 			page = requests.get(todo[0]) #Scrape the link's full content
 			tree = html.fromstring(page.content) #Get the link's XPath
-			links = tree.xpath('//a/@href') #Grab all links inside anchor tags
-			for item in list(links): #Encode each item to UTF-8 to minimize errors
-				item = item.encode('utf-8')
-			todo += list(links) #Add scraped links to the TODO list
+			links = list(tree.xpath('//a/@href')) #Grab all links inside anchor tags
+			for link in links:
+				if check(link):
+					links.remove(link)
+					continue
+				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
+			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			print('[CRAWL]: Successfully found {0} links on {1}'.format(len(links), todo[0])) #Announce which link was crawled
 			todo.remove(todo[0]) #Remove crawled link from TODO list
