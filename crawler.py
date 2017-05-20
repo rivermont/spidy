@@ -104,15 +104,16 @@ def files_save():
 	print('[LOG]: Saved TODO list to {0}'.format(todoFile))
 	for site in done:
 		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n')
-	print('[LOG]: Saved finished list to {0}'.format(doneFile))
+	print('[LOG]: Saved done list to {0}'.format(doneFile))
 	#Close things
 	todoList.close()
 	doneList.close()
 
 def info_log():
 	'''
-	Logs important information to the console.
+	Logs important information to the console and log file.
 	'''
+	#Print to console
 	time = t.strftime('%H:%M:%S')
 	print('[LOG]: {0}'.format(time))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
@@ -120,6 +121,12 @@ def info_log():
 	print('[LOG]: {0} bad links removed.'.format(removedCount))
 	print('[LOG]: {0} new errors caught.'.format(newErrorCount))
 	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
+	#Save to logFile
+	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
+	log = open(logFile, 'a')
+	log.write('\n\n====AUTOSAVE===')
+	log.write('\nTIME: {0}\nTODO: {1}\nDONE: {2}\nREMOVED: {3}\nNEW ERRORS: {4}\nOLD ERRORS: {5}'.format(time, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
+	log.write('\n======END======')
 	pass
 
 def err_log(error):
@@ -131,12 +138,15 @@ def err_log(error):
 	ERROR: error
 	'''
 	log = open(logFile, 'a') #Open the log file
-	log.seek(0) #Go to the first line
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	try:
-		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}\n'.format(todo[0], time, str(error)))
+		log.write('\n\n===ERROR===')
+		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}'.format(todo[0], time, str(error)))
+		log.write('\n===END===')
 	except: #If an error (usually UnicodeEncodeError), write encoded log
-		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}\n'.format(str(todo[0].encode('utf-8')), time, str(error)))
+		log.write('\n\n===ERROR===')
+		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}'.format(str(todo[0].encode('utf-8')), time, str(error)))
+		log.write('\n===END===')
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
 
@@ -175,9 +185,6 @@ while len(todo) != 0: #While there are links to check
 	try:
 		if counter >= saveCount:
 			print('[LOG]: Queried {0} links. Saving files...'.format(str(counter)))
-			#for link in todo:
-			#	if check(link):
-			#		todo.remove(link)
 			files_save()
 			info_log()
 			counter = 0
@@ -187,6 +194,7 @@ while len(todo) != 0: #While there are links to check
 			exit()
 		if check(todo[0]):
 			todo.remove(todo[0])
+			removedCount += 1
 		else: #Otherwise it must be valid and new, so
 			page = requests.get(todo[0]) #Scrape the link's full content
 			tree = html.fromstring(page.content) #Get the link's XPath
@@ -221,7 +229,7 @@ while len(todo) != 0: #While there are links to check
 	except requests.exceptions.SSLError as e:
 		knownErrorCount += 1
 		err_print()
-		print('[ERR]: snfkjngjsk')
+		print('[ERR]: An SSLError occured. Site is using an invalid certificate.')
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e:
@@ -236,6 +244,11 @@ while len(todo) != 0: #While there are links to check
 		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
 		err_log(e)
 		err_saved_message()
+	except requests.exceptions.ContentDecodingError as e:
+		knownErrorCount += 1
+		err_print()
+		print('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
+		err_log(e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
 		newErrorCount += 1
@@ -245,9 +258,6 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 		raise
 		# continue #Keep going like nothing happened
-	except:
-		files_save()
-		raise
 	#finally: #For debugging purposes, to check one link and then stop
 	#	files_save()
 	#	exit()
