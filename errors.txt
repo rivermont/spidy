@@ -20,7 +20,7 @@ Connection aborted, ConnectionResetError
 7
 
 HTTPSConnectionPool: Max entries exceeded with url
-6
+7
 
 Tag 'x' invalid
 4
