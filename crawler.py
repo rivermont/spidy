@@ -217,12 +217,6 @@ while len(todo) != 0: #While there are links to check
 		print('[ERR]: A UnicodeEncodeError occured. URL had a foreign character or something.')
 		err_log(e)
 		err_saved_message()
-	# except ssl.SSLError as e:
-		# knownErrorCount = knownErrorCount + 1
-		# err_print()
-		# print('[ERR]: an SSLError occured. URL was using a bad certificate.')
-		# err_log(e)
-		# err_saved_message()
 	except requests.exceptions.ConnectionError as e:
 		knownErrorCount = knownErrorCount + 1
 		err_print()
@@ -241,6 +235,9 @@ while len(todo) != 0: #While there are links to check
 		err_log(e)
 		err_saved_message()
 		continue #Keep going like nothing happened
+	except:
+		files_save()
+		raise
 	#finally: #For debugging purposes, to check one link and then stop
 	#	files_save()
 	#	exit()
