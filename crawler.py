@@ -221,7 +221,7 @@ while len(todo) != 0: #While there are links to check
 	except requests.exceptions.SSLError as e:
 		knownErrorCount += 1
 		err_print()
-		print('[ERR]: snfkjngjsk')
+		print('[ERR]: An SSLError occured. Site is using an invalid certificate.')
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e:
