@@ -111,8 +111,9 @@ def files_save():
 
 def info_log():
 	'''
-	Logs important information to the console.
+	Logs important information to the console and log file.
 	'''
+	#Print to console
 	time = t.strftime('%H:%M:%S')
 	print('[LOG]: {0}'.format(time))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
@@ -120,6 +121,12 @@ def info_log():
 	print('[LOG]: {0} bad links removed.'.format(removedCount))
 	print('[LOG]: {0} new errors caught.'.format(newErrorCount))
 	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
+	#Save to logFile
+	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
+	log = open(logFile, 'a')
+	log.write('\n\n===AUTOSAVE===')
+	log.write('\nTIME: {0}\nTODO: {1}\nDONE: {2}\nREMOVED: {3}\nNEW ERRORS: {4}\nOLD ERRORS: {5}'.format(time, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
+	log.write('\n===END===')
 	pass
 
 def err_log(error):
@@ -131,12 +138,15 @@ def err_log(error):
 	ERROR: error
 	'''
 	log = open(logFile, 'a') #Open the log file
-	log.seek(0) #Go to the first line
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	try:
-		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}\n'.format(todo[0], time, str(error)))
+		log.write('\n\n===ERROR===')
+		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}'.format(todo[0], time, str(error)))
+		log.write('\n===END===')
 	except: #If an error (usually UnicodeEncodeError), write encoded log
-		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}\n'.format(str(todo[0].encode('utf-8')), time, str(error)))
+		log.write('\n\n===ERROR===')
+		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}'.format(str(todo[0].encode('utf-8')), time, str(error)))
+		log.write('\n===END===')
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
 
