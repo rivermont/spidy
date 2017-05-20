@@ -13,7 +13,7 @@ In this branch only you have the ability to press a multitude of keys while the 
 ![Pause example](/pause.png?raw=true "Pause pic")
 
 In the pause menu and while the program is normally running you can press u, r, e, and s to update, restart, prune todo, and get status respectively. During the pause menu you will have to press enter afterwards but during the normal program run you won't have to.
-![Keyboard example](/Pause menu and keyboard Shortcuts.png?raw=true "Keyboard pic")
+![Keyboard example](/keyboard.png?raw=true "Keyboard pic")
 
 # error handling and management
 While testing we have come across many common errors that aren't easily avoided such as http timeout, unicode encode errors, exceeding maximum redirects, http connection, and document empty(going to picture etc.) For all of these errors we have separate error handling that prints a relevant sttatement to the console since most of these errors are impossible to avoid we just continue past them. For unknown errors we have a cap which will cause the program to stop if we exceed that set amount.
