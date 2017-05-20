@@ -20,8 +20,12 @@ print('[INIT]: Creating variables...')
 home = ['http://www.shodor.org/~wbennett/crawler-home.html']
 
 counter = 0
+
 newErrorCount = 0
 knownErrorCount = 0
+
+maxNewErrors = 10
+maxKnownErrors = 25
 
 print('[INIT]: Reading arguments...')
 
@@ -49,12 +53,7 @@ try:
 	saveCount = int(sys.argv[4])
 except:
 	saveCount = 100
-	pass
-
-try:
-	maxErrors = int(sys.argv[5])
-except:
-	maxErrors = 10
+	#100 is usually around 30 seconds between saves
 	pass
 
 print('[INIT]: Loading save files...')
@@ -80,6 +79,8 @@ def check(item):
 	if item in done:
 		return True
 	elif len(item) < 7:
+		return True
+	elif len(item) > 250:
 		return True
 	elif item[0:4] != 'http':
 		return True
@@ -168,8 +169,8 @@ while len(todo) != 0: #While there are links to check
 			files_save()
 			info_log()
 			counter = 0
-		elif newErrorCount >= maxErrors:
-			print('[ERR]: Too many errors have been caught, stopping crawler.')
+		elif newErrorCount >= maxNewErrors or KnownErrorCount >= maxKnownErrors:
+			print('[ERR]: Too many errors have accumulated, stopping crawler.')
 			files_save()
 			exit()
 		elif check(todo[0]):
