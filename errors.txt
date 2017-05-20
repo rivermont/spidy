@@ -1,11 +1,11 @@
 HTTPConnectionPool: Max retries exceeded with url
-84
+86
 
 'charmap' codec can't encode characters
 64
 
 SSL: CERTIFICATE_VERIFY_FAILED
-3+
+39
 
 Exceeded 30 redirects.
 19
@@ -14,7 +14,7 @@ Connection aborted, RemoteDisconnected
 16
 
 Document is empty
-8
+9
 
 Connection aborted, ConnectionResetError
 7
@@ -50,6 +50,9 @@ hostname 'x' doesn't match 'y'
 1
 
 htmlParseEntityRef: expecting ';'
+2
+
+Unexpected end tag : a
 1
 
 htmlParseEntityRef: no name

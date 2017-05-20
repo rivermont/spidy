@@ -1,1 +1,4 @@
- 
+
+URL: https://www.randomstorm.com/
+TIME: 12:08:08, Saturday May 2017
+ERROR: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:645)
