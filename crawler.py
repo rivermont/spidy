@@ -116,7 +116,7 @@ def info_log():
 	time = t.strftime('%H:%M:%S')
 	print('[LOG]: {0}'.format(time))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
-	print('[LOG]: {0} links done.'.format(len(done)))
+	print('[LOG]: {0} links in done.'.format(len(done)))
 	print('[LOG]: {0} new errors caught.'.format(newErrorCount))
 	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
 	pass
@@ -229,12 +229,12 @@ while len(todo) != 0: #While there are links to check
 		print('[ERR]: snfkjngjsk')
 		err_log(e)
 		err_saved_message()
-	except lxml.etree.ParserError as e:
-		knownErrorCount = knownErrorCount + 1
-		err_print()
-		print('[ERR]: an XMLParseError occurred. Most likely an image or other non-html document.')
-		err_log(e)
-		err_saved_message()
+	# except ParserError as e:
+		# knownErrorCount = knownErrorCount + 1
+		# err_print()
+		# print('[ERR]: an XMLParseError occurred. Most likely an image or other non-html document.')
+		# err_log(e)
+		# err_saved_message()
 	# except requests.exceptions.ConnectionError as e:
 		# knownErrorCount = knownErrorCount + 1
 		# err_print()
@@ -247,11 +247,11 @@ while len(todo) != 0: #While there are links to check
 		# print('[ERR]: A Timeout exception occurred. Link may be down or part of a redirect loop.')
 		# err_log(e)
 		# err_saved_message()
-	except lxml.etree.XMLSyntaxError as e:
-		knownErrorCount = knownErrorCount + 1
-		err_print()
-		print('[ERR]: An XMLSyntaxError occurred. Some web dev missed a close tag.')
-		err_log(e)
+	# except XMLSyntaxError as e:
+		# knownErrorCount = knownErrorCount + 1
+		# err_print()
+		# print('[ERR]: An XMLSyntaxError occurred. Some web dev missed a close tag.')
+		# err_log(e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
 		newErrorCount = newErrorCount + 1
@@ -260,7 +260,7 @@ while len(todo) != 0: #While there are links to check
 		err_log(e)
 		err_saved_message()
 		raise
-		#continue #Keep going like nothing happened
+		# continue #Keep going like nothing happened
 	except:
 		files_save()
 		raise

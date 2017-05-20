@@ -5,7 +5,7 @@ HTTPConnectionPool: Max retries exceeded with url
 64
 
 SSL: CERTIFICATE_VERIFY_FAILED
-39
+40
 
 Exceeded 30 redirects.
 19
