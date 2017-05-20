@@ -20,7 +20,8 @@ print('[INIT]: Creating variables...')
 home = ['http://www.shodor.org/~wbennett/crawler-home.html']
 
 counter = 0
-errorCount = 0
+newErrorCount = 0
+knownErrorCount = 0
 
 print('[INIT]: Reading arguments...')
 
@@ -108,9 +109,10 @@ def files_save():
 def info_log():
 	time = t.strftime('%H:%M:%S')
 	print('[LOG]: {0}'.format(time))
-	print('[LOG]: URLs in TODO: {0}.'.format(len(todo)))
-	print('[LOG]: URLs in done: {0}.'.format(len(done)))
-	print('[LOG]: Errors thrown so far: {0}.'.format(errorCount))
+	print('[LOG]: {0} links in TODO.'.format(len(todo)))
+	print('[LOG]: {0} links done.'.format(len(done)))
+	print('[LOG]: {0} new errors thrown.'.format(newErrorCount))
+	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
 	pass
 
 def err_log(error):
@@ -166,13 +168,14 @@ while len(todo) != 0: #While there are links to check
 			files_save()
 			info_log()
 			counter = 0
-		elif errorCount >= maxErrors:
+		elif newErrorCount >= maxErrors:
 			print('[ERR]: Too many errors have been caught, stopping crawler.')
+			files_save()
+			exit()
 		elif check(todo[0]):
 			todo.remove(todo[0])
 		else: #Otherwise it must be valid and new, so
 			#print('[CRAWL]: Connecting to {0}'.format(todo[0]))
-			#To Do: Create live line at bottom of console displaying current action.
 			page = requests.get(todo[0]) #Scrape the link's full content
 			tree = html.fromstring(page.content) #Get the link's XPath
 			links = tree.xpath('//a/@href') #Grab all links inside anchor tags
@@ -191,24 +194,24 @@ while len(todo) != 0: #While there are links to check
 		files_save()
 		exit()
 	except requests.exceptions.HTTPError as e:
-		errorCount = errorCount + 1
+		KnownEerrorCount = knownErrorCount + 1
 		print('[ERR]: An HTTPError occured, there is probably something wrong with the link.')
 		err_log(e)
 		err_saved_message()
 	except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
-		errorCount = errorCount + 1
+		knownErrorCount = knownErrorCount + 1
 		print('[ERR]: A connection error occured, the link may be down.')
 		err_log(e)
 		err_saved_message()
 	except UnicodeEncodeError as e:
-		errorCount = errorCount + 1
+		knownErrorCount = knownErrorCount + 1
 		print('[ERR]: A UnicodeEncodeError occured, most likely a foreign character in the link title.')
 		err_log(e)
 		err_saved_message()
 		continue
 	except Exception as e: #If any other error is raised
-		errorCount = errorCount + 1
-		print('[ERR]: An error happened, probably HTTP related.')
+		newErrorCount = newErrorCount + 1
+		print('[ERR]: An error happened that I haven\'t seen before. New debugging material!')
 		err_log(e)
 		err_saved_message()
 		continue #Keep going like nothing happened
