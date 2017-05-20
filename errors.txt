@@ -1,11 +1,11 @@
 HTTPConnectionPool: Max retries exceeded with url
-83
+84
 
 'charmap' codec can't encode characters
 64
 
 SSL: CERTIFICATE_VERIFY_FAILED
-35
+3+
 
 Exceeded 30 redirects.
 19
