@@ -183,31 +183,29 @@ print('[INIT]: Starting crawler...')
 
 while len(todo) != 0: #While there are links to check
 	try:
-		if counter >= saveCount:
+		if counter >= saveCount: #If it's not time for an autosave
 			print('[LOG]: Queried {0} links. Saving files...'.format(str(counter)))
 			files_save()
 			info_log()
 			counter = 0
-		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors:
+		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
 			print('[ERR]: Too many errors have accumulated, stopping crawler.')
 			files_save()
 			exit()
-		if check(todo[0]):
+		if check(todo[0]): #If the link is valid
 			todo.remove(todo[0])
 			removedCount += 1
 		else: #Otherwise it must be valid and new, so
-			page = requests.get(todo[0]) #Scrape the link's full content
+			page = requests.get(todo[0]) #Get page
 			links = []
-			for element, attribute, link, pos in html.iterlinks(page.content):
+			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
-			before = len(links)
-			for link in links:
+			for link in links: #Check for invalid links
 				if check(link):
 					links.remove(link)
+					removedCount += 1
 					continue
 				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
-			after = before - len(links)
-			removedCount += after
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			print('[CRAWL]: Found {0} links on {1}'.format(len(links), todo[0])) #Announce which link was crawled
