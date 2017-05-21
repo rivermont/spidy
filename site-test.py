@@ -3,7 +3,6 @@ import msvcrt
 import time
 import requests
 import sys
-import urllib
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -13,36 +12,36 @@ def start():
     count = 0;
     errors = 0
     knownErrors = 0
-    print('Enter automatic save interval')
-    try:
-        saveCount = sys.argv[1]
-    except:
-        saveCount = 1000
-        pass
-    print('Enter valid non-empty link file for todo')
-    try:
-        todoFile = sys.argv[2]
-    except:
-        todoFile = 'crawler_todo.txt'
-        pass
-    print('Enter valid text file for done')
-    try:
-        doneFile = sys.argv[3]
-    except:
-        doneFile = 'crawler_done.txt'
-        pass
-    print('Enter valid text file for log')
-    try:
-        logFile = sys.argv[4]
-    except:
-        logFile = 'crawler_log.txt'
-        pass
-    print('Enter valid text file for text')
-    try:
-        textFile = sys.argv(5)
-    except:
-        textFile = 'crawler_text.txt'
-        pass
+
+    custom = input('Would you like to change the default save settings y/n: ')
+    todoFile = 'crawler_todo.txt'
+    doneFile = 'crawler_done.txt'
+    logFile = 'crawler_log.txt'
+    textFile = 'crawler_text.txt'
+    saveCount = 1000
+
+    if custom == 'y':
+        print('Enter automatic save interval')
+        saveCount = input()
+        if saveCount == None:
+            saveCount = 1000
+        print('Enter valid non-empty link file for todo')
+        todoFile = input()
+        if todoFile == None:
+            todoFile = 'crawler_todo.txt'
+        print('Enter valid text file for done')
+        doneFile = input()
+        if doneFile == None:
+            doneFile = 'crawler_done.txt'
+        print('Enter valid text file for log')
+        logFile = input()
+        if logFile == None:
+            logFile = 'crawler_log.txt'
+        print('Enter valid text file for text')
+        textFile = input()
+        if textFile == None:
+            textFile = 'crawler_text.txt'
+    
     print('Enter True if you want to clear the done file')
     clear = input()
     print('Enter True if you want to clear todo and add wikipedia main page')
@@ -53,27 +52,44 @@ def start():
 
 
     #open saved files
-    with open(textFile, 'r+') as f:
-        if clearText == 'True':
+
+    if clearText == 'True':
+        with open(textFile, 'w') as f:
+            print('[INIT]: Clearing textFile')
             f.write('')
-        text = f.readlines()
+            text = []
+    else:
+        with open(textFile, 'r+') as f:
+            print('[INIT]: Opening textFile')
+            text = f.readlines()
     #open saved todo file
-    with open(todoFile, 'r+') as f:
-        if clearTodo == 'True':
+    if clearTodo == 'True':
+        print('[INIT]: Clearing todoFile')
+        with open(todoFile, 'w') as f:
             f.write('')
-        todo = f.readlines()
-    todo = [x.strip() for x in todo]
+            todo = []
+    else:
+        with open(todoFile, 'r+') as f:
+            print('[INIT]: opening todoFile')
+            todo = f.readlines()
+            todo = [x.strip() for x in todo]
 
     #opens all done pages
-    with open(doneFile, 'r+') as f:
         #clears doneFile if clear is True
-        if clear == 'True':
+    if clear == 'True':
+        with open(doneFile, 'w') as f:
             print('[INIT]: clearing done file')
             f.write('')
-        done = f.readlines()
-    done = [x.strip() for x in done]
+            done = []
+    else:
+        with open(doneFile, 'r+') as f:
+            print('[INIT]: opening doneFile')
+            done = f.readlines()
+            done = [x.strip() for x in todo]
 
     #initializes todoFile with default start website
+    print('[INIT]: Initializing todoFile with wikipedia main page')
+
     todo.append('https://en.wikipedia.org/wiki/Main_Page')
     return todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile
 
@@ -126,7 +142,11 @@ def save():
     for site in todo: #adds all todo sites into saved todo file
             todoList.write(str(site.encode('utf-8')) + '\n')
     for word in text:
-            textList.write(str(word.encode('utf-8'))[2:-1] + '\n')
+        if word != None:
+            try:
+                textList.write(str(word.encode('utf-8'))[2:-1] + '\n')
+            except:
+                pass
     doneList.close()
     todoList.close()
 
@@ -184,10 +204,13 @@ def textFromHtml(link):
     #t = '\n'.join(chunk for chunk in chunks if chunk)
     t = t.split()
     for word in t:
+        word = str(word.encode('utf-8'))[2:-1]
         if len(word) < 18 and len(word) > 3:
-            word = str(word.encode('utf-8'))[2:-1]
             word.replace("\\", "")
-            text.append(word)
+            if word in text:
+                pass
+            else:
+                text.append(word)
     
     
 todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile = start()
@@ -236,6 +259,7 @@ while len(todo) != 0:
                     item = item.encode('utf-8') #adds all links into todo separately
                 todo += list(links)
                 todo = list(set(todo)) #removes duplicates and also disorders the list
+                
                 prune()
         else:
             todo.remove(todo[0]) #removes too short links
@@ -266,7 +290,9 @@ while len(todo) != 0:
         errors += 1
         print('[ERROR]: An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
         todo.remove(todo[0]) #Remove unliked link from todo
-        raise #Keep going like nothing happened
+
+        #raise #Keep going like nothing happened
+        pass #Keep going like nothing happened
     #autosaves
     if count > 1000:
         count =0;
