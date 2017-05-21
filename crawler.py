@@ -35,9 +35,11 @@ removedCount = 0
 newErrorCount = 0
 knownErrorCount = 0
 
+#Amount of errors allowed to happen before automatic shutdown
 maxNewErrors = 10
 maxKnownErrors = 25
 
+#Line to print at the end of each logFile log
 endLog = '\n======END======'
 
 print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
@@ -300,8 +302,8 @@ while len(todo) != 0: #While there are links to check
 		print('[{0}] [ERR]: An unkown error happened. New debugging material!'.format(get_time()))
 		err_log(e)
 		err_saved_message()
-		raise
-		# continue
+		# raise
+		continue
 	# finally: #For debugging purposes; to check one link and then stop
 		# files_save()
 		# exit()
