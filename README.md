@@ -4,6 +4,14 @@ Given a list of web links, spidy uses the Python lxml and requests libraries to 
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
 
+# Tutorial
+The way that you will run spidy depends on the way you have Python installed.
+
+## Python Installation
+There are many different versions of Python, and probably hundreds of different installations of each them.
+Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
+
+
 # How it Works
 This web crawler is very simple in that the main functionality is it's ability to parse the html for all links and then adds all of those links that are valid into a list called todo. As you would expect the crawler then goes on to do this same process for all links in todo. After every 100 links queried (by default) the crawler will autosave the done file and will prune the links for any invalid ones.
 ![Run example](/run.png?raw=true "run pic")
