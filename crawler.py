@@ -88,13 +88,13 @@ def check(item):
 	Returns True if item is not a valid url.
 	Returns False if it passes all inspections (is valid url).
 	'''
-	if item in done:
-		return True
-	elif len(item) < 7:
-		return True
-	elif len(item) > 250:
+	if len(item) < 7:
 		return True
 	elif item[0:4] != 'http':
+		return True
+	elif item in done:
+		return True
+	elif len(item) > 250:
 		return True
 	else:
 		return False
@@ -212,6 +212,7 @@ while len(todo) != 0: #While there are links to check
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
+			links = (list(set(links))
 			for link in links: #Check for invalid links
 				if check(link):
 					links.remove(link)
