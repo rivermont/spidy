@@ -7,7 +7,10 @@ Built by rivermont and FalconWarriorr
 ## INIT ##
 ##########
 
+#Time statements.
+#This is done before anything else to enable timestamp logging at every step.
 import time as t
+startTime = round(t.time(), 2)
 def get_time():
 	return t.strftime('%H:%M:%S')
 
@@ -23,10 +26,11 @@ print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
 
+#Fallback pages in case the TODO file is empty
 start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
 
+#Counter variables
 counter = 0
-
 removedCount = 0
 newErrorCount = 0
 knownErrorCount = 0
@@ -34,41 +38,44 @@ knownErrorCount = 0
 maxNewErrors = 10
 maxKnownErrors = 25
 
-startTime = round(t.time(), 2)
-
 print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
-#Read variables from arguments or set to defaults.
+#Read variables from arguments or set to defaults if args not present.
 
+#Whether to load from save files or overwrite them
 try:
 	overwrite = sys.argv[1]
 except:
 	overwrite = False
 	pass
 
+#Saved TODO file
 try:
 	todoFile = sys.argv[2]
 except:
 	todoFile = 'crawler_todo.txt'
 	pass
 
+#Saved doneFile
 try:
 	doneFile = sys.argv[3]
 except:
 	doneFile = 'crawler_done.txt'
 	pass
 
+#Saved logFile
 try:
 	logFile = sys.argv[4]
 except:
 	logFile = 'crawler_log.txt'
 	pass
 
+#Number of crawled links after which to autosave
 try:
 	saveCount = int(sys.argv[5])
 except:
 	saveCount = 100
-	#100 is usually around 30 seconds between saves
+	#100 is default as it means there is usually at least one log in the console window at any given time.
 	pass
 
 print('[{0}] [INIT]: Loading save files...'.format(get_time()))
@@ -87,17 +94,16 @@ print('[{0}] [INIT]: Creating functions...'.format(get_time()))
 
 def check(item):
 	'''
-	Checks whether item has been checked, doesn't start with 'h' (must be http, https), or is less than 7 characters long (valid url).
 	Returns True if item is not a valid url.
 	Returns False if it passes all inspections (is valid url).
 	'''
-	if len(item) < 7:
+	if len(item) < 10: #Shortest possible url being 'http://a.b'
 		return True
-	elif item[0:4] != 'http':
+	elif item[0:4] != 'http': #Must be an http or https link
 		return True
-	elif item in done:
+	elif item in done: #Can't have visited already
 		return True
-	elif len(item) > 250:
+	elif len(item) > 250: #Links longer than 250 characters usually are useless or full of foreign characters
 		return True
 	else:
 		return False
@@ -105,6 +111,7 @@ def check(item):
 def files_save():
 	'''
 	Saves the TODO and done lists into their respective files.
+	Also logs the action to the console.
 	'''
 	#Open save files
 	todoList = open(todoFile, 'w')
@@ -143,10 +150,10 @@ def info_log():
 
 def err_log(error):
 	'''
-	Saves the triggering error to the log file.
-	Format:
-	SITE: todo[0]
-	TIMER: Hr:Min:Sec, Weekday Month Year
+	Saves the triggering error to the log file in the format
+	
+	TIME: Hr:Min:Sec, Weekday Month Year
+	URL: todo[0]
 	ERROR: error
 	'''
 	log = open(logFile, 'a') #Open the log file
@@ -214,7 +221,9 @@ while len(todo) != 0: #While there are links to check
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
+			len(links)
 			links = (list(set(links)))
+			len(links)
 			for link in links: #Check for invalid links
 				if check(link):
 					links.remove(link)
