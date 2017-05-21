@@ -25,7 +25,6 @@ start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipe
 counter = 0
 
 removedCount = 0
-
 newErrorCount = 0
 knownErrorCount = 0
 
