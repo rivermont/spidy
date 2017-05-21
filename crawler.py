@@ -181,7 +181,9 @@ if len(todo) == 0:
 	todo += start
 
 after = before - len(todo)
+
 print('[INIT]: {0} invalid links removed from TODO.'.format(after))
+
 removedCount += after
 
 print('[INIT]: TODO first value: {0}'.format(todo[0]))
