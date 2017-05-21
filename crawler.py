@@ -3,6 +3,7 @@ Python Web Crawler
 Built by rivermont and FalconWarriorr
 '''
 
+
 ##########
 ## INIT ##
 ##########
@@ -53,30 +54,35 @@ except:
 	overwrite = False
 	pass
 
+try:
+	raiseErrors = sys.argv[2]
+except:
+	raiseErrors = False
+	pass
 #Saved TODO file
 try:
-	todoFile = sys.argv[2]
+	todoFile = sys.argv[3]
 except:
 	todoFile = 'crawler_todo.txt'
 	pass
 
 #Saved doneFile
 try:
-	doneFile = sys.argv[3]
+	doneFile = sys.argv[4]
 except:
 	doneFile = 'crawler_done.txt'
 	pass
 
 #Saved logFile
 try:
-	logFile = sys.argv[4]
+	logFile = sys.argv[5]
 except:
 	logFile = 'crawler_log.txt'
 	pass
 
 #Number of crawled links after which to autosave
 try:
-	saveCount = int(sys.argv[5])
+	saveCount = int(sys.argv[6])
 except:
 	saveCount = 100
 	#100 is default as it means there is usually at least one log in the console window at any given time.
@@ -254,6 +260,7 @@ while len(todo) != 0: #While there are links to check
 		todo = list(rand) #and back to list.
 						  #This both removes duplicates and mixes up the list, as sets are unordered collections without duplicates
 		counter += 1
+	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
@@ -302,8 +309,10 @@ while len(todo) != 0: #While there are links to check
 		print('[{0}] [ERR]: An unkown error happened. New debugging material!'.format(get_time()))
 		err_log(e)
 		err_saved_message()
-		# raise
-		continue
+		if raiseErrors:
+			raise
+		else:
+			continue
 	# finally: #For debugging purposes; to check one link and then stop
 		# files_save()
 		# exit()
