@@ -243,7 +243,7 @@ while len(todo) != 0: #While there are links to check
 		print('[ERR]: An SSLError occured. Site is using an invalid certificate.')
 		err_log(e)
 		err_saved_message()
-	except (etree.XMLSyntaxError, etree.ParseError) as e:
+	except (etree.XMLSyntaxError, etree.ParserError) as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.')
