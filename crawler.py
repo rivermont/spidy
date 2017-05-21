@@ -7,16 +7,19 @@ Built by rivermont and FalconWarriorr
 ## INIT ##
 ##########
 
-print('[INIT]: Importing libraries...')
+import time as t
+def get_time()
+	return t.strftime('%H:%M:%S')
+
+print('[{0}] [INIT]: Importing libraries...'.format(get_time()))
 
 #Import required libraries
 from lxml import html
 from lxml import etree
 import requests
 import sys
-import time as t
 
-print('[INIT]: Creating variables...')
+print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
 
@@ -33,7 +36,7 @@ maxKnownErrors = 25
 
 startTime = round(t.time(), 3)
 
-print('[INIT]: Reading arguments...')
+print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
 #Read variables from arguments or set to defaults.
 
@@ -68,7 +71,7 @@ except:
 	#100 is usually around 30 seconds between saves
 	pass
 
-print('[INIT]: Loading save files...')
+print('[{0}] [INIT]: Loading save files...'.format(get_time()))
 
 #Import saved TODO file data
 with open(todoFile, 'r') as f:
@@ -80,7 +83,7 @@ with open(doneFile, 'r') as f:
 	done = f.readlines()
 done = [x.strip() for x in done]
 
-print('[INIT]: Creating functions...')
+print('[{0}] [INIT]: Creating functions...'.format(get_time()))
 
 def check(item):
 	'''
