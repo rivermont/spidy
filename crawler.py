@@ -34,7 +34,7 @@ knownErrorCount = 0
 maxNewErrors = 10
 maxKnownErrors = 25
 
-startTime = round(t.time(), 3)
+startTime = round(t.time(), 2)
 
 print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
@@ -127,7 +127,7 @@ def info_log():
 	'''
 	#Print to console
 	time = get_time()
-	sinceStart = round(t.time() - startTime, 3)
+	sinceStart = round(t.time() - startTime, 2)
 	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
 	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
 	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
@@ -140,7 +140,6 @@ def info_log():
 	log.write('\n\n====AUTOSAVE===')
 	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(time, sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
 	log.write('\n======END======')
-	pass
 
 def err_log(error):
 	'''
