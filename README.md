@@ -1,5 +1,6 @@
 # spidy
-Spidy (spˈɪdi) A simple to use command line web crawler that saves all visited website links to a folder along with all valid archived links
+Spidy (spˈɪdi) is a simple to use command line web crawler.
+Given a list of web links, spidy uses the Python lxml and requests libraries to query the websites. Spidy then extracts all links from the DOM of the page and adds them to its list.
 
 # startup
 User friendly log messages are printed in the console letting you know what proccess is going an if it is taking a long time and you don't know why. 
