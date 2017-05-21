@@ -38,6 +38,8 @@ knownErrorCount = 0
 maxNewErrors = 10
 maxKnownErrors = 25
 
+endLog = '\n======END======'
+
 print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
 #Read variables from arguments or set to defaults if args not present.
@@ -146,7 +148,7 @@ def info_log():
 	log = open(logFile, 'a')
 	log.write('\n\n====AUTOSAVE===')
 	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(time, sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
-	log.write('\n======END======')
+	log.write(endLog)
 
 def err_log(error):
 	'''
@@ -161,13 +163,25 @@ def err_log(error):
 	try:
 		log.write('\n\n=====ERROR=====')
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}'.format(time, todo[0], str(error)))
-		log.write('\n======END======')
+		log.write(endLog)
 	except: #If an error (usually UnicodeEncodeError), write encoded log
 		log.write('\n\n=====ERROR=====')
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}'.format(time, str(todo[0].encode('utf-8')), str(error)))
-		log.write('\n======END======')
+		log.write(endLog)
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
+
+def log(message):
+	'''
+	Logs a single message.
+	Prints message verbatim, so message must formatted correctly outside of the function call.
+	'''
+	log = open(logFile, 'a') #Open the log file
+	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
+	log.write('\n\n======LOG======')
+	log.write(message)
+	log.write(endLog)
+	log.close()
 
 def err_print(item):
 	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
@@ -193,10 +207,10 @@ removedCount += after
 
 print('[{0}] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
 
-
 print('[{0}] [INIT]: TODO first value: {1}'.format(get_time(), todo[0]))
 
 print('[{0}] [INIT]: Starting crawler...'.format(get_time()))
+log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
 
 #########
 ## RUN ##
@@ -241,6 +255,7 @@ while len(todo) != 0: #While there are links to check
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
+		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		files_save()
 		exit()
 	except UnicodeEncodeError as e:
