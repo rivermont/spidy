@@ -1,5 +1,5 @@
-# web-crawler
-A simple to use command line web crawler that saves all visited website links to a folder along with all valid archived links
+# spidy
+Spidy (spˈɪdi) A simple to use command line web crawler that saves all visited website links to a folder along with all valid archived links
 
 # startup
 User friendly log messages are printed in the console letting you know what proccess is going an if it is taking a long time and you don't know why. 

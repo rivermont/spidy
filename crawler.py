@@ -214,7 +214,7 @@ while len(todo) != 0: #While there are links to check
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
-			links = (list(set(links))
+			links = (list(set(links)))
 			for link in links: #Check for invalid links
 				if check(link):
 					links.remove(link)
