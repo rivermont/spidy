@@ -36,25 +36,31 @@ print('[INIT]: Reading arguments...')
 #Read variables from arguments or set to defaults.
 
 try:
-	todoFile = sys.argv[1]
+	overwrite = sys.argv[1]
+except:
+	overwrite = False
+	pass
+
+try:
+	todoFile = sys.argv[2]
 except:
 	todoFile = 'crawler_todo.txt'
 	pass
 
 try:
-	doneFile = sys.argv[2]
+	doneFile = sys.argv[3]
 except:
 	doneFile = 'crawler_done.txt'
 	pass
 
 try:
-	logFile = sys.argv[3]
+	logFile = sys.argv[4]
 except:
 	logFile = 'crawler_log.txt'
 	pass
 
 try:
-	saveCount = int(sys.argv[4])
+	saveCount = int(sys.argv[5])
 except:
 	saveCount = 100
 	#100 is usually around 30 seconds between saves
@@ -141,11 +147,11 @@ def err_log(error):
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	try:
 		log.write('\n\n=====ERROR=====')
-		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}'.format(todo[0], time, str(error)))
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}'.format(time, todo[0], str(error)))
 		log.write('\n======END======')
 	except: #If an error (usually UnicodeEncodeError), write encoded log
 		log.write('\n\n=====ERROR=====')
-		log.write('\nURL: {0}\nTIME: {1}\nERROR: {2}'.format(str(todo[0].encode('utf-8')), time, str(error)))
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}'.format(time, str(todo[0].encode('utf-8')), str(error)))
 		log.write('\n======END======')
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
@@ -223,45 +229,40 @@ while len(todo) != 0: #While there are links to check
 		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
 		print('[ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.')
-		# err_log(e)
-		# err_saved_message()
-		todo.remove(todo[0])
+		err_log(e)
+		err_saved_message()
 	except requests.exceptions.SSLError as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: An SSLError occured. Site is using an invalid certificate.')
-		# err_log(e)
-		# err_saved_message()
-		todo.remove(todo[0])
+		err_log(e)
+		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
-		# err_log(e)
-		# err_saved_message()
-		todo.remove(todo[0])
+		err_log(e)
+		err_saved_message()
 	except requests.exceptions.ConnectionError as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
-		# err_log(e)
-		# err_saved_message()
-		todo.remove(todo[0])
+		err_log(e)
+		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
-		# err_log(e)
-		# err_saved_message()
-		todo.remove(todo[0])
+		err_log(e)
+		err_saved_message()
 	except Exception as e: #If any other error is raised
 		newErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: An unkown error happened. New debugging material!')
 		err_log(e)
 		err_saved_message()
-		# raise
-		continue
+		raise
+		# continue
 	# finally: #For debugging purposes; to check one link and then stop
 		# files_save()
 		# exit()
