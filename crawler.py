@@ -112,10 +112,10 @@ def files_save():
 	#Save
 	for site in todo:
 		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n')
-	print('[LOG]: Saved TODO list to {0}'.format(todoFile))
+	print('[{0}] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	for site in done:
 		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n')
-	print('[LOG]: Saved done list to {0}'.format(doneFile))
+	print('[{0}] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
 	#Close things
 	todoList.close()
 	doneList.close()
@@ -125,15 +125,14 @@ def info_log():
 	Logs important information to the console and log file.
 	'''
 	#Print to console
-	time = t.strftime('%H:%M:%S')
+	time = get_time()
 	sinceStart = round(t.time() - startTime, 3)
-	print('[LOG]: {0}'.format(time))
-	print('[LOG]: {0} seconds elapsed since start.'.format(sinceStart))
-	print('[LOG]: {0} links in TODO.'.format(len(todo)))
-	print('[LOG]: {0} links in done.'.format(len(done)))
-	print('[LOG]: {0} bad links removed.'.format(removedCount))
-	print('[LOG]: {0} new errors caught.'.format(newErrorCount))
-	print('[LOG]: {0} known errors caught.'.format(knownErrorCount))
+	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
+	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
+	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
+	print('[{0}] [LOG]: {1} bad links removed.'.format(time, removedCount))
+	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
+	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
 	log = open(logFile, 'a')
