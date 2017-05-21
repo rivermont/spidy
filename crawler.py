@@ -31,7 +31,7 @@ knownErrorCount = 0
 maxNewErrors = 10
 maxKnownErrors = 25
 
-startTime = t.time()
+startTime = round(t.time(), 3)
 
 print('[INIT]: Reading arguments...')
 
@@ -88,13 +88,13 @@ def check(item):
 	Returns True if item is not a valid url.
 	Returns False if it passes all inspections (is valid url).
 	'''
-	if item in done:
-		return True
-	elif len(item) < 7:
-		return True
-	elif len(item) > 250:
+	if len(item) < 7:
 		return True
 	elif item[0:4] != 'http':
+		return True
+	elif item in done:
+		return True
+	elif len(item) > 250:
 		return True
 	else:
 		return False
@@ -123,7 +123,7 @@ def info_log():
 	'''
 	#Print to console
 	time = t.strftime('%H:%M:%S')
-	sinceStart = t.time() - startTime
+	sinceStart = round(t.time() - startTime, 3)
 	print('[LOG]: {0}'.format(time))
 	print('[LOG]: {0} seconds elapsed since start.'.format(sinceStart))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
@@ -201,7 +201,7 @@ while len(todo) != 0: #While there are links to check
 			info_log()
 			counter = 0
 		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
-			print('[ERR]: Too many errors have accumulated, stopping crawler.')
+			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format)
 			files_save()
 			exit()
 		if check(todo[0]): #If the link is valid
@@ -220,7 +220,7 @@ while len(todo) != 0: #While there are links to check
 				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
-			print('[CRAWL]: Found {0} links on {1}'.format(len(links), todo[0])) #Announce which link was crawled
+			print('[{0}] [CRAWL]: Found {1} links on {2}'.format(t.strftime('%H:%M:%S'), len(links), todo[0])) #Announce which link was crawled
 			todo.remove(todo[0]) #Remove crawled link from TODO list
 		rand = set(todo)  #Convert TODO to set
 		todo = list(rand) #and back to list.
@@ -228,49 +228,57 @@ while len(todo) != 0: #While there are links to check
 		counter += 1
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
-		print('[ERR]: User performed a KeyboardInterrupt, stopping crawler...')
+		now = t.strftime('%H:%M:%S')
+		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(now))
 		files_save()
 		exit()
 	except UnicodeEncodeError as e:
+		now = t.strftime('%H:%M:%S')
 		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
-		print('[ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.')
+		print('[{0}] [ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.'.format(now))
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.SSLError as e:
+		now = t.strftime('%H:%M:%S')
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[ERR]: An SSLError occured. Site is using an invalid certificate.')
+		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(now))
 		err_log(e)
 		err_saved_message()
 	except (etree.XMLSyntaxError, etree.ParserError) as e:
+		now = t.strftime('%H:%M:%S')
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.')
+		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(now))
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e:
+		now = t.strftime('%H:%M:%S')
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
+		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(now))
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.ConnectionError as e:
+		now = t.strftime('%H:%M:%S')
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.')
+		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(now))
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e:
+		now = t.strftime('%H:%M:%S')
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
+		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(now))
 		err_log(e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
+		now = t.strftime('%H:%M:%S')
 		newErrorCount += 1
 		err_print(todo[0])
-		print('[ERR]: An unkown error happened. New debugging material!')
+		print('[{0}] [ERR]: An unkown error happened. New debugging material!'.format(now))
 		err_log(e)
 		err_saved_message()
 		raise
