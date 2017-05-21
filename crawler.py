@@ -11,6 +11,7 @@ print('[INIT]: Importing libraries...')
 
 #Import required libraries
 from lxml import html
+from lxml import etree
 import requests
 import sys
 import time as t
@@ -30,6 +31,8 @@ knownErrorCount = 0
 
 maxNewErrors = 10
 maxKnownErrors = 25
+
+startTime = t.time()
 
 print('[INIT]: Reading arguments...')
 
@@ -121,7 +124,9 @@ def info_log():
 	'''
 	#Print to console
 	time = t.strftime('%H:%M:%S')
+	sinceStart = t.time() - startTime
 	print('[LOG]: {0}'.format(time))
+	print('[LOG]: {0} seconds elapsed since start.'.format(sinceStart))
 	print('[LOG]: {0} links in TODO.'.format(len(todo)))
 	print('[LOG]: {0} links in done.'.format(len(done)))
 	print('[LOG]: {0} bad links removed.'.format(removedCount))
@@ -131,7 +136,7 @@ def info_log():
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
 	log = open(logFile, 'a')
 	log.write('\n\n====AUTOSAVE===')
-	log.write('\nTIME: {0}\nTODO: {1}\nDONE: {2}\nREMOVED: {3}\nNEW ERRORS: {4}\nOLD ERRORS: {5}'.format(time, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
+	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(time, sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
 	log.write('\n======END======')
 	pass
 
@@ -235,6 +240,12 @@ while len(todo) != 0: #While there are links to check
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[ERR]: An SSLError occured. Site is using an invalid certificate.')
+		err_log(e)
+		err_saved_message()
+	except (etree.XMLSyntaxError, etree.ParseError) as e:
+		knownErrorCount += 1
+		err_print(todo[0])
+		print('[ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.')
 		err_log(e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e:
