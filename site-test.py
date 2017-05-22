@@ -12,6 +12,7 @@ def start():
     count = 0;
     errors = 0
     knownErrors = 0
+
     custom = input('Would you like to change the default save settings y/n: ')
     todoFile = 'crawler_todo.txt'
     doneFile = 'crawler_done.txt'
@@ -40,7 +41,7 @@ def start():
         textFile = input()
         if textFile == None:
             textFile = 'crawler_text.txt'
-            
+    
     print('Enter True if you want to clear the done file')
     clear = input()
     print('Enter True if you want to clear todo and add wikipedia main page')
@@ -51,6 +52,7 @@ def start():
 
 
     #open saved files
+
     if clearText == 'True':
         with open(textFile, 'w') as f:
             print('[INIT]: Clearing textFile')
@@ -87,6 +89,7 @@ def start():
 
     #initializes todoFile with default start website
     print('[INIT]: Initializing todoFile with wikipedia main page')
+
     todo.append('https://en.wikipedia.org/wiki/Main_Page')
     return todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile
 
@@ -256,8 +259,8 @@ while len(todo) != 0:
                     item = item.encode('utf-8') #adds all links into todo separately
                 todo += list(links)
                 todo = list(set(todo)) #removes duplicates and also disorders the list
-
-                #prune()
+                
+                prune()
         else:
             todo.remove(todo[0]) #removes too short links
 
@@ -287,6 +290,8 @@ while len(todo) != 0:
         errors += 1
         print('[ERROR]: An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
         todo.remove(todo[0]) #Remove unliked link from todo
+
+        #raise #Keep going like nothing happened
         pass #Keep going like nothing happened
     #autosaves
     if count > 1000:
