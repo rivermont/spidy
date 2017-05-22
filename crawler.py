@@ -79,8 +79,13 @@ except:
 	logFile = 'crawler_log.txt'
 	pass
 
+try: #Saved words file location
+	wordFile = sys.argv[6]
+except:
+	wordFile = 'crawler_words.txt'
+
 try: #Number of crawled links after which to autosave
-	saveCount = int(sys.argv[6])
+	saveCount = int(sys.argv[7])
 except:
 	saveCount = 100
 	#100 is default as it means there is usually at least one log in the console window at any given time.
@@ -123,6 +128,11 @@ def files_save():
 	#Close things
 	todoList.close()
 	doneList.close()
+
+def save_words(page):
+	page = str(page.content)[2:-1]
+	wordList = page.split()
+	print(wordList)
 
 def info_log():
 	'''
@@ -265,7 +275,7 @@ while len(todo) != 0: #While there are links to check
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			print('[{0}] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), todo[0])) #Announce which link was crawled
-	
+			save_words(page)
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
