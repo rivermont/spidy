@@ -41,7 +41,7 @@ def start():
 
     #raises every error if requested
     deb = input('Enter y if you want want to enter debug mode and raise every error')
-    if deb = 'True':
+    if deb == 'True':
         debug = True
         
     print('Enter True if you want to clear the done file')
@@ -59,7 +59,7 @@ def start():
         print('Enter True if you want to clear the previous text file')
         clearText = input()
 
-    #displays requested count on command prompt
+    #displays requested info on command prompt
     display = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed')
     print('[INIT]: Opening saved files')
 
@@ -102,7 +102,7 @@ def start():
     #initializes todoFile with default start website
     print('[INIT]: Initializing todoFile with wikipedia main page')
     todo.append('https://en.wikipedia.org/wiki/Main_Page')
-    return todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText
+    return todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display
 
 #defines prune function to delete invalid links
 def prune():
@@ -188,17 +188,18 @@ def pause():
     while command != '' and command != 'r':
 
         #pause menu
-        command = input('\rPress enter to resume or u, s, r, or e and then enter to update, get status, restart, or prune todo\n')
+        try:
+            command = input('\rPress enter to resume or u, s, r, or e and then enter to update, get status, restart, or prune todo\n')
 
-        #checks to see if any valid command is entered and then executes it
-        if(command == 'u'):
-            update()
-        elif command == 's':
-            status()
-        elif command == 'r':
-            restart()
-        elif command == 'e':
-            prune()       
+            #checks to see if any valid command is entered and then executes it
+            if(command == 'u'):
+                update()
+            elif command == 's':
+                status()
+            elif command == 'r':
+                restart()
+            elif command == 'e':
+                prune()       
         except KeyboardInterrupt:
             save()
             exit()
@@ -211,8 +212,18 @@ def restart():
     start()
 
 #used to draw keyboard commmands to the bottom of the command prompt
+#0-4 for size of done, size of todo, words in text, total errors, unknown errors
 def info():
-    sys.stdout.write("\r" + "Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+    if display == 0:
+        sys.stdout.write("\r" + "Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+    if display == 1:
+        sys.stdout.write("\r" + "Links in todo: " + str(len(todo)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+    if display == 2:
+        sys.stdout.write("\r" + "Words in text: " + str(len(text)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+    if display == 3:
+        sys.stdout.write("\r" + "Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>save")
+    if display == 4:
+        sys.stdout.write("\r" + "Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>save")
 
 #flushes the buffer to immediately write the above info to the command prompt
 def flush():
@@ -253,7 +264,7 @@ def textFromHtml(link):
     flush()
     
     
-todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText = start()
+todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display = start()
 print('[INIT]: Starting Crawler...')
 
 
@@ -348,7 +359,7 @@ while len(todo) != 0:
         pass #Keep going like nothing happened
     
     #autosaves after successfully querying specified number of websites(default 1000)
-    if count > saveCount:
+    if count > int(saveCount):
         count =0;
         logFile = open(logFile, 'a')
         logFile.write('[AUTOSAVE]: Saved done and todo to crawler_done.txt and crawler_todo.txt by default \n')
