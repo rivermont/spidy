@@ -39,28 +39,36 @@ def start():
         if logFile == None:
             logFile = 'crawler_log.txt'
 
-    #raises every error if requested
-    deb = input('Enter y if you want want to enter debug mode and raise every error')
+    #debug mode raises every error if requested
+    deb = input('Enter y if you want want to enter debug mode and raise every error\n')
     if deb == 'True':
         debug = True
-        
+
+    #defines vars to clear certain files based on user input
     print('Enter True if you want to clear the done file')
     clear = input()
     print('Enter True if you want to clear todo and add wikipedia main page')
     clearTodo = input()
     print('Enter True if you want to save text from the webpages')
     saveText = input()
+
+    #defines a text file if save text is requested
     if saveText == 'True':
         print('Enter valid text file for text or just press enter to use the default crawler_text.txt')
         textFile = input()
+        #used default if no input is given
         if textFile == None or textFile == '':
             textFile = 'crawler_text.txt'
-        
-        print('Enter True if you want to clear the previous text file')
+        #defines var to clear text
+        print('Enter True if you want to clear the previous text file\n')
         clearText = input()
+    else:
+        #defines a text list to avoid errors
+        text = []
+        clearText = ''
 
     #displays requested info on command prompt
-    display = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed')
+    display = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed\n')
     print('[INIT]: Opening saved files')
 
 
@@ -174,8 +182,8 @@ def update():
 
 #called when s key is pressed
 def status():   #outputs the length of all relevant files
-    print('[LOG]: Total errors encountered: ' + (errors+knownErrors))
-    print('[LOG]: Unknown errors encountered: ' + errors)
+    print('[LOG]: Total errors encountered: ' + str(errors+knownErrors))
+    print('[LOG]: Unknown errors encountered: ' + str(errors))
     print('[LOG] Links in done: ' + str(len(done)))
     print('[LOG] Links in todo: ' + str(len(todo)))
     if saveText == 'True':
@@ -207,24 +215,26 @@ def pause():
 
 #called when r key is pressed
 def restart():
+    save()
     print('\r[RESTART]\n[RESTART]\n[RESTART]: Restarting crawl . . .\n[RESTART]\n[RESTART]\n[RESTART]')
     #calls start to completely start over
     start()
+    todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display = start()
 
 #used to draw keyboard commmands to the bottom of the command prompt
 #0-4 for size of done, size of todo, words in text, total errors, unknown errors
 def info():
-    if display == 0:
+    if display == '0':
         sys.stdout.write("\r" + "Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>save")
-    if display == 1:
+    if display == '1':
         sys.stdout.write("\r" + "Links in todo: " + str(len(todo)) + " p>pause, u>update, r>restart, e>prune, or s>save")
-    if display == 2:
+    if display == '2':
         sys.stdout.write("\r" + "Words in text: " + str(len(text)) + " p>pause, u>update, r>restart, e>prune, or s>save")
-    if display == 3:
+    if display == '3':
         sys.stdout.write("\r" + "Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>save")
-    if display == 4:
+    if display == '4':
         sys.stdout.write("\r" + "Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>save")
-
+    flush()
 #flushes the buffer to immediately write the above info to the command prompt
 def flush():
     sys.stdout.flush()
@@ -331,7 +341,7 @@ while len(todo) != 0:
         print('\r\n[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
         print('[LOG]: Saved error to ' + logFile)
         log(e)
-        err_saved_message()
+        
     except requests.exceptions.HTTPError as e:
         if debug:
             raise
@@ -339,7 +349,7 @@ while len(todo) != 0:
         print('\r\n[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
         print('[LOG]: Saved error to ' + logFile)
         log(e)
-        err_saved_message()
+    
     except UnicodeEncodeError as e:
         if debug:
             raise
