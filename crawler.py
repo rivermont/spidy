@@ -11,7 +11,7 @@ Built by rivermont and FalconWarriorr
 #Time statements.
 #This is done before anything else to enable timestamp logging at every step.
 import time as t
-startTime = round(t.time(), 2)
+startTime = int(t.time())
 def get_time():
 	return t.strftime('%H:%M:%S')
 
@@ -35,6 +35,8 @@ counter = 0
 removedCount = 0
 newErrorCount = 0
 knownErrorCount = 0
+
+badLinkPercents = []
 
 #Amount of errors allowed to happen before automatic shutdown
 maxNewErrors = 10
@@ -142,20 +144,22 @@ def info_log():
 	'''
 	Logs important information to the console and log file.
 	'''
+	sinceStart = int(t.time() - startTime)
+	badLinkPercent = int(sum(badLinkPercents) / len(badLinkPercents))
 	#Print to console
 	time = get_time()
-	sinceStart = round(t.time() - startTime, 2)
 	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
 	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
 	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
 	print('[{0}] [LOG]: {1} bad links removed.'.format(time, removedCount))
+	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, badLinkPercent))
 	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
 	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
 	log = open(logFile, 'a')
 	log.write('\n\n====AUTOSAVE===')
-	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(time, sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
+	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
 	log.write(endLog)
 
 def err_log(error1, error2):
@@ -175,7 +179,6 @@ def err_log(error1, error2):
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
 		log.write(endLog)
 	log.close() #Save the log file
-	todo.remove(todo[0]) #Remove unliked link from todo
 
 def log(message):
 	'''
@@ -194,6 +197,15 @@ def err_print(item):
 
 def err_saved_message():
 	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
+
+def get_avg(state1, state2):
+	'''
+	Takes two values and returns the percentage of state1 that is state2.
+	'''
+	if state1 == 0:
+		return 0
+	else:
+		return (state2 / state1) * 100
 
 print('[{0}] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
 
@@ -233,17 +245,17 @@ while len(todo) != 0: #While there are links to check
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 			files_save()
 			exit()
-		if check(todo[0]): #If the link is valid
-			todo.remove(todo[0])
-			removedCount += 1
-		else: #Otherwise it must be valid and new, so
+		elif check(todo[0]):
+			continue
+		else:
 			page = requests.get(todo[0]) #Get page
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
-			len(links)
+			before = len(links)
 			links = (list(set(links)))
-			len(links)
+			after = len(links)
+			badLinkPercents.append(get_avg(before, after))
 			for link in links: #Check for invalid links
 				if check(link):
 					links.remove(link)
@@ -253,11 +265,6 @@ while len(todo) != 0: #While there are links to check
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			print('[{0}] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), todo[0])) #Announce which link was crawled
-			todo.remove(todo[0]) #Remove crawled link from TODO list
-		rand = set(todo)  #Convert TODO to set
-		todo = list(rand) #and back to list.
-						  #This both removes duplicates and mixes up the list, as sets are unordered collections without duplicates
-		counter += 1
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
@@ -317,7 +324,14 @@ while len(todo) != 0: #While there are links to check
 			raise
 		else:
 			continue
-	# finally: #For debugging purposes; to check one link and then stop
+	finally:
+		counter += 1
+		rand = set(todo)  #Convert TODO to set
+		todo = list(rand) #and back to list.
+						  #This both removes duplicates and mixes up the list, as sets are unordered collections without duplicates
+		del todo[0]#Remove crawled link from TODO list
+		
+		#For debugging purposes; to check one link and then stop
 		# files_save()
 		# exit()
 
