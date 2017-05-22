@@ -12,7 +12,8 @@ Spidy can be run from the command line, a Python IDE or (on Windows systems) by 
 
 ## Python Installation
 There are many different versions of Python, and probably hundreds of different installations of each them.
-Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
+Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3, but you will need a scientific distribution of python for lxml to run without errors. Downloading anaconda is a great way to get all the python functionality that 
+need along with an ide and the ability to compile and run from the command line.
 
 ## Launching
 
