@@ -158,23 +158,21 @@ def info_log():
 	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(time, sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
 	log.write(endLog)
 
-def err_log(error):
+def err_log(error1, error2):
 	'''
-	Saves the triggering error to the log file in the format
-	
-	TIME: Hr:Min:Sec, Weekday Month Year
-	URL: todo[0]
-	ERROR: error
+	Saves the triggering error to the log file.
+	error1 is the trimmed error source.
+	error2 is the extended text of the error.
 	'''
 	log = open(logFile, 'a') #Open the log file
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	try:
 		log.write('\n\n=====ERROR=====')
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}'.format(time, todo[0], str(error)))
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
 		log.write(endLog)
 	except: #If an error (usually UnicodeEncodeError), write encoded log
 		log.write('\n\n=====ERROR=====')
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}'.format(time, str(todo[0].encode('utf-8')), str(error)))
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
 		log.write(endLog)
 	log.close() #Save the log file
 	todo.remove(todo[0]) #Remove unliked link from todo
@@ -271,49 +269,49 @@ while len(todo) != 0: #While there are links to check
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-		err_log(e)
+		err_log('ConnectionError', e)
 		err_saved_message()
 	except UnicodeEncodeError as e: # 'charmap' codec can't encode characters
 		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.'.format(get_time()))
-		err_log(e)
+		err_log('UnicodeEncodeError', e)
 		err_saved_message()
 	except requests.exceptions.SSLError as e: # SSL: CERTIFICATE_VERIFY_FAILED
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-		err_log(e)
+		err_log('SSLError', e)
 		err_saved_message()
 	except (etree.XMLSyntaxError, etree.ParserError) as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
-		err_log(e)
+		err_log('XMLSyntaxError', e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e: # Exceeded 30 redirects.
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
-		err_log(e)
+		err_log('TooManyRedirects', e)
 		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e: # Received response with content-encoding: gzip, but failed to decode it.
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
-		err_log(e)
+		err_log('ContentDecodingError', e)
 		err_saved_message()
 	except OSError as e:
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An OSError occurred.')
-		err_log(e)
+		err_log('OSError', e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
 		newErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An unkown error happened. New debugging material!'.format(get_time()))
-		err_log(e)
+		err_log('Unkown', e)
 		err_saved_message()
 		if raiseErrors:
 			raise
