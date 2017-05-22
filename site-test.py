@@ -162,7 +162,7 @@ def status():
 def pause():
     command = ' '
     while command != '' and command != 'r':
-        command = input('Press enter to resume or u, s, r, or e and then enter to update, get status, restart, or prune todo\n')
+        command = input('\rPress enter to resume or u, s, r, or e and then enter to update, get status, restart, or prune todo\n')
         if(command == 'u'):
             update()
         elif command == 's':
@@ -176,12 +176,20 @@ def pause():
 
 #called when r key is pressed
 def restart():
-    print('\n[RESTART]\n[RESTART]\n[RESTART]: Restarting crawl . . .\n[RESTART]\n[RESTART]\n[RESTART]')
+    print('\r[RESTART]\n[RESTART]\n[RESTART]: Restarting crawl . . .\n[RESTART]\n[RESTART]\n[RESTART]')
     start()
-    
+
+def info():
+    sys.stdout.write("\r" + "p>pause, u>update, r>restart, e>prune, or s>save")
+
+def flush():
+    sys.stdout.flush()
 
 def textFromHtml(link):
-    print('Parsing')
+    flush()
+    print('\r[LOG]: Parsing: ' + todo[0] + ' for text\n')
+    
+    info()
     with urlopen(link) as url:
         html =  url.read()
     soup = BeautifulSoup(html)
@@ -208,6 +216,7 @@ def textFromHtml(link):
                 pass
             else:
                 text.append(word)
+    flush()
     
     
 todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile = start()
@@ -216,6 +225,7 @@ print('[INIT]: Starting Crawler...')
 
 #loops as long as we haven't mastered the internet
 while len(todo) != 0:
+    
 
     #tests for key press
     if msvcrt.kbhit():
@@ -245,8 +255,11 @@ while len(todo) != 0:
             #actual web crawling process    
             else:
                 count += 1
-                print('[CRAWL] Web Crawler currently at: ' + str(todo[0].encode('utf-8'))) #prints current website to the console
+                flush()
+                print('\r[CRAWL] Web Crawler currently at: ' + str(todo[0].encode('utf-8'))) #prints current website to the console
+                info()
                 page = requests.get(todo[0])
+                flush()
                 text.append(textFromHtml(str(todo[0])))
                 done.append(todo[0]) #moves the current website from todo into done
                 todo.remove(todo[0])
@@ -256,8 +269,8 @@ while len(todo) != 0:
                     item = item.encode('utf-8') #adds all links into todo separately
                 todo += list(links)
                 todo = list(set(todo)) #removes duplicates and also disorders the list
-
                 #prune()
+                flush()
         else:
             todo.remove(todo[0]) #removes too short links
 
@@ -268,28 +281,32 @@ while len(todo) != 0:
         exit()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
         knownErrors += 1
-        print('[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
+        print('\r\n[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
+        print('[LOG]: Saved error to ' + logFile)
         log(e)
         err_saved_message()
     except requests.exceptions.HTTPError as e:
         knownErrors += 1
-        print('[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
+        print('\r\n[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
+        print('[LOG]: Saved error to ' + logFile)
         log(e)
         err_saved_message()
     except UnicodeEncodeError as e:
         knownErrors += 1
         log(e)
-        print('[ERROR]: Unicode Error with link: ' + todo[0] + ', probably a foreign character in the link title.')
-        print('[LOG]: Saved error to crawler_log.txt')
+        print('\r\n[ERROR]: Unicode Error with link: ' + todo[0] + ', probably a foreign character in the link title.')
+        print('[LOG]: Saved error to ' + logFile)
         pass        
     except Exception as e: #If any other error is raised
         log(e)
         errors += 1
-        print('[ERROR]: An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
+        print('\r\n[ERROR]: An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
+        print('[LOG]: Saved error to ' + logFile)
         todo.remove(todo[0]) #Remove unliked link from todo
         pass #Keep going like nothing happened
     #autosaves
     if count > 1000:
+        flush()
         count =0;
         logFile = open(logFile, 'a')
         logFile.write('[AUTOSAVE]: Saved done and todo to crawler_done.txt and crawler_todo.txt by default \n')
@@ -297,5 +314,8 @@ while len(todo) != 0:
         logFile.write('[AUTOSAVE]: Todo length: ' + str(len(todo) + '\n\n\n'))
         logFile.close()
         print('[LOG]: Queried 1000 websites, Automatically saving done and todo files')
-        save()    
+        save()
+        info()
+    info()
+flush()
 print('Internet has been mastered')
