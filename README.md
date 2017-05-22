@@ -8,7 +8,7 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
 The way that you will run spidy depends on the way you have Python installed.
 Spidy can be run from the command line, a Python IDE or (on Windows systems) by launching the .bat file.
 
-![Run example](/run.png?raw=true "run pic")
+![Run example](/media/run.png?raw=true "run pic")
 
 ## Python Installation
 There are many different versions of Python, and probably hundreds of different installations of each them.
