@@ -43,7 +43,7 @@ Use cd to navigate to spidy's directory and run the `makefiles.bat`.
 This will create all of the neccessary files if they don't already exist.
 Then run `run.bat`.
 
-![options example](/bat.png?raw=true "options pic")
+![options example](/media/bat.png?raw=true "options pic")
 
 In the .bat file that runs the web-crawler.py you can specify arguments to control the behavior of the crawler the first argument after specifying the python script is todo file where you can specify a separate file if you want to save multiple to do lists or already have a preset one default is crawler_todo.txt.
 Second argument is done file where same as to do you can specify a specific file where you want to load a done list from or save to default is crawler_done.txt.
@@ -57,17 +57,20 @@ Linux isn't popular enough, so we don't know how to use it.
 Macs suck, so we don't care about them.
 
 ## Running
+
+![](/media/run.mp4?raw=true "running gif")
+
 Spidy logs a lot of information to the command line.
 Once started, a bunch of `[INIT]` lines will print.
 These announce where spidy is in its initialization process.
 If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's fine - it has to process every link in the TODO list, which can be hundreds of thousands of lines long.
 
-![Start example](/start.png?raw=true "Start pic")
+![Start example](/media/start.png?raw=true "Start pic")
 
 
 # How it Works
 This web crawler is very simple in that the main functionality is it's ability to parse the html for all links and then adds all of those links that are valid into a list called todo. As you would expect the crawler then goes on to do this same process for all links in todo. After every 100 links queried (by default) the crawler will autosave the done file and will prune the links for any invalid ones.
-![Run example](/run.png?raw=true "run pic")
+![Run example](/media/run.png?raw=true "run pic")
 
 
 # Features
@@ -91,7 +94,8 @@ Currently Spidy has built-in support for
 Spidy logs the time of its actions with every console line and logFile write.
 
 ## Startup
-![Start example](/start.png?raw=true "Start pic")
+![Start example](/media/start.png?raw=true "Start pic")
+
 In the .bat file that runs the web-crawler.py you can specify arguments to control the behavior of the crawler the first argument after specifying the python script is todo file where you can specify a separate file if you want to save multiple to do lists or already have a preset one default is crawler_todo.txt. Second argument is done file where same as to do you can specify a specific file where you want to load a done list from or save to default is crawler_done.txt. Third argument is log file where you can specify a file where you want so write all error messages etc to default is crawler_log.txt. Fourth argument is after how many queried webpages will the crawler autosave todo and done lists(default is 1000 iterations.
 ![options example](/bat.png?raw=true "options pic")
 
