@@ -267,6 +267,12 @@ while len(todo) != 0: #While there are links to check
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		files_save()
 		exit()
+	except OSError as e:
+		knownErrorCount += 1
+		err_print(todo[0])
+		print('[{0}] [ERR]: An OSError occurred.')
+		err_log(e)
+		err_saved_message()
 	except UnicodeEncodeError as e:
 		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
