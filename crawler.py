@@ -49,58 +49,42 @@ print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
 #Read variables from arguments or set to defaults if args not present.
 
-#Whether to load from save files or overwrite them
-try:
+try: #Whether to load from save files or overwrite them
 	overwrite = sys.argv[1]
 except:
 	overwrite = False
 	pass
 
-try:
+try: #Whether to raise errors instead of passing them
 	raiseErrors = sys.argv[2]
 except:
 	raiseErrors = False
 	pass
-#Saved TODO file
-try:
+
+try: #Saved TODO file location
 	todoFile = sys.argv[3]
 except:
 	todoFile = 'crawler_todo.txt'
 	pass
 
-#Saved doneFile
-try:
+try: #Saved done file location
 	doneFile = sys.argv[4]
 except:
 	doneFile = 'crawler_done.txt'
 	pass
 
-#Saved logFile
-try:
+try: #Saved log file location
 	logFile = sys.argv[5]
 except:
 	logFile = 'crawler_log.txt'
 	pass
 
-#Number of crawled links after which to autosave
-try:
+try: #Number of crawled links after which to autosave
 	saveCount = int(sys.argv[6])
 except:
 	saveCount = 100
 	#100 is default as it means there is usually at least one log in the console window at any given time.
 	pass
-
-print('[{0}] [INIT]: Loading save files...'.format(get_time()))
-
-#Import saved TODO file data
-with open(todoFile, 'r') as f:
-	todo = f.readlines()
-todo = [x.strip() for x in todo]
-
-#Import saved done file data
-with open(doneFile, 'r') as f:
-	done = f.readlines()
-done = [x.strip() for x in done]
 
 print('[{0}] [INIT]: Creating functions...'.format(get_time()))
 
@@ -207,28 +191,44 @@ def get_avg(state1, state2):
 	else:
 		return (state2 / state1) * 100
 
-print('[{0}] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
+#Import saved TODO file data
+if overwrite:
+	print('[{0}] [INIT]: Creating save files...'.format(get_time()))
+	todo = start
+	done = []
+else:
+	print('[{0}] [INIT]: Loading save files...'.format(get_time()))
+	with open(todoFile, 'r') as f:
+		todo = f.readlines()
+	todo = [x.strip() for x in todo]
+	#Import saved done file data
+	with open(doneFile, 'r') as f:
+		done = f.readlines()
+	done = [x.strip() for x in done]
 
-before = len(todo)
+	print('[{0}] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
 
-#Remove invalid links from TODO list
-for link in todo:
-	if check(link):
-		todo.remove(link)
+	before = len(todo)
 
-#If TODO list is empty, add default start page
-if len(todo) == 0:
-	todo += start
+	#Remove invalid links from TODO list
+	for link in todo:
+		if check(link):
+			todo.remove(link)
 
-after = before - len(todo)
-removedCount += after
+	#If TODO list is empty, add default start page
+	if len(todo) == 0:
+		todo += start
 
-print('[{0}] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
+	after = before - len(todo)
+	removedCount += after
+
+	print('[{0}] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
 
 print('[{0}] [INIT]: TODO first value: {1}'.format(get_time(), todo[0]))
 
 print('[{0}] [INIT]: Starting crawler...'.format(get_time()))
 log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
+
 
 #########
 ## RUN ##
