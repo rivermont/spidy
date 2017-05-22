@@ -267,19 +267,19 @@ while len(todo) != 0: #While there are links to check
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		files_save()
 		exit()
-	except OSError as e:
+	except requests.exceptions.ConnectionError as e: # HTTP(S)ConnectionPool: Max retries exceeded with url
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[{0}] [ERR]: An OSError occurred.')
+		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 		err_log(e)
 		err_saved_message()
-	except UnicodeEncodeError as e:
+	except UnicodeEncodeError as e: # 'charmap' codec can't encode characters
 		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.'.format(get_time()))
 		err_log(e)
 		err_saved_message()
-	except requests.exceptions.SSLError as e:
+	except requests.exceptions.SSLError as e: # SSL: CERTIFICATE_VERIFY_FAILED
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
@@ -291,22 +291,22 @@ while len(todo) != 0: #While there are links to check
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 		err_log(e)
 		err_saved_message()
-	except requests.exceptions.TooManyRedirects as e:
+	except requests.exceptions.TooManyRedirects as e: # Exceeded 30 redirects.
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 		err_log(e)
 		err_saved_message()
-	except requests.exceptions.ConnectionError as e:
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-		err_log(e)
-		err_saved_message()
-	except requests.exceptions.ContentDecodingError as e:
+	except requests.exceptions.ContentDecodingError as e: # Received response with content-encoding: gzip, but failed to decode it.
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
+		err_log(e)
+		err_saved_message()
+	except OSError as e:
+		knownErrorCount += 1
+		err_print(todo[0])
+		print('[{0}] [ERR]: An OSError occurred.')
 		err_log(e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
