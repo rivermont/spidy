@@ -73,10 +73,7 @@ def words_save(wordList):
 		file = f.readlines() #Make list of all lines in wordFile
 		file = [x.strip() for x in file]
 		for item in file:
-			if check_word(item): #If item is invalid
-				file.remove(item) #Remove invalid word from
-			elif not check_word(item):
-				wordList.update(item) #Otherwise add item to wordList (set)
+			wordList.update(item) #Otherwise add item to wordList (set)
 		for word in wordList:
 			f.write('\n' + word) #Write all words to wordFile
 		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)

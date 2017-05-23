@@ -138,15 +138,28 @@ Once started, a bunch of `[INIT]` lines will print.
 These announce where spidy is in its initialization process.
 If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's fine - it has to process every link in the TODO list, which can be hundreds of thousands of lines long.
 
+### Start
+Sample start log.
+
 ![](/media/start.png?raw=true)
+
+### Log
+Sample log after hitting the autosave cap.
+
+![](/media/log.png?raw=true)
+
+### End
+Sample log after performing a `^C` to force quit the crawler.
+
+![](/media/keyboardinterrupt.png?raw=true)
 
 
 # Files
 
-## \media
+## media/
 Images used in this readme file.
 
-## \data
+## data/
 Post-processed wordlists.
 
 ## README.md
