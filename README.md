@@ -3,6 +3,9 @@ Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
 Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and `requests` libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
+[![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Python: 3.6](https://img.shields.io/badge/python-3.6-lightgrey.svg)](https://docs.python.org/3/)
+
 --------------------
 
 # Table of Contents
