@@ -71,6 +71,7 @@ def make_words(page):
 def words_save(wordList):
 	with open(wordFile, 'r+') as f: #Open save file for reading and writing
 		file = f.readlines() #Make list of all lines in wordFile
+		file = [x.strip() for x in file]
 		for item in file:
 			if check_word(item): #If item is invalid
 				file.remove(item) #Remove invalid word from
