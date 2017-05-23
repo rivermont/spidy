@@ -123,6 +123,12 @@ If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's 
 
 # Files
 
+## \media
+Images used in this readme file.
+
+## \data
+Post-processed wordlists.
+
 ## README.md
 This readme file.
 
@@ -164,6 +170,7 @@ He is constantly adding new features to his, and I am slowly implementing them i
 # TODO
   - Log length of wordFile to console/logFile
   - Change arguments to a required list
+  - Talk about hashcat in README
 
 # Acknowledgements
 I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platfom for learning any language.
