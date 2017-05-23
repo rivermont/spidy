@@ -3,6 +3,34 @@ Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
 Given a list of web links, it uses the Python lxml and requests libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
+--------------------
+
+# Table of Contents
+
+ - [How it Works](#how-it-works)
+ - [Features](#features)
+  - [Error Handling](#error-handling)
+  - [Frequent Timestamp Logging](frequent-timestamp-logging)
+  - [Startup](#startup)
+  - [User-Friendly Logs](#user-friendly-logs)
+ - [Tutorial](#tutorial)
+  - [Python Installation](#python-installation)
+  - [Launching](#launching)
+   - [Command Arguments](#command-arguments)
+   - [Windows (Command Line)](#windows-command-line)
+   - [Windows (batch file)](#windows-batch-file)
+   - [Linux Command Line](#linux-command-line)
+   - [OS X Command Line](#os-x-command-line)
+  - [Running](#running)
+ - [Files](#files)
+  - [README.md](#readmemd)
+  - [clear.bat](#clearbat)
+  - [crawler.py](#crawlerpy)
+  - [errors.txt](#errorstxt)
+  - [makefiles.bat](#makefilesbat)
+  - [post-process.py](#post-processpy)
+  - [run.bat](#runbat)
+ - [Acknowledgements](#acknoowledgements)
 
 # How it Works
 Spidy has to working lists, `TODO` and `done`.
@@ -77,7 +105,7 @@ This will create all of the neccessary files if they don't already exist.
 
 > python crawler.py True False crawler_todo.txt crawler_done.txt crawler_log.txt 100
 
-## Windows (batch file)
+### Windows (batch file)
 Use cd to navigate to spidy's directory and run the `makefiles.bat`.
 This will create all of the neccessary files if they don't already exist.
 Then run `run.bat`.
