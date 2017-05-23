@@ -4,9 +4,9 @@ Built by rivermont and FalconWarriorr
 '''
 
 
-##########
-## INIT ##
-##########
+############
+## IMPORT ##
+############
 
 #Time statements.
 #This is done before anything else to enable timestamp logging at every step.
@@ -23,75 +23,17 @@ from lxml import etree
 import requests
 import sys
 
-print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
-#Initialize required variables
-
-#Fallback pages in case the TODO file is empty
-start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
-
-#Counter variables
-counter = 0
-removedCount = 0
-newErrorCount = 0
-knownErrorCount = 0
-
-badLinkPercents = []
-
-#Amount of errors allowed to happen before automatic shutdown
-maxNewErrors = 10
-maxKnownErrors = 25
-
-#Line to print at the end of each logFile log
-endLog = '\n======END======'
-
-print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
-
-#Read variables from arguments or set to defaults if args not present.
-
-try: #Whether to load from save files or overwrite them
-	overwrite = sys.argv[1]
-except:
-	overwrite = False
-	pass
-
-try: #Whether to raise errors instead of passing them
-	raiseErrors = sys.argv[2]
-except:
-	raiseErrors = False
-	pass
-
-try: #Saved TODO file location
-	todoFile = sys.argv[3]
-except:
-	todoFile = 'crawler_todo.txt'
-	pass
-
-try: #Saved done file location
-	doneFile = sys.argv[4]
-except:
-	doneFile = 'crawler_done.txt'
-	pass
-
-try: #Saved log file location
-	logFile = sys.argv[5]
-except:
-	logFile = 'crawler_log.txt'
-	pass
-
-try: #Number of crawled links after which to autosave
-	saveCount = int(sys.argv[6])
-except:
-	saveCount = 100
-	#100 is default as it means there is usually at least one log in the console window at any given time.
-	pass
+###############
+## FUNCTIONS ##
+###############
 
 print('[{0}] [INIT]: Creating functions...'.format(get_time()))
 
-def check(item):
+def check_link(item):
 	'''
 	Returns True if item is not a valid url.
-	Returns False if it passes all inspections (is valid url).
+	Returns False if item passes all inspections (is valid url).
 	'''
 	if len(item) < 10: #Shortest possible url being 'http://a.b'
 		return True
@@ -103,6 +45,42 @@ def check(item):
 		return True
 	else:
 		return False
+
+def check_word(word):
+	'''
+	Returns True if word is not valid.
+	Returns False if word passes all inspections (is valid).
+	'''
+	if len(word) > 16: #If word is longer than 16 characters (avg password length is ~8)
+		return True
+	else:
+		return False
+
+def make_words(page):
+	'''
+	Returns list of all valid words in page.
+	'''
+	page = str(page.content) #Get page content
+	wordList = page.split() #Split content into lits of words, as separated by spaces
+	wordList = list(set(wordList)) #Remove duplicates
+	for word in wordList:
+		if check_word(word): #If word is invalid
+			wordList.remove(word) #Remove invalid word from list
+	return wordList
+
+def words_save(wordList):
+	with open(wordFile, 'r+') as f: #Open save file for reading and writing
+		file = f.readlines() #Make list of all lines in wordFile
+		file = [x.strip() for x in file]
+		for item in file:
+			if check_word(item): #If item is invalid
+				file.remove(item) #Remove invalid word from
+			elif not check_word(item):
+				wordList.update(item) #Otherwise add item to wordList (set)
+		for word in wordList:
+			f.write('\n' + word) #Write all words to wordFile
+		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
+	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
 
 def files_save():
 	'''
@@ -191,6 +169,81 @@ def get_avg(state1, state2):
 	else:
 		return (state2 / state1) * 100
 
+
+##########
+## INIT ##
+##########
+
+print('[{0}] [INIT]: Creating variables...'.format(get_time()))
+
+#Initialize required variables
+
+#Fallback pages in case the TODO file is empty
+start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
+
+#Counter variables
+counter = 0
+removedCount = 0
+newErrorCount = 0
+knownErrorCount = 0
+
+badLinkPercents = []
+
+words = set([])
+
+#Amount of errors allowed to happen before automatic shutdown
+maxNewErrors = 10
+maxKnownErrors = 25
+
+#Line to print at the end of each logFile log
+endLog = '\n======END======'
+
+print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
+
+#Read variables from arguments or set to defaults if args not present.
+
+try: #Whether to load from save files or overwrite them
+	overwrite = sys.argv[1]
+except:
+	overwrite = False
+	pass
+
+try: #Whether to raise errors instead of passing them
+	raiseErrors = sys.argv[2]
+except:
+	raiseErrors = False
+	pass
+
+try: #Saved TODO file location
+	todoFile = sys.argv[3]
+except:
+	todoFile = 'crawler_todo.txt'
+	pass
+
+try: #Saved done file location
+	doneFile = sys.argv[4]
+except:
+	doneFile = 'crawler_done.txt'
+	pass
+
+try: #Saved log file location
+	logFile = sys.argv[5]
+except:
+	logFile = 'crawler_log.txt'
+	pass
+
+try: #Saved words file location
+	wordFile = sys.argv[6]
+except:
+	wordFile = 'crawler_words.txt'
+
+try: #Number of crawled links after which to autosave
+	saveCount = int(sys.argv[7])
+except:
+	saveCount = 100
+	#100 is default as it means there is usually at least one log in the console window at any given time.
+	pass
+
 #Import saved TODO file data
 if overwrite:
 	print('[{0}] [INIT]: Creating save files...'.format(get_time()))
@@ -212,7 +265,7 @@ else:
 
 	#Remove invalid links from TODO list
 	for link in todo:
-		if check(link):
+		if check_link(link):
 			todo.remove(link)
 
 	#If TODO list is empty, add default start page
@@ -239,16 +292,19 @@ while len(todo) != 0: #While there are links to check
 		if counter >= saveCount: #If it's not time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			files_save()
+			words_save(words)
+			words.clear()
 			info_log()
 			counter = 0
 		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 			files_save()
 			exit()
-		elif check(todo[0]):
+		elif check_link(todo[0]):
 			continue
 		else:
 			page = requests.get(todo[0]) #Get page
+			words.update(make_words(page))
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
@@ -257,7 +313,7 @@ while len(todo) != 0: #While there are links to check
 			after = len(links)
 			badLinkPercents.append(get_avg(before, after))
 			for link in links: #Check for invalid links
-				if check(link):
+				if check_link(link):
 					links.remove(link)
 					removedCount += 1
 					continue
@@ -268,6 +324,7 @@ while len(todo) != 0: #While there are links to check
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
+		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		files_save()
