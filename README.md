@@ -1,11 +1,19 @@
 # spidy
-Spidy (spˈɪdi) is a simple to use command line web crawler.
+Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
 Given a list of web links, it uses the Python lxml and requests libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
 
+# How it Works
+Spidy has to working lists, `TODO` and `done`.
+TODO is the list of URLs it hasn't yet visited.
+Done is the list of URLs it has already been to.
+The crawler visits each page in TODO, scrapes the html content for links, and adds those back into TODO.
+It also saves all of the content of the page into a file for processing.
+
+
 # Features
-We've built a lot of the functionality of spidy by watching is scroll by and going "Hey, we should add this!"
+We built a lot of the functionality in spidy by watching the console scroll by and going, "Hey, we should add that!"
 Here are some features that we think are worth noting, in alphabetic order.
 
 ## Error Handling
@@ -99,11 +107,6 @@ If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's 
 ![Start example](/media/start.png?raw=true "Start pic")
 
 
-# How it Works
-This web crawler is very simple in that the main functionality is it's ability to parse the html for all links and then adds all of those links that are valid into a list called todo. As you would expect the crawler then goes on to do this same process for all links in todo. After every 100 links queried (by default) the crawler will autosave the done file and will prune the links for any invalid ones.
-![Run example](/media/run.png?raw=true "run pic")
-
-
 # Files
 
 ## README.md
@@ -130,11 +133,6 @@ Run this after running crawler.py for a while.
 ## run.bat
 A Windows batch file to run the program.
 Theoretically once the crawler finishes running post-process with run, but you'd have to get the entire internet first, so...
-
-
-# What's Next
-
-## Webpage Keyword Scraping
 
 
 # Acknowledgements
