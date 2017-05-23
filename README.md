@@ -30,6 +30,9 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
     - [makefiles.bat](#makefilesbat)
     - [post-process.py](#post-processpy)
     - [run.bat](#runbat)
+  - [Branches](#the-branches)
+    - [master](#master)
+	- [FalconWarriorr-branch](#falconwarriorr-branch)
   - [Acknowledgements](#acknoowledgements)
 
 # How it Works
@@ -136,6 +139,7 @@ If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's 
 
 
 # Files
+Detailing each important file.
 
 ## README.md
 This readme file.
@@ -161,6 +165,17 @@ Run this after running crawler.py for a while.
 ## run.bat
 A Windows batch file to run the program.
 Theoretically once the crawler finishes running post-process with run, but you'd have to get the entire internet first, so...
+
+
+# Branches
+Detailing each active branch of the project.
+
+## master
+The stable, up-to-date branch.
+
+## FalconWarriorr-branch
+Falconwarriorr's development branch.
+He is constantly adding new features to his, and I am slowly implementing them into the master branch.
 
 
 # Acknowledgements
