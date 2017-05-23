@@ -225,15 +225,15 @@ def restart():
 #0-4 for size of done, size of todo, words in text, total errors, unknown errors
 def info():
     if display == '0':
-        sys.stdout.write("\r" + "Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+        sys.stdout.write("\r" + "Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '1':
-        sys.stdout.write("\r" + "Links in todo: " + str(len(todo)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+        sys.stdout.write("\r" + "Links in todo: " + str(len(todo)) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '2':
-        sys.stdout.write("\r" + "Words in text: " + str(len(text)) + " p>pause, u>update, r>restart, e>prune, or s>save")
+        sys.stdout.write("\r" + "Words in text: " + str(len(text)) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '3':
-        sys.stdout.write("\r" + "Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>save")
+        sys.stdout.write("\r" + "Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '4':
-        sys.stdout.write("\r" + "Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>save")
+        sys.stdout.write("\r" + "Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>status")
     flush()
 #flushes the buffer to immediately write the above info to the command prompt
 def flush():
@@ -310,7 +310,7 @@ while len(todo) != 0:
             #actual web crawling process    
             else:
                 count += 1
-                print('\r[CRAWL] Web Crawler currently at: ' + str(todo[0].encode('utf-8'))) #prints current website to the console
+                print('\r[CRAWL] Web Crawler currently at: ' + str(todo[0].encode('utf-8')) + '               ') #prints current website to the console
                 info()
                 flush()
                 page = requests.get(todo[0])
@@ -339,7 +339,8 @@ while len(todo) != 0:
             raise
         knownErrors += 1
         print('\r\n[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
-        print('[LOG]: Saved error to ' + logFile)
+        print('[LOG]: Saved error to ' + logFile + '                             ')
+        todo.remove(todo[0])
         log(e)
         
     except requests.exceptions.HTTPError as e:
@@ -347,7 +348,8 @@ while len(todo) != 0:
             raise
         knownErrors += 1
         print('\r\n[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
-        print('[LOG]: Saved error to ' + logFile)
+        print('[LOG]: Saved error to ' + logFile + '                                ')
+        todo.remove(todo[0])
         log(e)
     
     except UnicodeEncodeError as e:
@@ -356,7 +358,8 @@ while len(todo) != 0:
         knownErrors += 1
         log(e)
         print('\r\n[ERROR]: Unicode Error with link: ' + todo[0] + ', probably a foreign character in the link title.')
-        print('[LOG]: Saved error to ' + logFile)
+        print('[LOG]: Saved error to ' + logFile + '                                ')
+        todo.remove(todo[0])
         pass        
     except Exception as e: #If any other error is raised
         if debug:
