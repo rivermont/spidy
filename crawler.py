@@ -74,9 +74,9 @@ def words_save(wordList):
 		for item in file:
 			if check_word(item): #If item is invalid
 				file.remove(item) #Remove invalid word from
-			else:
-				words.update(item) #Otherwise add item to words (set)
-		for word in words:
+			elif not check_word(item):
+				wordList.update(item) #Otherwise add item to wordList (set)
+		for word in wordList:
 			f.write('\n' + word) #Write all words to wordFile
 		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
 	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
