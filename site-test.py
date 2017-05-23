@@ -336,6 +336,7 @@ while len(todo) != 0:
         exit()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
         if debug:
+            save()
             raise
         knownErrors += 1
         print('\r\n[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
@@ -345,6 +346,7 @@ while len(todo) != 0:
         
     except requests.exceptions.HTTPError as e:
         if debug:
+            save()
             raise
         knownErrors += 1
         print('\r\n[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
@@ -354,6 +356,7 @@ while len(todo) != 0:
     
     except UnicodeEncodeError as e:
         if debug:
+            save()
             raise
         knownErrors += 1
         log(e)
@@ -363,6 +366,7 @@ while len(todo) != 0:
         pass        
     except Exception as e: #If any other error is raised
         if debug:
+            save()
             raise
         log(e)
         errors += 1
