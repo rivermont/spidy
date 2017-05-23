@@ -141,6 +141,7 @@ def words_save():
 	for word in words:
 		file.write('\n' + word)
 	file.close()
+	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
 
 def info_log():
 	'''
