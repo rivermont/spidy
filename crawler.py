@@ -48,8 +48,8 @@ def check_link(item):
 
 def check_word(word):
 	'''
-	Returns False if word is not valid.
-	Returns True if word passes all inspections (is valid).
+	Returns True if word is not valid.
+	Returns False if word passes all inspections (is valid).
 	'''
 	if len(word) > 16:
 		return True
@@ -60,14 +60,14 @@ def make_words(page):
 	page = str(page.content)
 	wordList = page.split()
 	for word in wordList:
-		if not check_word(word):
+		if check_word(word):
 			wordList.remove(word)
 	return wordList
 
 def words_save(wordList):
 	file = open(wordFile, 'r+')
 	for item in file.readlines():
-		if check_word(item):
+		if not check_word(item):
 			words.update(item)
 	# file.seek(0)
 	for word in words:
@@ -318,6 +318,7 @@ while len(todo) != 0: #While there are links to check
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
+		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		files_save()
