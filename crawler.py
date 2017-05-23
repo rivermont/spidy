@@ -38,6 +38,8 @@ knownErrorCount = 0
 
 badLinkPercents = []
 
+words = set([])
+
 #Amount of errors allowed to happen before automatic shutdown
 maxNewErrors = 10
 maxKnownErrors = 25
@@ -129,10 +131,16 @@ def files_save():
 	todoList.close()
 	doneList.close()
 
-def save_words(page):
+def make_words(page):
 	page = str(page.content)[2:-1]
 	wordList = page.split()
-	print(wordList)
+	words.update(wordList)
+
+def words_save():
+	file = open(wordFile, 'a')
+	for word in words:
+		file.write('\n' + word)
+	file.close()
 
 def info_log():
 	'''
@@ -249,6 +257,8 @@ while len(todo) != 0: #While there are links to check
 		if counter >= saveCount: #If it's not time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			files_save()
+			words_save()
+			words = set([])
 			info_log()
 			counter = 0
 		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
@@ -259,6 +269,7 @@ while len(todo) != 0: #While there are links to check
 			continue
 		else:
 			page = requests.get(todo[0]) #Get page
+			make_words(page)
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
@@ -275,7 +286,7 @@ while len(todo) != 0: #While there are links to check
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			print('[{0}] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), todo[0])) #Announce which link was crawled
-			save_words(page)
+	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
