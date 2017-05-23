@@ -3,6 +3,31 @@ Spidy (spˈɪdi) is a simple to use command line web crawler.
 Given a list of web links, it uses the Python lxml and requests libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
+## README.md
+This readme file.
+
+## clear.bat
+Clears all save files by deleting them and creating empty ones.
+
+## crawler.py
+The important code. This is what you will run to crawl links and save information.
+Because the internet is so big, this will practically never end.
+
+## errors.txt
+A log of all the errors we encounter, sorted by frequency.
+This is used to improve the efficiency of the error handling.
+
+## makefiles.bat
+Creates all of the needed save files for spidy to run.
+
+## post-process.py
+This removes all the lines in `crawler_words.txt` longer than 16 characters.
+Run this after running crawler.py for a while.
+
+## run.bat
+A Windows batch file to run the program.
+Theoretically once the crawler finishes running post-process with run, but you'd have to get the entire internet first, so...
+
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.
@@ -22,9 +47,9 @@ Spidy has 6 different command line arguments.
 Because of the way it's written, args are optional but you must do them in a set order.
 You can do `1, 2, 3`, but not `1, 3, 4`.
 
-> python crawler.py [overwrite] [raiseErrors] [todoFile] [doneFile] [logFile] [saveCount]
+> python crawler.py [overwrite] [raiseErrors] [todoFile] [doneFile] [logFile] [wordFile] [saveCount]
 
-The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log`, `saveCount`.
+The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log`, `crawler_words.txt`, `100`.
 
  - overwrite (Bool): Whether to load from the save files or not. Spidy will always save to the save files.
  - raiseErrors (Bool): Whether to stop the script when an error occurs that it can;t handle by default.
@@ -52,10 +77,10 @@ Third argument is log file where you can specify a file where you want so write 
 Fourth argument is after how many queried webpages will the crawler autosave todo and done lists(default is 1000 iterations.
 
 ### Linux Command Line
-Linux isn't popular enough, so we don't know how to use it.
+Do things.
 
 ### OS X Command Line
-Macs suck, so we don't care about them.
+Do things.
 
 ## Running
 
