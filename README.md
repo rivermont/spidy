@@ -1,6 +1,6 @@
 # spidy
 Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
-Given a list of web links, it uses the Python `lxml` and `requests` libraries to query the webpages.
+Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and `requests` libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
 --------------------
@@ -18,8 +18,6 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
       - [Command Arguments](#command-arguments)
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
-      - [Linux Command Line](#linux-command-line)
-      - [OS X Command Line](#os-x-command-line)
     - [Running](#running)
   - [Files](#files)
     - [README.md](#readmemd)
@@ -33,7 +31,9 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
     - [master](#master)
 	- [FalconWarriorr-branch](#falconwarriorr-branch)
   - [TODO](#todo)
-  - [Acknowledgements](#acknoowledgements)
+  - [Acknowledgements](#acknowledgements)
+  - [Contribute](#contribute)
+  - [License](#license)
 
 # How it Works
 Spidy has to working lists, `TODO` and `done`.
@@ -45,7 +45,7 @@ It also saves all of the content of the page into a file for processing.
 
 # Features
 We built a lot of the functionality in spidy by watching the console scroll by and going, "Hey, we should add that!"
-Here are some features that we think are worth noting, in alphabetic order.
+Here are some features we figured were worth noting.
 
 ## Error Handling
 While testing we have come across many common errors that aren't easily avoided such as http timeout, unicode encode errors, exceeding maximum redirects, http connection, and document empty(going to picture etc.)
@@ -53,12 +53,13 @@ For all of these errors we have separate error handling that prints a relevant s
 For unknown errors we have a cap which will cause the program to stop if we exceed that set amount.
 Currently Spidy has built-in support for
 
- - UnicodeEncodeError
- - SSLError
- - XMLSyntaxError, ParserError
- - TooManyRedirects
- - ConnectionError
- - ContentDecodingError
+  - ConnectionError
+  - UnicodeEncodeError
+  - SSLError
+  - XMLSyntaxError, ParserError
+  - TooManyRedirects
+  - ContentDecodingError
+  - OSError
 
 ## Frequent Timestamp Logging
 Spidy logs almost every action it takes to both the command console and the logFile.
@@ -69,14 +70,15 @@ Both the console and logFile messages are simple and easy to interpret, but pack
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.
-Spidy can be run from the command line, a Python IDE or (on Windows systems) by launching the .bat file.
+Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the .bat file.
 
 ![](/media/run.png?raw=true)
 
 ## Python Installation
 There are many different versions of Python, and probably hundreds of different installations of each them.
 Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
-Rivermont is working with Python installed through the [Anaconda distribution](https://www.continuum.io/downloads), and Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/).
+Rivermont runs Python in Powershell, installed through the [Anaconda distribution](https://www.continuum.io/downloads).
+Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/).
 
 ## Launching
 
@@ -98,7 +100,7 @@ The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `craw
  - saveCount (int): The number of processed links after which to autosave.
 
 ### Windows (Command Line)
-Use cd to navigate to the spidy's directory located in, then run the `makefiles.bat`.
+Use `cd` to navigate to the directory spidy's located in, then run the `makefiles.bat`.
 This will create all of the neccessary files if they don't already exist.
 
 > python crawler.py True False crawler_todo.txt crawler_done.txt crawler_log.txt 100
@@ -108,18 +110,7 @@ Use cd to navigate to spidy's directory and run the `makefiles.bat`.
 This will create all of the neccessary files if they don't already exist.
 Then run `run.bat`.
 
-![options example](/media/bat.png?raw=true "options pic")
-
-In the .bat file that runs the web-crawler.py you can specify arguments to control the behavior of the crawler the first argument after specifying the python script is todo file where you can specify a separate file if you want to save multiple to do lists or already have a preset one default is crawler_todo.txt.
-Second argument is done file where same as to do you can specify a specific file where you want to load a done list from or save to default is crawler_done.txt.
-Third argument is log file where you can specify a file where you want so write all error messages etc to default is crawler_log.txt.
-Fourth argument is after how many queried webpages will the crawler autosave todo and done lists(default is 1000 iterations.
-
-### Linux Command Line
-Do things.
-
-### OS X Command Line
-Do things.
+![](/media/bat.png?raw=true)
 
 ## Running
 
@@ -180,3 +171,19 @@ He is constantly adding new features to his, and I am slowly implementing them i
 # Acknowledgements
 I'd like to thank Pluralsight for providing an amazing platfom for learning any language.
 Specifically the Python Fundamentals course by Austin Bingham and Robert Smallshire.
+
+
+# Contribute
+We would love your help with anything!
+Right now neither of us have access to a Linux or OS/X machine, so we don't have any documentation for running spidy on those systems.
+If you find a bug raise an issue, and if you have a suggestion, go ahead and fork it.
+We will happily look at anything that you build off of spidy.
+We're not very creative people and we know that there're more ideas out there!
+
+
+# License
+Honestly, if you link to this repo and credit `rivermont` and `Falconwarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.
+Unless you contributed majorly to the project however, you can't really put your name on it.
+We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.
+Just don't sell it and you should be fine.
+Thanks!
