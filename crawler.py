@@ -51,29 +51,34 @@ def check_word(word):
 	Returns True if word is not valid.
 	Returns False if word passes all inspections (is valid).
 	'''
-	if len(word) > 16:
+	if len(word) > 16: #If word is longer than 16 characters (avg password length is ~8)
 		return True
 	else:
 		return False
 
 def make_words(page):
-	page = str(page.content)
-	wordList = page.split()
+	'''
+	Returns list of all valid words in page.
+	'''
+	page = str(page.content) #Get page content
+	wordList = page.split() #Split content into lits of words, as separated by spaces
+	wordList = list(set(wordList)) #Remove duplicates
 	for word in wordList:
-		if check_word(word):
-			wordList.remove(word)
+		if check_word(word): #If word is invalid
+			wordList.remove(word) #Remove invalid word from list
 	return wordList
 
 def words_save(wordList):
-	file = open(wordFile, 'r+')
-	for item in file.readlines():
-		if not check_word(item):
-			words.update(item)
-	# file.seek(0)
-	for word in words:
-		file.write('\n' + word)
-	file.truncate()
-	file.close()
+	with open(wordFile, 'r+') as f: #Open save file for reading and writing
+		file = f.readlines() #Make list of all lines in wordFile
+		for item in file:
+			if check_word(item): #If item is invalid
+				file.remove(item) #Remove invalid word from
+			else:
+				words.update(item) #Otherwise add item to words (set)
+		for word in words:
+			f.write('\n' + word) #Write all words to wordFile
+		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
 	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
 
 def files_save():
