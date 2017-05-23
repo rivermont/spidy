@@ -61,13 +61,7 @@ Currently Spidy has built-in support for
  - ContentDecodingError
 
 ## Frequent Timestamp Logging
-Spidy logs the time of its actions with every console line and logFile write.
-
-## Startup
-![Start example](/media/start.png?raw=true "Start pic")
-
-In the .bat file that runs the web-crawler.py you can specify arguments to control the behavior of the crawler the first argument after specifying the python script is todo file where you can specify a separate file if you want to save multiple to do lists or already have a preset one default is crawler_todo.txt. Second argument is done file where same as to do you can specify a specific file where you want to load a done list from or save to default is crawler_done.txt. Third argument is log file where you can specify a file where you want so write all error messages etc to default is crawler_log.txt. Fourth argument is after how many queried webpages will the crawler autosave todo and done lists(default is 1000 iterations.
-![options example](/bat.png?raw=true "options pic")
+Spidy logs almost every action it takes to both the command console and the logFile.
 
 ## User-Friendly Logs
 Both the console and logFile messages are simple and easy to interpret, but packed with information.
@@ -77,17 +71,17 @@ Both the console and logFile messages are simple and easy to interpret, but pack
 The way that you will run spidy depends on the way you have Python installed.
 Spidy can be run from the command line, a Python IDE or (on Windows systems) by launching the .bat file.
 
-![Run example](/media/run.png?raw=true "run pic")
+![](/media/run.png?raw=true)
 
 ## Python Installation
 There are many different versions of Python, and probably hundreds of different installations of each them.
-Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3, but you will need a scientific distribution of python for lxml to run without errors. Downloading anaconda is a great way to get all the python functionality that 
-need along with an ide and the ability to compile and run from the command line.
+Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
+rivermont is using Python installed through the [Anaconda distribution](https://www.continuum.io/downloads), and Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/).
 
 ## Launching
 
 ### Command Arguments
-Spidy has 6 different command line arguments.
+Spidy has 6 different command line arguments that control the behaviour of the crawler.
 Because of the way it's written, args are optional but you must do them in a set order.
 You can do `1, 2, 3`, but not `1, 3, 4`.
 
