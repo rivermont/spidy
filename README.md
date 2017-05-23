@@ -10,10 +10,12 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
 
 # Table of Contents
 
+  - [spidy](#spidy)
+  - [Table of Contents](#table-of-contents)
   - [How it Works](#how-it-works)
   - [Features](#features)
     - [Error Handling](#error-handling)
-    - [Frequent Timestamp Logging](frequent-timestamp-logging)
+    - [Frequent Timestamp Logging](#frequent-timestamp-logging)
     - [User-Friendly Logs](#user-friendly-logs)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
@@ -23,6 +25,8 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
       - [Windows (batch file)](#windows-batch-file)
     - [Running](#running)
   - [Files](#files)
+    - [media/](#media)
+	- [data/](#data)
     - [README.md](#readmemd)
     - [clear.bat](#clearbat)
     - [crawler.py](#crawlerpy)
@@ -30,9 +34,12 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
     - [makefiles.bat](#makefilesbat)
     - [post-process.py](#post-processpy)
     - [run.bat](#runbat)
-  - [Branches](#the-branches)
+  - [Branches](#branches)
     - [master](#master)
 	- [FalconWarriorr-branch](#falconwarriorr-branch)
+	- [saving-test](#saving-test)
+	- [timings](#timings)
+	- [verbose](#verbose)
   - [TODO](#todo)
   - [Acknowledgements](#acknowledgements)
   - [Contribute](#contribute)
@@ -168,6 +175,13 @@ Falconwarriorr's development branch.
 He is constantly adding new features to his, and I am slowly implementing them into the master branch.
 
 ## saving-test
+The old development branch for implementing word saving.
+
+## timings
+The old development branch for adding timestamps to all the logs.
+
+## verbose
+The old development branch for implementing logging.
 
 
 # TODO
