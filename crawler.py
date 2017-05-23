@@ -330,6 +330,18 @@ while len(todo) != 0: #While there are links to check
 		files_save()
 		words_save(words)
 		exit()
+	except (etree.XMLSyntaxError, etree.ParserError) as e:
+		knownErrorCount += 1
+		err_print(todo[0])
+		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+		err_log('XMLSyntaxError', e)
+		err_saved_message()
+	except requests.exceptions.SSLError as e: # SSL: CERTIFICATE_VERIFY_FAILED
+		knownErrorCount += 1
+		err_print(todo[0])
+		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
+		err_log('SSLError', e)
+		err_saved_message()
 	except requests.exceptions.ConnectionError as e: # HTTP(S)ConnectionPool: Max retries exceeded with url
 		knownErrorCount += 1
 		err_print(todo[0])
@@ -341,18 +353,6 @@ while len(todo) != 0: #While there are links to check
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.'.format(get_time()))
 		err_log('UnicodeEncodeError', e)
-		err_saved_message()
-	except requests.exceptions.SSLError as e: # SSL: CERTIFICATE_VERIFY_FAILED
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-		err_log('SSLError', e)
-		err_saved_message()
-	except (etree.XMLSyntaxError, etree.ParserError) as e:
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
-		err_log('XMLSyntaxError', e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e: # Exceeded 30 redirects.
 		knownErrorCount += 1

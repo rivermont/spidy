@@ -1,5 +1,8 @@
 XMLSyntaxError
-4
+12
 
 ConnectionError
-2
+4
+
+SSLErorr
+1
