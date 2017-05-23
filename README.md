@@ -50,18 +50,17 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
 Spidy has to working lists, `TODO` and `done`.
 TODO is the list of URLs it hasn't yet visited.
 Done is the list of URLs it has already been to.
-The crawler visits each page in TODO, scrapes the html content for links, and adds those back into TODO.
+The crawler visits each page in TODO, scrapes the HTML content for links, and adds those back into TODO.
 It also saves all of the content of the page into a file for processing.
 
 
 # Features
 We built a lot of the functionality in spidy by watching the console scroll by and going, "Hey, we should add that!"
-Here are some features we figured were worth noting.
+Here are some features we figure are worth noting.
 
 ## Error Handling
-While testing we have come across many common errors that aren't easily avoided such as http timeout, unicode encode errors, exceeding maximum redirects, http connection, and document empty(going to picture etc.)
-For all of these errors we have separate error handling that prints a relevant sttatement to the console since most of these errors are impossible to avoid we just continue past them.
-For unknown errors we have a cap which will cause the program to stop if we exceed that set amount.
+We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each.
+There is a set cap so that after accumulating too many errors the crawler will stop itself.
 Currently Spidy has built-in support for
 
   - ConnectionError
@@ -94,7 +93,7 @@ Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/
 ## Launching
 
 ### Command Arguments
-Spidy has 6 different command line arguments that control the behaviour of the crawler.
+Spidy has 6 different command line arguments that control the behavior of the crawler.
 Because of the way it's written, args are optional but you must do them in a set order.
 You can do `1, 2, 3`, but not `1, 3, 4`.
 
@@ -112,13 +111,13 @@ The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `craw
 
 ### Windows (Command Line)
 Use `cd` to navigate to the directory spidy's located in, then run the `makefiles.bat`.
-This will create all of the neccessary files if they don't already exist.
+This will create all of the necessary files if they don't already exist.
 
 > python crawler.py True False crawler_todo.txt crawler_done.txt crawler_log.txt 100
 
 ### Windows (batch file)
-Use cd to navigate to spidy's directory and run the `makefiles.bat`.
-This will create all of the neccessary files if they don't already exist.
+Use `cd` to navigate to spidy's directory and run the `makefiles.bat`.
+This will create all of the necessary files if they don't already exist.
 Then run `run.bat`.
 
 ![](/media/bat.png?raw=true)
@@ -189,23 +188,21 @@ The old development branch for implementing logging.
   - Log length of wordFile to console/logFile
   - Change arguments to a required list
   - Talk about hashcat in README
+  - Upload spidy to PyPI
 
 # Acknowledgements
-I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platfom for learning any language.
+I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platform for learning any language.
 Specifically the [Python Fundamentals](https://www.pluralsight.com/courses/python-fundamentals/) course by Austin Bingham and Robert Smallshire.
 
 
 # Contribute
 We would love your help with anything!
 Right now neither of us have access to a Linux or OS/X machine, so we don't have any documentation for running spidy on those systems.
-If you find a bug raise an issue, and if you have a suggestion, go ahead and fork it.
-We will happily look at anything that you build off of spidy.
-We're not very creative people and we know that there're more ideas out there!
+If you find a bug raise an issue, and if you have a suggestion go ahead and fork it.
+We will happily look at anything that you build off of spidy; we're not very creative people and we know that there're more ideas out there!
 
 
 # License
-Honestly, if you link to this repo and credit `rivermont` and `Falconwarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.
-Unless you contributed majorly to the project however, you can't really put your name on it.
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.
-Just don't sell it and you should be fine.
+Honestly, if you link to this repo and credit `rivermont` and `Falconwarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.
 Thanks!
