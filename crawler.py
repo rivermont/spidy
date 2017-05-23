@@ -131,15 +131,29 @@ def files_save():
 	todoList.close()
 	doneList.close()
 
+def check_word(word):
+	if len(word) > 16:
+		return False
+	else:
+		return True
+
 def make_words(page):
-	page = str(page.content)[2:-1]
+	page = str(page.content)
 	wordList = page.split()
-	words.update(wordList)
+	for word in wordList:
+		if check_word(word):
+			wordList.remove(word)
+	return wordList
 
 def words_save():
-	file = open(wordFile, 'a')
+	file = open(wordFile, 'r+')
+	for item in file.readlines():
+		if check_word(item):
+			words.update(item)
+	file.seek(0)
 	for word in words:
 		file.write('\n' + word)
+	file.truncate()
 	file.close()
 	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
 
@@ -259,7 +273,7 @@ while len(todo) != 0: #While there are links to check
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			files_save()
 			words_save()
-			words = set([])
+			words.clear()
 			info_log()
 			counter = 0
 		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
@@ -270,7 +284,7 @@ while len(todo) != 0: #While there are links to check
 			continue
 		else:
 			page = requests.get(todo[0]) #Get page
-			make_words(page)
+			words.update(make_words(page))
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
