@@ -4,9 +4,9 @@ Built by rivermont and FalconWarriorr
 '''
 
 
-##########
-## INIT ##
-##########
+############
+## IMPORT ##
+############
 
 #Time statements.
 #This is done before anything else to enable timestamp logging at every step.
@@ -22,6 +22,151 @@ from lxml import html
 from lxml import etree
 import requests
 import sys
+
+
+###############
+## FUNCTIONS ##
+###############
+
+print('[{0}] [INIT]: Creating functions...'.format(get_time()))
+
+def check_link(item):
+	'''
+	Returns True if item is not a valid url.
+	Returns False if item passes all inspections (is valid url).
+	'''
+	if len(item) < 10: #Shortest possible url being 'http://a.b'
+		return True
+	elif item[0:4] != 'http': #Must be an http or https link
+		return True
+	elif item in done: #Can't have visited already
+		return True
+	elif len(item) > 250: #Links longer than 250 characters usually are useless or full of foreign characters
+		return True
+	else:
+		return False
+
+def check_word(word):
+	'''
+	Returns False if word is not valid.
+	Returns True if word passes all inspections (is valid).
+	'''
+	if len(word) > 16:
+		return True
+	else:
+		return False
+
+def make_words(page):
+	page = str(page.content)
+	wordList = page.split()
+	for word in wordList:
+		if not check_word(word):
+			wordList.remove(word)
+	return wordList
+
+def words_save(wordList):
+	file = open(wordFile, 'r+')
+	for item in file.readlines():
+		if check_word(item):
+			words.update(item)
+	# file.seek(0)
+	for word in words:
+		file.write('\n' + word)
+	file.truncate()
+	file.close()
+	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
+
+def files_save():
+	'''
+	Saves the TODO and done lists into their respective files.
+	Also logs the action to the console.
+	'''
+	#Open save files
+	todoList = open(todoFile, 'w')
+	doneList = open(doneFile, 'w')
+	#Save
+	time = get_time()
+	for site in todo:
+		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n')
+	print('[{0}] [LOG]: Saved TODO list to {1}'.format(time, todoFile))
+	for site in done:
+		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n')
+	print('[{0}] [LOG]: Saved done list to {1}'.format(time, doneFile))
+	#Close things
+	todoList.close()
+	doneList.close()
+
+def info_log():
+	'''
+	Logs important information to the console and log file.
+	'''
+	sinceStart = int(t.time() - startTime)
+	badLinkPercent = int(sum(badLinkPercents) / len(badLinkPercents))
+	#Print to console
+	time = get_time()
+	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
+	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
+	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
+	print('[{0}] [LOG]: {1} bad links removed.'.format(time, removedCount))
+	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, badLinkPercent))
+	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
+	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
+	#Save to logFile
+	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
+	log = open(logFile, 'a')
+	log.write('\n\n====AUTOSAVE===')
+	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
+	log.write(endLog)
+
+def err_log(error1, error2):
+	'''
+	Saves the triggering error to the log file.
+	error1 is the trimmed error source.
+	error2 is the extended text of the error.
+	'''
+	log = open(logFile, 'a') #Open the log file
+	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
+	try:
+		log.write('\n\n=====ERROR=====')
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
+		log.write(endLog)
+	except: #If an error (usually UnicodeEncodeError), write encoded log
+		log.write('\n\n=====ERROR=====')
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
+		log.write(endLog)
+	log.close() #Save the log file
+
+def log(message):
+	'''
+	Logs a single message.
+	Prints message verbatim, so message must formatted correctly outside of the function call.
+	'''
+	log = open(logFile, 'a') #Open the log file
+	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
+	log.write('\n\n======LOG======')
+	log.write(message)
+	log.write(endLog)
+	log.close()
+
+def err_print(item):
+	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
+
+def err_saved_message():
+	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
+
+def get_avg(state1, state2):
+	'''
+	Takes two values and returns the percentage of state1 that is state2.
+	'''
+	if state1 == 0:
+		return 0
+	else:
+		return (state2 / state1) * 100
+
+
+##########
+## INIT ##
+##########
 
 print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
@@ -93,137 +238,6 @@ except:
 	#100 is default as it means there is usually at least one log in the console window at any given time.
 	pass
 
-print('[{0}] [INIT]: Creating functions...'.format(get_time()))
-
-def check(item):
-	'''
-	Returns True if item is not a valid url.
-	Returns False if it passes all inspections (is valid url).
-	'''
-	if len(item) < 10: #Shortest possible url being 'http://a.b'
-		return True
-	elif item[0:4] != 'http': #Must be an http or https link
-		return True
-	elif item in done: #Can't have visited already
-		return True
-	elif len(item) > 250: #Links longer than 250 characters usually are useless or full of foreign characters
-		return True
-	else:
-		return False
-
-def files_save():
-	'''
-	Saves the TODO and done lists into their respective files.
-	Also logs the action to the console.
-	'''
-	#Open save files
-	todoList = open(todoFile, 'w')
-	doneList = open(doneFile, 'w')
-	#Save
-	time = get_time()
-	for site in todo:
-		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n')
-	print('[{0}] [LOG]: Saved TODO list to {1}'.format(time, todoFile))
-	for site in done:
-		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n')
-	print('[{0}] [LOG]: Saved done list to {1}'.format(time, doneFile))
-	#Close things
-	todoList.close()
-	doneList.close()
-
-def check_word(word):
-	if len(word) > 16:
-		return False
-	else:
-		return True
-
-def make_words(page):
-	page = str(page.content)
-	wordList = page.split()
-	for word in wordList:
-		if check_word(word):
-			wordList.remove(word)
-	return wordList
-
-def words_save():
-	file = open(wordFile, 'r+')
-	for item in file.readlines():
-		if check_word(item):
-			words.update(item)
-	file.seek(0)
-	for word in words:
-		file.write('\n' + word)
-	file.truncate()
-	file.close()
-	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
-
-def info_log():
-	'''
-	Logs important information to the console and log file.
-	'''
-	sinceStart = int(t.time() - startTime)
-	badLinkPercent = int(sum(badLinkPercents) / len(badLinkPercents))
-	#Print to console
-	time = get_time()
-	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
-	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
-	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
-	print('[{0}] [LOG]: {1} bad links removed.'.format(time, removedCount))
-	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, badLinkPercent))
-	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
-	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
-	#Save to logFile
-	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
-	log = open(logFile, 'a')
-	log.write('\n\n====AUTOSAVE===')
-	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
-	log.write(endLog)
-
-def err_log(error1, error2):
-	'''
-	Saves the triggering error to the log file.
-	error1 is the trimmed error source.
-	error2 is the extended text of the error.
-	'''
-	log = open(logFile, 'a') #Open the log file
-	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	try:
-		log.write('\n\n=====ERROR=====')
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
-		log.write(endLog)
-	except: #If an error (usually UnicodeEncodeError), write encoded log
-		log.write('\n\n=====ERROR=====')
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
-		log.write(endLog)
-	log.close() #Save the log file
-
-def log(message):
-	'''
-	Logs a single message.
-	Prints message verbatim, so message must formatted correctly outside of the function call.
-	'''
-	log = open(logFile, 'a') #Open the log file
-	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	log.write('\n\n======LOG======')
-	log.write(message)
-	log.write(endLog)
-	log.close()
-
-def err_print(item):
-	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
-
-def err_saved_message():
-	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
-
-def get_avg(state1, state2):
-	'''
-	Takes two values and returns the percentage of state1 that is state2.
-	'''
-	if state1 == 0:
-		return 0
-	else:
-		return (state2 / state1) * 100
-
 #Import saved TODO file data
 if overwrite:
 	print('[{0}] [INIT]: Creating save files...'.format(get_time()))
@@ -245,7 +259,7 @@ else:
 
 	#Remove invalid links from TODO list
 	for link in todo:
-		if check(link):
+		if check_link(link):
 			todo.remove(link)
 
 	#If TODO list is empty, add default start page
@@ -272,7 +286,7 @@ while len(todo) != 0: #While there are links to check
 		if counter >= saveCount: #If it's not time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			files_save()
-			words_save()
+			words_save(words)
 			words.clear()
 			info_log()
 			counter = 0
@@ -280,7 +294,7 @@ while len(todo) != 0: #While there are links to check
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 			files_save()
 			exit()
-		elif check(todo[0]):
+		elif check_link(todo[0]):
 			continue
 		else:
 			page = requests.get(todo[0]) #Get page
@@ -293,7 +307,7 @@ while len(todo) != 0: #While there are links to check
 			after = len(links)
 			badLinkPercents.append(get_avg(before, after))
 			for link in links: #Check for invalid links
-				if check(link):
+				if check_link(link):
 					links.remove(link)
 					removedCount += 1
 					continue
