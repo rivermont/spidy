@@ -27,6 +27,10 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
     - [Running](#running)
+	  - [Start](#start)
+	  - [Autosave](#autosave)
+	  - [Force Quit](#fore-quit)
+	  - [End](#end)
   - [Files](#files)
     - [media/](#media)
 	- [data/](#data)
@@ -84,8 +88,6 @@ Both the console and logFile messages are simple and easy to interpret, but pack
 The way that you will run spidy depends on the way you have Python installed.
 Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the .bat file.
 
-![](/media/run.png?raw=true)
-
 ## Python Installation
 There are many different versions of [Python](https://www.python.org/about/), and probably hundreds of different installations of each them.
 Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
@@ -130,8 +132,6 @@ Use `cd` to navigate to spidy's directory and run the `makefiles.bat`.
 This will create all of the necessary files if they don't already exist.
 Then run `run.bat`.
 
-![](/media/bat.png?raw=true)
-
 ## Running
 Spidy logs a lot of information to the command line.
 Once started, a bunch of `[INIT]` lines will print.
@@ -143,15 +143,20 @@ Sample start log.
 
 ![](/media/start.png?raw=true)
 
-### Log
+### Autosave
 Sample log after hitting the autosave cap.
 
 ![](/media/log.png?raw=true)
 
-### End
+### Force Quit
 Sample log after performing a `^C` to force quit the crawler.
 
 ![](/media/keyboardinterrupt.png?raw=true)
+
+### End
+Sample log after crawler visits all links in TODO.
+
+![](/media/end.png?raw=true)
 
 
 # Files
@@ -208,10 +213,10 @@ The old development branch for implementing logging.
 
 
 # TODO
-  - Log length of wordFile to console/logFile
-  - Change arguments to a required list
-  - Talk about hashcat in README
   - Upload spidy to PyPI
+  - Change arguments to a required list
+  - Log length of wordFile to console/logFile
+  - Talk about hashcat in README
 
 # Acknowledgements
 I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platform for learning any language.
