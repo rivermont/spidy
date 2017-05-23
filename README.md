@@ -3,30 +3,35 @@ Spidy (spˈɪdi) is a simple to use command line web crawler.
 Given a list of web links, it uses the Python lxml and requests libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
-## README.md
-This readme file.
 
-## clear.bat
-Clears all save files by deleting them and creating empty ones.
+# Features
+We've built a lot of the functionality of spidy by watching is scroll by and going "Hey, we should add this!"
+Here are some features that we think are worth noting, in alphabetic order.
 
-## crawler.py
-The important code. This is what you will run to crawl links and save information.
-Because the internet is so big, this will practically never end.
+## Error Handling
+While testing we have come across many common errors that aren't easily avoided such as http timeout, unicode encode errors, exceeding maximum redirects, http connection, and document empty(going to picture etc.)
+For all of these errors we have separate error handling that prints a relevant sttatement to the console since most of these errors are impossible to avoid we just continue past them.
+For unknown errors we have a cap which will cause the program to stop if we exceed that set amount.
+Currently Spidy has built-in support for
 
-## errors.txt
-A log of all the errors we encounter, sorted by frequency.
-This is used to improve the efficiency of the error handling.
+ - UnicodeEncodeError
+ - SSLError
+ - XMLSyntaxError, ParserError
+ - TooManyRedirects
+ - ConnectionError
+ - ContentDecodingError
 
-## makefiles.bat
-Creates all of the needed save files for spidy to run.
+## Frequent Timestamp Logging
+Spidy logs the time of its actions with every console line and logFile write.
 
-## post-process.py
-This removes all the lines in `crawler_words.txt` longer than 16 characters.
-Run this after running crawler.py for a while.
+## Startup
+![Start example](/media/start.png?raw=true "Start pic")
 
-## run.bat
-A Windows batch file to run the program.
-Theoretically once the crawler finishes running post-process with run, but you'd have to get the entire internet first, so...
+In the .bat file that runs the web-crawler.py you can specify arguments to control the behavior of the crawler the first argument after specifying the python script is todo file where you can specify a separate file if you want to save multiple to do lists or already have a preset one default is crawler_todo.txt. Second argument is done file where same as to do you can specify a specific file where you want to load a done list from or save to default is crawler_done.txt. Third argument is log file where you can specify a file where you want so write all error messages etc to default is crawler_log.txt. Fourth argument is after how many queried webpages will the crawler autosave todo and done lists(default is 1000 iterations.
+![options example](/bat.png?raw=true "options pic")
+
+## User-Friendly Logs
+Both the console and logFile messages are simple and easy to interpret, but packed with information.
 
 
 # Tutorial
@@ -99,34 +104,32 @@ This web crawler is very simple in that the main functionality is it's ability t
 ![Run example](/media/run.png?raw=true "run pic")
 
 
-# Features
-We've built a lot of the functionality of spidy by watching is scroll by and going "Hey, we should add this!"
-Here are some features that we think are worth noting, in alphabetic order.
+# Files
 
-## Error Handling
-While testing we have come across many common errors that aren't easily avoided such as http timeout, unicode encode errors, exceeding maximum redirects, http connection, and document empty(going to picture etc.)
-For all of these errors we have separate error handling that prints a relevant sttatement to the console since most of these errors are impossible to avoid we just continue past them.
-For unknown errors we have a cap which will cause the program to stop if we exceed that set amount.
-Currently Spidy has built-in support for
+## README.md
+This readme file.
 
- - UnicodeEncodeError
- - SSLError
- - XMLSyntaxError, ParserError
- - TooManyRedirects
- - ConnectionError
- - ContentDecodingError
+## clear.bat
+Clears all save files by deleting them and creating empty ones.
 
-## Frequent Timestamp Logging
-Spidy logs the time of its actions with every console line and logFile write.
+## crawler.py
+The important code. This is what you will run to crawl links and save information.
+Because the internet is so big, this will practically never end.
 
-## Startup
-![Start example](/media/start.png?raw=true "Start pic")
+## errors.txt
+A log of all the errors we encounter, sorted by frequency.
+This is used to improve the efficiency of the error handling.
 
-In the .bat file that runs the web-crawler.py you can specify arguments to control the behavior of the crawler the first argument after specifying the python script is todo file where you can specify a separate file if you want to save multiple to do lists or already have a preset one default is crawler_todo.txt. Second argument is done file where same as to do you can specify a specific file where you want to load a done list from or save to default is crawler_done.txt. Third argument is log file where you can specify a file where you want so write all error messages etc to default is crawler_log.txt. Fourth argument is after how many queried webpages will the crawler autosave todo and done lists(default is 1000 iterations.
-![options example](/bat.png?raw=true "options pic")
+## makefiles.bat
+Creates all of the needed save files for spidy to run.
 
-## User-Friendly Logs
-Both the console and logFile messages are simple and easy to interpret, but packed with information.
+## post-process.py
+This removes all the lines in `crawler_words.txt` longer than 16 characters.
+Run this after running crawler.py for a while.
+
+## run.bat
+A Windows batch file to run the program.
+Theoretically once the crawler finishes running post-process with run, but you'd have to get the entire internet first, so...
 
 
 # What's Next
