@@ -20,6 +20,8 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
     - [User-Friendly Logs](#user-friendly-logs)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
+      - [Anaconda](#anaconda)
+      - [Python Base](#python-base)
     - [Launching](#launching)
       - [Command Arguments](#command-arguments)
       - [Windows (Command Line)](#windows-command-line)
@@ -85,10 +87,18 @@ Spidy can be run from the command line, a Python IDE, or (on Windows systems) by
 ![](/media/run.png?raw=true)
 
 ## Python Installation
-There are many different versions of Python, and probably hundreds of different installations of each them.
+There are many different versions of [Python](https://www.python.org/about/), and probably hundreds of different installations of each them.
 Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
-Rivermont runs Python in Powershell, installed through the [Anaconda distribution](https://www.continuum.io/downloads).
-Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/).
+
+### Anaconda
+We recommend the [Anaconda distribution](https://www.continuum.io/downloads).
+It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python distro.
+
+### Python Base
+If you do choose to go with the [default Python](https://www.python.org/downloads/) distribution, you will need to install the `lxml` library for spidy to work.
+This can be done with `pip`:
+
+> pip install lxml
 
 ## Launching
 
