@@ -1,6 +1,6 @@
 # spidy
 Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
-Given a list of web links, it uses the Python lxml and requests libraries to query the webpages.
+Given a list of web links, it uses the Python `lxml` and `requests` libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
 
 --------------------
@@ -11,7 +11,6 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
   - [Features](#features)
     - [Error Handling](#error-handling)
     - [Frequent Timestamp Logging](frequent-timestamp-logging)
-    - [Startup](#startup)
     - [User-Friendly Logs](#user-friendly-logs)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
@@ -33,6 +32,7 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
   - [Branches](#the-branches)
     - [master](#master)
 	- [FalconWarriorr-branch](#falconwarriorr-branch)
+  - [TODO](#todo)
   - [Acknowledgements](#acknoowledgements)
 
 # How it Works
@@ -76,7 +76,7 @@ Spidy can be run from the command line, a Python IDE or (on Windows systems) by 
 ## Python Installation
 There are many different versions of Python, and probably hundreds of different installations of each them.
 Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
-rivermont is using Python installed through the [Anaconda distribution](https://www.continuum.io/downloads), and Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/).
+Rivermont is working with Python installed through the [Anaconda distribution](https://www.continuum.io/downloads), and Falconwarriorr uses [Python's standard distro](https://www.python.org/downloads/).
 
 ## Launching
 
@@ -91,9 +91,10 @@ The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `craw
 
  - overwrite (Bool): Whether to load from the save files or not. Spidy will always save to the save files.
  - raiseErrors (Bool): Whether to stop the script when an error occurs that it can;t handle by default.
- - todoFile (str): The location of the TODO file. Spidy will load from and save to this file..
+ - todoFile (str): The location of the TODO file. Spidy will load from and save to this file.
  - doneFile (str): The location of the done file. Spidy will load from and save to this file.
  - logFile (str): The location of the log file. Spidy will save to this file, apppending logs to the end.
+ - wordFile (str): The location of the words file. Spidy will load from and save to this file.
  - saveCount (int): The number of processed links after which to autosave.
 
 ### Windows (Command Line)
@@ -171,6 +172,10 @@ The stable, up-to-date branch.
 Falconwarriorr's development branch.
 He is constantly adding new features to his, and I am slowly implementing them into the master branch.
 
+
+# TODO
+  - Log length of wordFile to console/logFile
+  - Change arguments to a required list
 
 # Acknowledgements
 I'd like to thank Pluralsight for providing an amazing platfom for learning any language.

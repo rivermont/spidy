@@ -328,6 +328,7 @@ while len(todo) != 0: #While there are links to check
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		files_save()
+		words_save(words)
 		exit()
 	except requests.exceptions.ConnectionError as e: # HTTP(S)ConnectionPool: Max retries exceeded with url
 		knownErrorCount += 1
