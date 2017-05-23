@@ -41,26 +41,26 @@ def start():
 
     #debug mode raises every error if requested
     deb = input('Enter y if you want want to enter debug mode and raise every error\n')
-    if deb == 'True':
+    if deb == 'y':
         debug = True
 
     #defines vars to clear certain files based on user input
-    print('Enter True if you want to clear the done file')
+    print('Enter y if you want to clear the done file')
     clear = input()
-    print('Enter True if you want to clear todo and add wikipedia main page')
+    print('Enter y if you want to clear todo and add wikipedia main page')
     clearTodo = input()
-    print('Enter True if you want to save text from the webpages')
+    print('Enter y if you want to save text from the webpages')
     saveText = input()
 
     #defines a text file if save text is requested
-    if saveText == 'True':
+    if saveText == 'y':
         print('Enter valid text file for text or just press enter to use the default crawler_text.txt')
         textFile = input()
         #used default if no input is given
         if textFile == None or textFile == '':
             textFile = 'crawler_text.txt'
         #defines var to clear text
-        print('Enter True if you want to clear the previous text file\n')
+        print('Enter y if you want to clear the previous text file\n')
         clearText = input()
     else:
         #defines a text list to avoid errors
@@ -73,17 +73,17 @@ def start():
 
 
     #open saved files
-    if clearText == 'True':
+    if clearText == 'y':
         with open(textFile, 'w') as f:
             print('[INIT]: Clearing textFile')
             f.write('')
             text = []
-    elif saveText == 'True':
+    elif saveText == 'y':
         with open(textFile, 'r+') as f:
             print('[INIT]: Opening textFile')
             text = f.readlines()
     #open saved todo file
-    if clearTodo == 'True':
+    if clearTodo == 'y':
         print('[INIT]: Clearing todoFile')
         with open(todoFile, 'w') as f:
             f.write('')
@@ -96,7 +96,7 @@ def start():
 
     #opens all done pages
         #clears doneFile if clear is True
-    if clear == 'True':
+    if clear == 'y':
         with open(doneFile, 'w') as f:
             print('[INIT]: clearing done file')
             f.write('')
@@ -120,11 +120,11 @@ def prune():
         if link in done:
             counter += 1;
             todo.remove(link)
-        elif link[0] != 'h':
-            counter += 1;
-            todo.remove(link)
         elif len(link) < 7:
             counter += 1
+            todo.remove(link)
+        elif link[0] != 'h':
+            counter += 1;
             todo.remove(link)
     for line in text:
         text.remove(line)
@@ -162,7 +162,7 @@ def save():
             todoList.write(str(site.encode('utf-8')) + '\n')
 
     #saves text if user selected that option
-    if saveText == 'True':
+    if saveText == 'y':
         print('[LOG]: Saving text to text file(crawler_text.txt by default)')
         #iterates through every entry in text and checks to make sure there are no duplicates before adding it to the text file
         for word in text:
@@ -186,7 +186,7 @@ def status():   #outputs the length of all relevant files
     print('[LOG]: Unknown errors encountered: ' + str(errors))
     print('[LOG] Links in done: ' + str(len(done)))
     print('[LOG] Links in todo: ' + str(len(todo)))
-    if saveText == 'True':
+    if saveText == '':
         print('[LOG]: Words in text: ' + str(len(text)))
 
 #called when p key is pressed
@@ -314,7 +314,7 @@ while len(todo) != 0:
                 info()
                 flush()
                 page = requests.get(todo[0])
-                if saveText == 'True':
+                if saveText == 'y':
                     text.append(textFromHtml(str(todo[0])))
                 done.append(todo[0]) #moves the current website from todo into done
                 todo.remove(todo[0])
