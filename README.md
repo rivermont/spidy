@@ -113,19 +113,15 @@ Then run `run.bat`.
 ![](/media/bat.png?raw=true)
 
 ## Running
-
-![](/media/run.mp4?raw=true "running gif")
-
 Spidy logs a lot of information to the command line.
 Once started, a bunch of `[INIT]` lines will print.
 These announce where spidy is in its initialization process.
 If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's fine - it has to process every link in the TODO list, which can be hundreds of thousands of lines long.
 
-![Start example](/media/start.png?raw=true "Start pic")
+![](/media/start.png?raw=true)
 
 
 # Files
-Detailing each important file.
 
 ## README.md
 This readme file.
@@ -154,7 +150,6 @@ Theoretically once the crawler finishes running post-process with run, but you'd
 
 
 # Branches
-Detailing each active branch of the project.
 
 ## master
 The stable, up-to-date branch.
@@ -163,14 +158,16 @@ The stable, up-to-date branch.
 Falconwarriorr's development branch.
 He is constantly adding new features to his, and I am slowly implementing them into the master branch.
 
+## saving-test
+
 
 # TODO
   - Log length of wordFile to console/logFile
   - Change arguments to a required list
 
 # Acknowledgements
-I'd like to thank Pluralsight for providing an amazing platfom for learning any language.
-Specifically the Python Fundamentals course by Austin Bingham and Robert Smallshire.
+I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platfom for learning any language.
+Specifically the [Python Fundamentals](https://www.pluralsight.com/courses/python-fundamentals/) course by Austin Bingham and Robert Smallshire.
 
 
 # Contribute
