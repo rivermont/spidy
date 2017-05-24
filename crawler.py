@@ -77,7 +77,7 @@ def words_save(wordList):
 		for word in wordList:
 			f.write('\n' + word) #Write all words to wordFile
 		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
-	print('[{0}] [LOG]: Saved words list to {1}'.format(get_time(), wordFile))
+	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
 
 def files_save():
 	'''
@@ -199,47 +199,56 @@ print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
 #Read variables from arguments or set to defaults if args not present.
 
-try: #Whether to load from save files or overwrite them
-	overwrite = sys.argv[1]
-except:
-	overwrite = False
-	pass
+#[overwrite, raiseErrors, todoFile, doneFile, logFile, wordFile, saveCount]
 
-try: #Whether to raise errors instead of passing them
-	raiseErrors = sys.argv[2]
-except:
-	raiseErrors = False
-	pass
+try:
+	#Whether to load from save files or overwrite them
+	if eval(sys.argv[1]) == None:
+		overwrite = False
+	else:
+		overwrite = bool(sys.argv[1])
+	
+	#Whether to raise errors instead of passing them
+	if eval(sys.argv[2]) == None:
+		raiseErrors = False
+	else:
+		raiseErrors = bool(sys.argv[2])
 
-try: #Saved TODO file location
-	todoFile = sys.argv[3]
-except:
-	todoFile = 'crawler_todo.txt'
-	pass
+	#Saved TODO file location
+	if eval(sys.argv[3]) == None:
+		todoFile = 'crawler_todo.txt'
+	else:
+		todoFile = sys.argv[2]
 
-try: #Saved done file location
-	doneFile = sys.argv[4]
-except:
-	doneFile = 'crawler_done.txt'
-	pass
+	#Saved done file location
+	if eval(sys.argv[4]) == None:
+		doneFile = 'crawler_done.txt'
+	else:
+		doneFile = sys.argv[3]
 
-try: #Saved log file location
-	logFile = sys.argv[5]
-except:
-	logFile = 'crawler_log.txt'
-	pass
+	#Saved log file location
+	if eval(sys.argv[5]) == None:
+		logFile = 'crawler_log.txt'
+	else:
+		logFile = sys.argv[4]
 
-try: #Saved words file location
-	wordFile = sys.argv[6]
-except:
-	wordFile = 'crawler_words.txt'
+	#Saved words file location
+	if eval(sys.argv[6]) == None:
+		wordFile = 'crawler_words.txt'
+	else:
+		wordFile = sys.argv[5]
 
-try: #Number of crawled links after which to autosave
-	saveCount = int(sys.argv[7])
-except:
-	saveCount = 100
-	#100 is default as it means there is usually at least one log in the console window at any given time.
-	pass
+	#Number of crawled links after which to autosave
+	if eval(sys.argv[7]) == None:
+		saveCount = 100
+	else:
+		saveCount = int(sys.argv[7])
+except IndexError:
+	print('[{0}] [ERR]: Provide a valid argument list'.format(get_time()))
+	print('[{0}] [ERR]: Format [overwrite, raiseErrors, todoFile, doneFile, logFile, wordFile, saveCount]'.format(get_time()))
+	print('[{0}] [ERR]:        [  Bool,       Bool,        str,      str,     str,     str,       int   ]'.format(get_time()))
+	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
+	raise
 
 #Import saved TODO file data
 if overwrite:

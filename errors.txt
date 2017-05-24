@@ -1,8 +1,14 @@
 XMLSyntaxError
-32
+65
 
 ConnectionError
-7
+11
 
 SSLErorr
+4
+
+UnicodeEncodeError
+10
+
+OSError
 2
