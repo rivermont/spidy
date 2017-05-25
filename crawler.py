@@ -22,6 +22,8 @@ from lxml import html
 from lxml import etree
 import requests
 import sys
+import urllib.request
+import shutil
 
 
 ###############
@@ -68,7 +70,7 @@ def make_words(page):
 			wordList.remove(word) #Remove invalid word from list
 	return wordList
 
-def words_save(wordList):
+def save_words(wordList):
 	with open(wordFile, 'r+') as f: #Open save file for reading and writing
 		file = f.readlines() #Make list of all lines in wordFile
 		file = [x.strip() for x in file]
@@ -78,8 +80,8 @@ def words_save(wordList):
 			f.write('\n' + word) #Write all words to wordFile
 		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
 	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
-
-def files_save():
+                                                 
+def save_files():
 	'''
 	Saves the TODO and done lists into their respective files.
 	Also logs the action to the console.
@@ -98,6 +100,14 @@ def files_save():
 	#Close things
 	todoList.close()
 	doneList.close()
+
+def save_page(url):
+	url = str(url)
+	newUrl = url
+	for char in '"/\|:?<>*':
+		newUrl = newUrl.replace(char, '')
+	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}.html'.format(newUrl), 'wb+') as saveFile:
+		shutil.copyfileobj(response, saveFile)
 
 def info_log():
 	'''
@@ -151,12 +161,6 @@ def log(message):
 	log.write(endLog)
 	log.close()
 
-def err_print(item):
-	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
-
-def err_saved_message():
-	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
-
 def get_avg(state1, state2):
 	'''
 	Takes two values and returns the percentage of state1 that is state2.
@@ -165,6 +169,12 @@ def get_avg(state1, state2):
 		return 0
 	else:
 		return (state2 / state1) * 100
+
+def err_print(item):
+	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
+
+def err_saved_message():
+	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
 
 
 ##########
@@ -297,14 +307,14 @@ while len(todo) != 0: #While there are links to check
 	try:
 		if counter >= saveCount: #If it's not time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
-			files_save()
-			words_save(words)
+			save_files()
+			save_words(words)
 			words.clear()
 			info_log()
 			counter = 0
 		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
-			files_save()
+			save_files()
 			exit()
 		elif check_link(todo[0]):
 			continue
@@ -326,6 +336,7 @@ while len(todo) != 0: #While there are links to check
 				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
+			save_page(todo[0])
 			print('[{0}] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), todo[0])) #Announce which link was crawled
 	
 	#ERROR HANDLING
@@ -333,7 +344,7 @@ while len(todo) != 0: #While there are links to check
 		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
-		files_save()
+		save_files()
 		exit()
 	except (etree.XMLSyntaxError, etree.ParserError) as e:
 		knownErrorCount += 1
@@ -374,7 +385,7 @@ while len(todo) != 0: #While there are links to check
 	except OSError as e:
 		knownErrorCount += 1
 		err_print(todo[0])
-		print('[{0}] [ERR]: An OSError occurred.')
+		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
 		err_log('OSError', e)
 		err_saved_message()
 	except Exception as e: #If any other error is raised
@@ -395,8 +406,8 @@ while len(todo) != 0: #While there are links to check
 		del todo[0]#Remove crawled link from TODO list
 		
 		#For debugging purposes; to check one link and then stop
-		# files_save()
+		# save_files()
 		# exit()
 
 print('[{0}] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
-files_save()
+save_files()
