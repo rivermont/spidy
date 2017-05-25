@@ -214,8 +214,9 @@ The old development branch for implementing logging.
 
 # TODO
   - Upload spidy to PyPI
-  - Change arguments to a required list
-  - Log length of wordFile to console/logFile
+  - Log length of wordFile to logFile
+  - Log saving of webpage to console.
+  - Add webpage saving functionality to README
   - Talk about hashcat in README
 
 # Acknowledgements
