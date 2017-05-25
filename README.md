@@ -2,6 +2,7 @@
 Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
 Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and `requests` libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
+It does this to infinity.[*](#asterisk)
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
@@ -235,3 +236,11 @@ We will happily look at anything that you build off of spidy; we're not very cre
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.
 Honestly, if you link to this repo and credit `rivermont` and `Falconwarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.
 Thanks!
+
+
+--------------------
+
+### Asterisk
+Studies have shown that the spidy web crawler will run to infinity, it has not yet been proven that there is computing power *beyond* infinity.
+If there is, then yes - spidy will run to infinity **and bey**-
+![](/media/physics.dll.png?raw=true)
