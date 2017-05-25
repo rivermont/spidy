@@ -104,9 +104,12 @@ def save_files():
 def save_page(url):
 	url = str(url)
 	newUrl = url
+	ext = newUrl.split('.')[-1]
 	for char in '"/\|:?<>*':
 		newUrl = newUrl.replace(char, '')
-	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}.html'.format(newUrl), 'wb+') as saveFile:
+	if ext in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
+		ext = 'html'
+	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}.{1}'.format(newUrl, ext), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
 def info_log():

@@ -241,6 +241,6 @@ Thanks!
 --------------------
 
 ### Asterisk
-Studies have shown that the spidy web crawler will run to infinity, it has not yet been proven that there is computing power *beyond* infinity.
+Studies have shown that the spidy web crawler will run to infinity, however it has not yet been proven whether there is computing power *beyond* infinity.
 If there is, then yes - spidy will run to infinity **and bey**-
 ![](/media/physics.dll.png?raw=true)
