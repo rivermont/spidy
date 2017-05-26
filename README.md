@@ -2,7 +2,7 @@
 Spidy (spˈɪdi) is the simple, easy to use command line web crawler.
 Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and `requests` libraries to query the webpages.
 Spidy then extracts all links from the DOM of the page and adds them to its list.
-It does this to infinity.[*](#asterisk)
+It does this to infinity[*](#asterisk).
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
@@ -18,6 +18,7 @@ It does this to infinity.[*](#asterisk)
   - [Features](#features)
     - [Error Handling](#error-handling)
     - [Frequent Timestamp Logging](#frequent-timestamp-logging)
+	- [Portability](#portability)
     - [User-Friendly Logs](#user-friendly-logs)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
@@ -30,7 +31,7 @@ It does this to infinity.[*](#asterisk)
     - [Running](#running)
 	  - [Start](#start)
 	  - [Autosave](#autosave)
-	  - [Force Quit](#fore-quit)
+	  - [Force Quit](#force-quit)
 	  - [End](#end)
   - [Files](#files)
     - [media/](#media)
@@ -44,6 +45,7 @@ It does this to infinity.[*](#asterisk)
     - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
+	- [GUI-spidy](#gui-spidy)
 	- [FalconWarriorr-branch](#falconwarriorr-branch)
 	- [saving-test](#saving-test)
 	- [timings](#timings)
@@ -81,6 +83,9 @@ Currently spidy has built-in support for
 
 ## Frequent Timestamp Logging
 Spidy logs almost every action it takes to both the command console and the logFile.
+
+## Portability
+Move spidy's folder and it's contents somewhere else and it will run right where it left off.
 
 ## User-Friendly Logs
 Both the console and logFile messages are simple and easy to interpret, but packed with information.
@@ -201,6 +206,10 @@ Theoretically once the crawler finishes running post-process with run, but you'd
 
 ## master
 The stable, up-to-date branch.
+
+## GUI-spidy
+Falconwarriorr is working on a GUI for spidy.
+For those who like slicky buttons the command line can be confusing and hard to navigate.
 
 ## FalconWarriorr-branch
 Falconwarriorr's development branch.
