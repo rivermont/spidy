@@ -68,15 +68,16 @@ Here are some features we figure are worth noting.
 ## Error Handling
 We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each.
 There is a set cap so that after accumulating too many errors the crawler will stop itself.
-Currently Spidy has built-in support for
+Currently spidy has built-in support for
 
   - ConnectionError
-  - UnicodeEncodeError
-  - SSLError
-  - XMLSyntaxError, ParserError
-  - TooManyRedirects
   - ContentDecodingError
+  - HTTPError
   - OSError
+  - SSLError
+  - UnicodeEncodeError
+  - TooManyRedirects
+  - XMLSyntaxError, ParserError
 
 ## Frequent Timestamp Logging
 Spidy logs almost every action it takes to both the command console and the logFile.

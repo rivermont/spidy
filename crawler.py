@@ -104,30 +104,33 @@ def save_files():
 	todoList = open(todoFile, 'w')
 	doneList = open(doneFile, 'w')
 	#Save
-	time = get_time()
+	time = get_time() #Get current time
 	for site in todo:
-		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n')
+		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
 	print('[{0}] [LOG]: Saved TODO list to {1}'.format(time, todoFile))
 	for site in done:
-		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n')
+		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
 	print('[{0}] [LOG]: Saved done list to {1}'.format(time, doneFile))
 	#Close things
 	todoList.close()
 	doneList.close()
 
 def save_page(url):
-	url = str(url)
+	'''
+	Download content of page and save to the save folder.
+	'''
+	url = str(url) #Sanitize input
 	newUrl = url
-	ext = newUrl.split('.')[-1]
-	for char in '''"/\ ''':
+	ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension, hopefully
+	for char in '''"/\ ''': #Replace folders with -
 		newUrl = newUrl.replace(char, '-')
-	for char in '''|:?<>*''':
+	for char in '''|:?<>*''': #Remove illegal filename characters
 		newUrl = newUrl.replace(char, '')
-	if check_filePath(ext):
+	if check_filePath(ext): #If the extension is invalid, default to .html
 		ext = 'html'
-	newUrl = newUrl.replace(ext, '')
-	fileName = newUrl + '.' + ext
-	now = round(t.time(), 0)
+	newUrl = newUrl.replace(ext, '') #Remove extension from file name
+	fileName = newUrl + '.' + ext #Create full file name
+	now = round(t.time(), 0) #Get current time in seconds. Makes all files unique.
 	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0} - {1}'.format(now, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
@@ -147,11 +150,12 @@ def info_log():
 	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
 	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	#Save to logFile
-	fullTime = t.strftime('%H:%M:%S, %A %b %Y')
+	fullTime = t.strftime('%H:%M:%S, %A %b %Y') #Get current time
 	log = open(logFile, 'a')
-	log.write('\n\n====AUTOSAVE===')
+	log.write('\n\n====AUTOSAVE===') #Write opening line
 	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
-	log.write(endLog)
+	log.write(endLog) #Write closing line
+	log.close()
 
 def err_log(error1, error2):
 	'''
@@ -162,13 +166,13 @@ def err_log(error1, error2):
 	log = open(logFile, 'a') #Open the log file
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	try:
-		log.write('\n\n=====ERROR=====')
+		log.write('\n\n=====ERROR=====') #Write opening line
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
-		log.write(endLog)
+		log.write(endLog) #Write closing line
 	except: #If an error (usually UnicodeEncodeError), write encoded log
-		log.write('\n\n=====ERROR=====')
+		log.write('\n\n=====ERROR=====') #Write opening line
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
-		log.write(endLog)
+		log.write(endLog) #Write closing line
 	log.close() #Save the log file
 
 def log(message):
@@ -178,9 +182,10 @@ def log(message):
 	'''
 	log = open(logFile, 'a') #Open the log file
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	log.write('\n\n======LOG======')
-	log.write(message)
-	log.write(endLog)
+	log.write('\n\n======LOG======') #Write opening line
+	log.write('\nTIME: {0}'.format(time)) #Write current time
+	log.write(message) #Write message
+	log.write(endLog) #Write closing line
 	log.close()
 
 def get_avg(state1, state2):
@@ -193,9 +198,15 @@ def get_avg(state1, state2):
 		return (state2 / state1) * 100
 
 def err_print(item):
+	'''
+	Announce that an error occurred.
+	'''
 	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
 
 def err_saved_message():
+	'''
+	Announce that error was successfully saved to log.
+	'''
 	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
 
 
@@ -210,19 +221,22 @@ print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 #Fallback pages in case the TODO file is empty
 start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
 
+badLinkPercents = []
+
+#Create empty list for word scraping
+words = set([])
+
 #Counter variables
 counter = 0
 removedCount = 0
 newErrorCount = 0
 knownErrorCount = 0
-
-badLinkPercents = []
-
-words = set([])
+HTTPErrorCount = 0
 
 #Amount of errors allowed to happen before automatic shutdown
 maxNewErrors = 10
-maxKnownErrors = 25
+maxKnownErrors = 20
+maxHTTPErrors = 50
 
 #Line to print at the end of each logFile log
 endLog = '\n======END======'
@@ -230,9 +244,6 @@ endLog = '\n======END======'
 print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 
 #Read variables from arguments or set to defaults if args not present.
-
-#[overwrite, raiseErrors, todoFile, doneFile, logFile, wordFile, saveCount]
-
 try:
 	#Whether to load from save files or overwrite them
 	if eval(sys.argv[1]) == None:
@@ -312,7 +323,6 @@ else:
 
 	after = before - len(todo)
 	removedCount += after
-
 	print('[{0}] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
 
 print('[{0}] [INIT]: TODO first value: {1}'.format(get_time(), todo[0]))
@@ -327,83 +337,87 @@ log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
 
 while len(todo) != 0: #While there are links to check
 	try:
-		if counter >= saveCount: #If it's not time for an autosave
+		if counter >= saveCount: #If it's time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			save_files()
 			save_words(words)
-			words.clear()
 			info_log()
+			#Reset variables
 			counter = 0
-		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors: #If too many errors haven't occurred
+			words.clear()
+			badLinkPercents.clear()
+		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors or HTTPErrorCount >= maxHTTPErrors: #If too many errors have occurred
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 			save_files()
 			exit()
-		elif check_link(todo[0]):
+		elif check_link(todo[0]): #If the link is invalid
 			continue
+		#Run
 		else:
 			page = requests.get(todo[0]) #Get page
-			words.update(make_words(page))
+			wordList = make_words(page) #Get all words from page
+			words.update(wordList) #Add words to word list
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
 			before = len(links)
-			links = (list(set(links)))
+			links = (list(set(links))) #Remove duplicates and shuffle links
 			after = len(links)
-			badLinkPercents.append(get_avg(before, after))
+			badLinkPercents.append(get_avg(before, after)) #Get percentage of links removed
 			for link in links: #Check for invalid links
 				if check_link(link):
 					links.remove(link)
 					removedCount += 1
-					continue
 				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
-			print('[{0}] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), todo[0])) #Announce which link was crawled
+			print('[{0}] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
-		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
+		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 		save_files()
 		exit()
-	except urllib.error.HTTPError as e:
+	except urllib.error.HTTPError as e: #Bad HTTP Response
+		HTTPErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
 		err_log('Bad Response', e)
 		err_saved_message()
-	except (etree.XMLSyntaxError, etree.ParserError) as e:
+	except (etree.XMLSyntaxError, etree.ParserError) as e: #Error processing html/xml
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 		err_log('XMLSyntaxError', e)
 		err_saved_message()
-	except requests.exceptions.SSLError as e: # SSL: CERTIFICATE_VERIFY_FAILED
+	except requests.exceptions.SSLError as e: #Invalid SSL certificate
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 		err_log('SSLError', e)
 		err_saved_message()
-	except requests.exceptions.ConnectionError as e: # HTTP(S)ConnectionPool: Max retries exceeded with url
+	except requests.exceptions.ConnectionError as e: #Error connecting to page
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 		err_log('ConnectionError', e)
 		err_saved_message()
-	except UnicodeEncodeError as e: # 'charmap' codec can't encode characters
+	except UnicodeEncodeError as e: #Error trying to convert foreign characters to Unicode
 		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.'.format(get_time()))
 		err_log('UnicodeEncodeError', e)
 		err_saved_message()
-	except requests.exceptions.TooManyRedirects as e: # Exceeded 30 redirects.
+	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 		err_log('TooManyRedirects', e)
 		err_saved_message()
-	except requests.exceptions.ContentDecodingError as e: # Received response with content-encoding: gzip, but failed to decode it.
+	except requests.exceptions.ContentDecodingError as e: #Received response with content-encoding: gzip, but failed to decode it.
 		knownErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
@@ -415,7 +429,7 @@ while len(todo) != 0: #While there are links to check
 		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
 		err_log('OSError', e)
 		err_saved_message()
-	except Exception as e: #If any other error is raised
+	except Exception as e: #Any other error
 		newErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: An unkown error happened. New debugging material!'.format(get_time()))
