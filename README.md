@@ -105,6 +105,8 @@ This can be done with `pip`:
 
 ## Launching
 
+![](/media/run.gif?raw=true)
+
 ### Command Arguments
 Spidy has 6 different command line arguments that control the behavior of the crawler.
 Because of the way it's written, args are optional but you must do them in a set order.

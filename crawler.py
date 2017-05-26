@@ -125,7 +125,7 @@ def save_page(url):
 		newUrl = newUrl.replace(char, '')
 	if check_filePath(ext):
 		ext = 'html'
-	newUrl = newUrl.split('.')[-1]
+	newUrl = newUrl.replace(ext, '')
 	fileName = newUrl + '.' + ext
 	now = round(t.time(), 0)
 	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0} - {1}'.format(now, fileName), 'wb+') as saveFile:
