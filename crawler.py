@@ -121,12 +121,14 @@ def save_page(url):
 	ext = newUrl.split('.')[-1]
 	for char in '''"/\ ''':
 		newUrl = newUrl.replace(char, '-')
-	for char in '|:?<>*':
+	for char in '''|:?<>*''':
 		newUrl = newUrl.replace(char, '')
 	if check_filePath(ext):
 		ext = 'html'
 	newUrl = newUrl.split('.')[-1]
-	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}.{1}'.format(newUrl, ext), 'wb+') as saveFile:
+	fileName = newUrl + '.' + ext
+	now = round(t.time(), 0)
+	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0} - {1}'.format(now, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
 def info_log():
