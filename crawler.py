@@ -58,6 +58,20 @@ def check_word(word):
 	else:
 		return False
 
+def check_filePath(path):
+	'''
+	Returns True if path is an invalid system path.
+	Returns False if is a valid path.
+	'''
+	if path in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
+		return True
+	elif len(path) > 5:
+		return True
+	elif path[-1] == '/':
+		return True
+	else:
+		return False
+
 def make_words(page):
 	'''
 	Returns list of all valid words in page.
@@ -105,10 +119,13 @@ def save_page(url):
 	url = str(url)
 	newUrl = url
 	ext = newUrl.split('.')[-1]
-	for char in '"/\|:?<>*':
+	for char in '''"/\ ''':
+		newUrl = newUrl.replace(char, '-')
+	for char in '|:?<>*':
 		newUrl = newUrl.replace(char, '')
-	if ext in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
+	if check_filePath(ext):
 		ext = 'html'
+	newUrl = newUrl.split('.')[-1]
 	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}.{1}'.format(newUrl, ext), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
@@ -349,6 +366,11 @@ while len(todo) != 0: #While there are links to check
 		log('\nTIME: {0}\nLOG: User performed a KeyboardInterrupt, stopping crawler.'.format(get_time()))
 		save_files()
 		exit()
+	except urllib.error.HTTPError as e:
+		err_print(todo[0])
+		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
+		err_log('Bad Response', e)
+		err_saved_message()
 	except (etree.XMLSyntaxError, etree.ParserError) as e:
 		knownErrorCount += 1
 		err_print(todo[0])
