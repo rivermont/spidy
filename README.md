@@ -20,6 +20,7 @@ It does this to infinity[*](#asterisk).
     - [Frequent Timestamp Logging](#frequent-timestamp-logging)
 	- [Portability](#portability)
     - [User-Friendly Logs](#user-friendly-logs)
+	- [Website Saving](#website-saving)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
       - [Anaconda](#anaconda)
@@ -90,6 +91,10 @@ Move spidy's folder and it's contents somewhere else and it will run right where
 ## User-Friendly Logs
 Both the console and logFile messages are simple and easy to interpret, but packed with information.
 
+## Webpage saving
+Spidy downloads each page that it runs into, regardless of file type.
+The crawler attempts to save to the correct file type, but it defaults to `.html`, so some 'pages' may appear corrupted.
+Renaming the file extension will fix this.
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.
@@ -209,7 +214,7 @@ The stable, up-to-date branch.
 
 ## GUI-spidy
 Falconwarriorr is working on a GUI for spidy.
-For those who like slicky buttons the command line can be confusing and hard to navigate.
+For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition to the suite.
 
 ## FalconWarriorr-branch
 Falconwarriorr's development branch.
