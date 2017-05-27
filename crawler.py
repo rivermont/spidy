@@ -20,6 +20,7 @@ print('[{0}] [INIT]: Importing libraries...'.format(get_time()))
 #Import required libraries
 from lxml import html
 from lxml import etree
+from os import makedirs
 import requests
 import sys
 import urllib.request
@@ -197,11 +198,18 @@ def get_avg(state1, state2):
 	else:
 		return (state2 / state1) * 100
 
+def zip(out_fileName, dir):
+	'''
+	Creates a .zip file in the current directory containing all contents of dir, then deletes dir.
+	'''
+	shutil.make_archive(str(out_fileName), 'zip', dir)
+	shutil.rmtree(dir)
+	makedirs(dir[:-1])
 def err_print(item):
 	'''
 	Announce that an error occurred.
 	'''
-	print('[{0}] [ERR]: An error was raised trying to connect to {1}'.format(get_time(), item))
+	print('[{0}] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
 
 def err_saved_message():
 	'''
@@ -228,6 +236,7 @@ words = set([])
 
 #Counter variables
 counter = 0
+autoSaveCounter = 0
 removedCount = 0
 newErrorCount = 0
 knownErrorCount = 0
@@ -338,10 +347,12 @@ log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
 while len(todo) != 0: #While there are links to check
 	try:
 		if counter >= saveCount: #If it's time for an autosave
+			autoSaveCounter += 1
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			save_files()
 			save_words(words)
 			info_log()
+			zip(autoSaveCounter, 'saved/')
 			#Reset variables
 			counter = 0
 			words.clear()

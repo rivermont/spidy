@@ -10,9 +10,13 @@ It does this to infinity[*](#asterisk).
 
 --------------------
 
+# New Features
+
+
 # Table of Contents
 
   - [spidy](#spidy)
+  - [New Features](#new-features)
   - [Table of Contents](#table-of-contents)
   - [How it Works](#how-it-works)
   - [Features](#features)
@@ -20,7 +24,8 @@ It does this to infinity[*](#asterisk).
     - [Frequent Timestamp Logging](#frequent-timestamp-logging)
 	- [Portability](#portability)
     - [User-Friendly Logs](#user-friendly-logs)
-	- [Website Saving](#website-saving)
+	- [Webpage Saving](#webpage-saving)
+	- [File Zipping](#file-zipping)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
       - [Anaconda](#anaconda)
@@ -96,6 +101,10 @@ Both the console and logFile messages are simple and easy to interpret, but pack
 Spidy downloads each page that it runs into, regardless of file type.
 The crawler attempts to save to the correct file type, but it defaults to `.html`, so some 'pages' may appear corrupted.
 Renaming the file extension will fix this.
+
+## File Zipping
+When autosaving, spidy will archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
+
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.
@@ -189,7 +198,7 @@ Broken links can be identified by noticing that the crawler reached the line
 > [INIT]: Starting crawler...
 
 but never kept going. While the running prompt will be there, performing a `CTRL^C` will appear to do nothing.
-Technically, the command will terminate eventually, but that is normally 10 minutes after starting.
+Technically, the command will resolve eventually, but that happens 10 minutes after starting.
 
 ### Removing Broken Links
 There are too many 'broken' links out there to check against them in the code, so they must be removed by hand.
