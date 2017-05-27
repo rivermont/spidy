@@ -432,8 +432,8 @@ while len(todo) != 0: #While there are links to check
 	except Exception as e: #Any other error
 		newErrorCount += 1
 		err_print(todo[0])
-		print('[{0}] [ERR]: An unkown error happened. New debugging material!'.format(get_time()))
-		err_log('Unkown', e)
+		print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
+		err_log('Unknown', e)
 		err_saved_message()
 		if raiseErrors:
 			raise

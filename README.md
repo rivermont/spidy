@@ -37,12 +37,13 @@ It does this to infinity[*](#asterisk).
   - [Files](#files)
     - [media/](#media)
 	- [data/](#data)
-    - [README.md](#readmemd)
+	- [broken.txt](#brokentxt)
     - [clear.bat](#clearbat)
     - [crawler.py](#crawlerpy)
     - [errors.txt](#errorstxt)
     - [makefiles.bat](#makefilesbat)
     - [post-process.py](#post-processpy)
+    - [README.md](#readmemd)
     - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
@@ -181,8 +182,22 @@ Images used in this readme file.
 ## data/
 Post-processed wordlists.
 
-## README.md
-This readme file.
+## broken.txt
+Contains links that are known to either break the crawler or make it run for some indefinite amount of.
+Broken links can be identified by noticing that the crawler reached the line
+
+> [INIT]: Starting crawler...
+
+but never kept going. While the running prompt will be there, performing a `CTRL^C` will appear to do nothing.
+Technically, the command will terminate eventually, but that is normally 10 minutes after starting.
+
+### Removing Broken Links
+There are too many 'broken' links out there to check against them in the code, so they must be removed by hand.
+This is a regular expression, or [regex](http://www.regular-expressions.info) line that will get all lines containing `link`.
+
+> ^.*link.*\r\n
+
+In a text editor that supports regex, like [Notepad++](https://notepad-plus-plus.org), finding that expression and replacing with nothing will remove all the links.
 
 ## clear.bat
 Clears all save files by deleting them and creating empty ones.
@@ -201,6 +216,9 @@ Creates all of the needed save files for spidy to run.
 ## post-process.py
 This removes all the lines in `crawler_words.txt` longer than 16 characters.
 Run this after running crawler.py for a while.
+
+## README.md
+This readme file.
 
 ## run.bat
 A Windows batch file to run the program.
