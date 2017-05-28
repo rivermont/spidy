@@ -10,15 +10,16 @@ It does this to infinity[*](#asterisk).
 
 --------------------
 
-# New Features
+# New Features!
 
 ## File Zipping
-b624200085a035acd35333e7ad4f28e2e86f78d2
+Commit [b624200](https://github.com/rivermont/spidy/commit/b624200085a035acd35333e7ad4f28e2e86f78d2)
+Spidy now zips the webpages it downloads into a `.zip` file for storage.
 
 # Table of Contents
 
   - [spidy](#spidy)
-  - [New Features](#new-features)
+  - [New Features!](#new-features)
   - [Table of Contents](#table-of-contents)
   - [How it Works](#how-it-works)
   - [Features](#features)
