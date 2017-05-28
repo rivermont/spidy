@@ -12,7 +12,7 @@ It does this to infinity[*](#asterisk).
 
 # New Features!
 
-## File Zipping - Commit #[b624200](https://github.com/rivermont/spidy/commit/b624200085a035acd35333e7ad4f28e2e86f78d2).
+### File Zipping - Commit #[b624200](https://github.com/rivermont/spidy/commit/b624200085a035acd35333e7ad4f28e2e86f78d2).
 Spidy now zips the webpages it downloads into a `.zip` file for storage.
 
 # Table of Contents
