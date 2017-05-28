@@ -12,7 +12,8 @@ It does this to infinity[*](#asterisk).
 
 # New Features
 
-## [File Zipping](b624200085a035acd35333e7ad4f28e2e86f78d2)
+## File Zipping
+b624200085a035acd35333e7ad4f28e2e86f78d2
 
 # Table of Contents
 
