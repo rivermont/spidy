@@ -1,5 +1,8 @@
-
+#Save files
 saved/
 data/
-
 *.zip
+crawler_todo.txt
+crawler_done.txt
+crawler_log.txt
+crawler_words.txt
