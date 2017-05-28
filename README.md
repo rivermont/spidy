@@ -43,12 +43,11 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
 	  - [End](#end)
   - [Files](#files)
     - [media/](#media)
-	- [data/](#data)
+	- [saved/](#saved)
 	- [broken.txt](#brokentxt)
     - [clear.bat](#clearbat)
     - [crawler.py](#crawlerpy)
     - [errors.txt](#errorstxt)
-    - [makefiles.bat](#makefilesbat)
     - [post-process.py](#post-processpy)
     - [README.md](#readmemd)
     - [run.bat](#runbat)
@@ -190,8 +189,8 @@ Sample log after crawler visits all links in TODO.
 ## media/
 Images used in this readme file.
 
-## data/
-Post-processed wordlists.
+## saved/
+Location for document saving.
 
 ## broken.txt
 Contains links that are known to either break the crawler or make it run for some indefinite amount of.
@@ -220,9 +219,6 @@ Because the internet is so big, this will practically never end.
 ## errors.txt
 A log of all the errors we encounter, sorted by frequency.
 This is used to improve the efficiency of the error handling.
-
-## makefiles.bat
-Creates all of the needed save files for spidy to run.
 
 ## post-process.py
 This removes all the lines in `crawler_words.txt` longer than 16 characters.

@@ -47,7 +47,10 @@ def check_link(item):
 	elif len(item) > 250: #Links longer than 250 characters usually are useless or full of foreign characters
 		return True
 	else:
-		return False
+		for badLink in killList:
+			if badLink in item:
+				return True
+	return False
 
 def check_word(word):
 	'''
@@ -197,6 +200,7 @@ def zip(out_fileName, dir):
 	shutil.make_archive(str(out_fileName), 'zip', dir)
 	shutil.rmtree(dir)
 	makedirs(dir[:-1])
+
 def err_print(item):
 	'''
 	Announce that an error occurred.
@@ -219,7 +223,9 @@ print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 #Initialize required variables
 
 #Fallback pages in case the TODO file is empty
-start = ['http://www.shodor.org/~wbennett/crawler-home.html', 'https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
+start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
+
+killList = ['http://scores.usaultimate.org/']
 
 badLinkPercents = []
 
@@ -396,6 +402,12 @@ while len(todo) != 0: #While there are links to check
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 		err_log('XMLSyntaxError', e)
 		err_saved_message()
+	except UnicodeError as e: #Error trying to convert foreign characters to Unicode
+		knownErrorCount += 1
+		err_print(todo[0].encode('utf-8'))
+		print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
+		err_log('UnicodeError', e)
+		err_saved_message()
 	except requests.exceptions.SSLError as e: #Invalid SSL certificate
 		knownErrorCount += 1
 		err_print(todo[0])
@@ -407,12 +419,6 @@ while len(todo) != 0: #While there are links to check
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 		err_log('ConnectionError', e)
-		err_saved_message()
-	except UnicodeEncodeError as e: #Error trying to convert foreign characters to Unicode
-		knownErrorCount += 1
-		err_print(todo[0].encode('utf-8'))
-		print('[{0}] [ERR]: A UnicodeEncodeError occurred. URL had a foreign character or something.'.format(get_time()))
-		err_log('UnicodeEncodeError', e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
 		knownErrorCount += 1
