@@ -101,20 +101,15 @@ def save_files():
 	Saves the TODO and done lists into their respective files.
 	Also logs the action to the console.
 	'''
-	#Open save files
-	todoList = open(todoFile, 'w')
-	doneList = open(doneFile, 'w')
-	#Save
 	time = get_time() #Get current time
-	for site in todo:
-		todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
-	print('[{0}] [LOG]: Saved TODO list to {1}'.format(time, todoFile))
-	for site in done:
-		doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
-	print('[{0}] [LOG]: Saved done list to {1}'.format(time, doneFile))
-	#Close things
-	todoList.close()
-	doneList.close()
+	with open(todoFile, 'w') as todoList:
+		for site in todo:
+			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
+		print('[{0}] [LOG]: Saved TODO list to {1}'.format(time, todoFile))
+	with open(doneFile, 'w') as doneList:
+		for site in done:
+			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
+		print('[{0}] [LOG]: Saved done list to {1}'.format(time, doneFile))
 
 def save_page(url):
 	'''
@@ -152,11 +147,10 @@ def info_log():
 	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y') #Get current time
-	log = open(logFile, 'a')
-	log.write('\n\n====AUTOSAVE===') #Write opening line
-	log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
-	log.write(endLog) #Write closing line
-	log.close()
+	with open(logFile, 'a') as log:
+		log.write('\n\n====AUTOSAVE===') #Write opening line
+		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
+		log.write(endLog) #Write closing line
 
 def err_log(error1, error2):
 	'''
@@ -164,30 +158,28 @@ def err_log(error1, error2):
 	error1 is the trimmed error source.
 	error2 is the extended text of the error.
 	'''
-	log = open(logFile, 'a') #Open the log file
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	try:
-		log.write('\n\n=====ERROR=====') #Write opening line
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
+	with open(logFile, 'a') as log:
+		try:
+			log.write('\n\n=====ERROR=====') #Write opening line
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
+			log.write(endLog) #Write closing line
+		except: #If an error (usually UnicodeEncodeError), write encoded log
+			log.write('\n\n=====ERROR=====') #Write opening line
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
 		log.write(endLog) #Write closing line
-	except: #If an error (usually UnicodeEncodeError), write encoded log
-		log.write('\n\n=====ERROR=====') #Write opening line
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
-		log.write(endLog) #Write closing line
-	log.close() #Save the log file
 
 def log(message):
 	'''
 	Logs a single message.
 	Prints message verbatim, so message must formatted correctly outside of the function call.
 	'''
-	log = open(logFile, 'a') #Open the log file
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	log.write('\n\n======LOG======') #Write opening line
-	log.write('\nTIME: {0}'.format(time)) #Write current time
-	log.write(message) #Write message
-	log.write(endLog) #Write closing line
-	log.close()
+	with open(logFile, 'a') as log:
+		log.write('\n\n======LOG======') #Write opening line
+		log.write('\nTIME: {0}'.format(time)) #Write current time
+		log.write(message) #Write message
+		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
 	'''
