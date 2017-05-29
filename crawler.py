@@ -344,7 +344,11 @@ log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
 
 while len(todo) != 0: #While there are links to check
 	try:
-		if counter >= saveCount: #If it's time for an autosave
+		if newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors or HTTPErrorCount >= maxHTTPErrors: #If too many errors have occurred
+			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+			save_files()
+			exit()
+		elif counter >= saveCount: #If it's time for an autosave
 			autoSaveCounter += 1
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			save_files()
@@ -355,10 +359,6 @@ while len(todo) != 0: #While there are links to check
 			counter = 0
 			words.clear()
 			badLinkPercents.clear()
-		elif newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors or HTTPErrorCount >= maxHTTPErrors: #If too many errors have occurred
-			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
-			save_files()
-			exit()
 		elif check_link(todo[0]): #If the link is invalid
 			continue
 		#Run
