@@ -130,7 +130,7 @@ This can be done with `pip`:
 ![](/media/run.gif?raw=true)
 
 ### Command Arguments
-Spidy has 6 different command line arguments that control the behavior of the crawler.
+Spidy has 7 different command line arguments that control the behavior of the crawler.
 Because of the way it's written, args are optional but you must do them in a set order.
 You can do `1, 2, 3`, but not `1, 3, 4`.
 
@@ -138,8 +138,12 @@ You can do `1, 2, 3`, but not `1, 3, 4`.
 
 The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log`, `crawler_words.txt`, `100`.
 
+To run spidy with its default values, use
+
+> python crawler.py 'None' 'None' 'None' 'None' 'None' 'None' 'None'
+
  - overwrite (Bool): Whether to load from the save files or not. Spidy will always save to the save files.
- - raiseErrors (Bool): Whether to stop the script when an error occurs that it can;t handle by default.
+ - raiseErrors (Bool): Whether to stop the script when an error occurs that it can't handle by default.
  - todoFile (str): The location of the TODO file. Spidy will load from and save to this file.
  - doneFile (str): The location of the done file. Spidy will load from and save to this file.
  - logFile (str): The location of the log file. Spidy will save to this file, apppending logs to the end.
@@ -257,6 +261,7 @@ The old development branch for implementing logging.
 
 # TODO
   - Upload spidy to PyPI
+  - Multiple HTTP threads
   - Log length of wordFile to logFile
   - Log saving of webpage to console.
   - Add webpage saving functionality to README

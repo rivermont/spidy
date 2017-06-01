@@ -129,8 +129,7 @@ def save_page(url):
 		ext = 'html'
 	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
-	now = round(t.time(), 0) #Get current time in seconds. Makes all files unique.
-	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0} - {1}'.format(now, fileName), 'wb+') as saveFile:
+	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{1}'.format(now, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
 def info_log():
@@ -268,25 +267,25 @@ try:
 	if eval(sys.argv[3]) == None:
 		todoFile = 'crawler_todo.txt'
 	else:
-		todoFile = sys.argv[2]
+		todoFile = sys.argv[3]
 
 	#Saved done file location
 	if eval(sys.argv[4]) == None:
 		doneFile = 'crawler_done.txt'
 	else:
-		doneFile = sys.argv[3]
+		doneFile = sys.argv[4]
 
 	#Saved log file location
 	if eval(sys.argv[5]) == None:
 		logFile = 'crawler_log.txt'
 	else:
-		logFile = sys.argv[4]
+		logFile = sys.argv[5]
 
 	#Saved words file location
 	if eval(sys.argv[6]) == None:
 		wordFile = 'crawler_words.txt'
 	else:
-		wordFile = sys.argv[5]
+		wordFile = sys.argv[6]
 
 	#Number of crawled links after which to autosave
 	if eval(sys.argv[7]) == None:
