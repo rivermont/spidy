@@ -129,7 +129,7 @@ def save_page(url):
 		ext = 'html'
 	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
-	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{1}'.format(now, fileName), 'wb+') as saveFile:
+	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}'.format(fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
 def info_log():
