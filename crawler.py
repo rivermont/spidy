@@ -129,7 +129,7 @@ def save_page(url):
 		ext = 'html'
 	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
-	with urllib.request.urlopen(url) as response, open('C:/Users/Will Bennett/Downloads/web-crawler/saved/{0}'.format(fileName), 'wb+') as saveFile:
+	with urllib.request.urlopen(url) as response, open('{0}/saved/{1}'.format(crawlerLocation, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
 def info_log():
@@ -220,6 +220,9 @@ def err_saved_message():
 print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
+
+# Folder location of spidy
+crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
 
 #Fallback pages in case the TODO file is empty
 start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']

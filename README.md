@@ -33,6 +33,7 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
       - [Anaconda](#anaconda)
       - [Python Base](#python-base)
     - [Launching](#launching)
+	  - [Important Note](#important-note)
       - [Command Arguments](#command-arguments)
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
@@ -128,6 +129,16 @@ This can be done with `pip`:
 ## Launching
 
 ![](/media/run.gif?raw=true)
+
+### Important Note
+Before launching spidy, you will need to change a variable in the crawler code.
+Open `crawler.py` in your favorite text editor, and find line `225`:
+
+> 224 | # Folder location of spidy
+> 225 | crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
+
+Change the folder path to the directory that spidy is located in.
+If you do not change this, spidy will not be able to save pages and will stop after accumulating too many errors.
 
 ### Command Arguments
 Spidy has 7 different command line arguments that control the behavior of the crawler.
