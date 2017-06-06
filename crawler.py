@@ -351,12 +351,11 @@ while len(todo) != 0: #While there are links to check
 			save_files()
 			exit()
 		elif counter >= saveCount: #If it's time for an autosave
-			autoSaveCounter += 1
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			save_files()
 			save_words(words)
 			info_log()
-			zip(autoSaveCounter, 'saved/')
+			zip(t.time(), 'saved/')
 			#Reset variables
 			counter = 0
 			words.clear()
