@@ -44,12 +44,12 @@ def check_link(item):
 		return True
 	elif item[0:4] != 'http': #Must be an http or https link
 		return True
-	elif:
+	elif item in done: #Can't have visited already
+		return True
+	else:
 		for badLink in killList:
 			if badLink in item:
 				return True
-	elif item in done: #Can't have visited already
-		return True
 	return False
 
 def check_word(word):
@@ -260,7 +260,7 @@ print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 #Read variables from arguments or set to defaults if args not present.
 try:
 	#Whether to load from save files or overwrite them
-	if sys.argv[1) == 'None':
+	if sys.argv[1] == 'None':
 		overwrite = False
 	else:
 		overwrite = bool(sys.argv[1])
@@ -359,7 +359,7 @@ while len(todo) != 0: #While there are links to check
 	try:
 		if newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors or HTTPErrorCount >= maxHTTPErrors: #If too many errors have occurred
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
-			save_files()
+			save_files(words)
 			exit()
 		elif counter >= saveCount: #If it's time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
@@ -375,7 +375,7 @@ while len(todo) != 0: #While there are links to check
 			continue
 		#Run
 		else:
-			page = requests.get(todo[0], header=headers) #Get page
+			page = requests.get(todo[0], headers=headers) #Get page
 			wordList = make_words(page) #Get all words from page
 			words.update(wordList) #Add words to word list
 			links = []
@@ -403,7 +403,7 @@ while len(todo) != 0: #While there are links to check
 		save_files()
 		exit()
 	except urllib.error.HTTPError as e: #Bad HTTP Response
-		HTTPErrorCount += 1
+		# HTTPErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
 		err_log('Bad Response', e)
@@ -462,9 +462,6 @@ while len(todo) != 0: #While there are links to check
 			continue
 	finally:
 		counter += 1
-		rand = set(todo)  #Convert TODO to set
-		todo = list(rand) #and back to list.
-						  #This both removes duplicates and mixes up the list, as sets are unordered collections without duplicates
 		del todo[0]#Remove crawled link from TODO list
 		
 		#For debugging purposes; to check one link and then stop
@@ -472,4 +469,4 @@ while len(todo) != 0: #While there are links to check
 		# exit()
 
 print('[{0}] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
-save_files()
+save_files(words)
