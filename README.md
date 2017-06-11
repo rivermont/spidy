@@ -49,7 +49,6 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
 	- [broken.txt](#brokentxt)
     - [clear.bat](#clearbat)
     - [crawler.py](#crawlerpy)
-    - [errors.txt](#errorstxt)
     - [post-process.py](#post-processpy)
     - [README.md](#readmemd)
     - [run.bat](#runbat)
@@ -233,10 +232,6 @@ Clears all save files by deleting them and creating empty ones.
 ## crawler.py
 The important code. This is what you will run to crawl links and save information.
 Because the internet is so big, this will practically never end.
-
-## errors.txt
-A log of all the errors we encounter, sorted by frequency.
-This is used to improve the efficiency of the error handling.
 
 ## post-process.py
 This removes all the lines in `crawler_words.txt` longer than 16 characters.
