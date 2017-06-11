@@ -265,40 +265,46 @@ try:
 		raiseErrors = False
 	else:
 		raiseErrors = bool(sys.argv[2])
+	
+	#Whether to zip saved files or leave them in the saved/ folder
+	if eval(sys.argv[3]) == None:
+		zipFiles = True
+	else:
+		zipFiles = False
 
 	#Saved TODO file location
-	if eval(sys.argv[3]) == None:
+	if eval(sys.argv[4]) == None:
 		todoFile = 'crawler_todo.txt'
 	else:
-		todoFile = sys.argv[3]
+		todoFile = sys.argv[4]
 
 	#Saved done file location
-	if eval(sys.argv[4]) == None:
+	if eval(sys.argv[5]) == None:
 		doneFile = 'crawler_done.txt'
 	else:
-		doneFile = sys.argv[4]
+		doneFile = sys.argv[5]
 
 	#Saved log file location
-	if eval(sys.argv[5]) == None:
+	if eval(sys.argv[6]) == None:
 		logFile = 'crawler_log.txt'
 	else:
-		logFile = sys.argv[5]
+		logFile = sys.argv[6]
 
 	#Saved words file location
-	if eval(sys.argv[6]) == None:
+	if eval(sys.argv[7]) == None:
 		wordFile = 'crawler_words.txt'
 	else:
-		wordFile = sys.argv[6]
+		wordFile = sys.argv[7]
 
 	#Number of crawled links after which to autosave
-	if eval(sys.argv[7]) == None:
+	if eval(sys.argv[8]) == None:
 		saveCount = 100
 	else:
-		saveCount = int(sys.argv[7])
+		saveCount = int(sys.argv[8])
 except IndexError:
 	print('[{0}] [ERR]: Provide a valid argument list'.format(get_time()))
-	print('[{0}] [ERR]: Format [overwrite, raiseErrors, todoFile, doneFile, logFile, wordFile, saveCount]'.format(get_time()))
-	print('[{0}] [ERR]:        [  Bool,       Bool,        str,      str,     str,     str,       int   ]'.format(get_time()))
+	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, saveCount'.format(get_time()))
+	print('[{0}] [ERR]:           Bool,       Bool,       Bool      str,      str,     str,     str,       int   '.format(get_time()))
 	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
 	raise
 

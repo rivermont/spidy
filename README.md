@@ -107,6 +107,7 @@ Renaming the file extension will fix this.
 
 ## File Zipping
 When autosaving, spidy will archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
+The name of each zip file will be unique, as it is generated from the current time.
 
 
 # Tutorial
@@ -146,16 +147,17 @@ Spidy has 7 different command line arguments that control the behavior of the cr
 Because of the way it's written, args are optional but you must do them in a set order.
 You can do `1, 2, 3`, but not `1, 3, 4`.
 
-> python crawler.py [overwrite] [raiseErrors] [todoFile] [doneFile] [logFile] [wordFile] [saveCount]
+> python crawler.py [overwrite] [raiseErrors] [zipFiles] [todoFile] [doneFile] [logFile] [wordFile] [saveCount]
 
-The defaults are `False`, `False`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log`, `crawler_words.txt`, `100`.
+The defaults are `False`, `False`, `True`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log`, `crawler_words.txt`, `100`.
 
-To run spidy with its default values, use
+To run spidy with all of its default values, use
 
-> python crawler.py 'None' 'None' 'None' 'None' 'None' 'None' 'None'
+> python crawler.py 'None' 'None' 'None' 'None' 'None' 'None' 'None' 'None'
 
  - overwrite (Bool): Whether to load from the save files or not. Spidy will always save to the save files.
  - raiseErrors (Bool): Whether to stop the script when an error occurs that it can't handle by default.
+ - zipFiles (Bool): Whether to zip saved files or leave them in the saved/ folder.
  - todoFile (str): The location of the TODO file. Spidy will load from and save to this file.
  - doneFile (str): The location of the done file. Spidy will load from and save to this file.
  - logFile (str): The location of the log file. Spidy will save to this file, apppending logs to the end.
