@@ -1,8 +1,6 @@
-data/
-saved/
-pages/
 crawler_done.txt
 crawler_log.txt
 crawler_todo.txt
 crawler_words.txt
+saved/
 *.zip

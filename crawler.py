@@ -40,16 +40,16 @@ def check_link(item):
 	'''
 	if len(item) < 10: #Shortest possible url being 'http://a.b'
 		return True
-	elif item[0:4] != 'http': #Must be an http or https link
-		return True
-	elif item in done: #Can't have visited already
-		return True
 	elif len(item) > 250: #Links longer than 250 characters usually are useless or full of foreign characters
 		return True
-	else:
+	elif item[0:4] != 'http': #Must be an http or https link
+		return True
+	elif:
 		for badLink in killList:
 			if badLink in item:
 				return True
+	elif item in done: #Can't have visited already
+		return True
 	return False
 
 def check_word(word):
@@ -99,20 +99,20 @@ def save_words(wordList):
 		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
 	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
                                                  
-def save_files():
+def save_files(wordList):
 	'''
 	Saves the TODO and done lists into their respective files.
 	Also logs the action to the console.
 	'''
-	time = get_time() #Get current time
 	with open(todoFile, 'w') as todoList:
 		for site in todo:
 			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
-		print('[{0}] [LOG]: Saved TODO list to {1}'.format(time, todoFile))
+		print('[{0}] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	with open(doneFile, 'w') as doneList:
 		for site in done:
 			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
-		print('[{0}] [LOG]: Saved done list to {1}'.format(time, doneFile))
+		print('[{0}] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
+	save_words(wordList)
 
 def save_page(url):
 	'''
@@ -221,13 +221,18 @@ print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
 
-# Folder location of spidy
+#User-Agent Header String
+headers = {
+'User-Agent': 'Mozilla/5.0 (compatible; spidy (bot, +https://github.com/rivermont/spidy))'
+}
+
+#Folder location of spidy
 crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
 
 #Fallback pages in case the TODO file is empty
 start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
 
-killList = ['http://scores.usaultimate.org/']
+killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
 
 badLinkPercents = []
 
@@ -255,49 +260,49 @@ print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 #Read variables from arguments or set to defaults if args not present.
 try:
 	#Whether to load from save files or overwrite them
-	if eval(sys.argv[1]) == None:
+	if sys.argv[1) == 'None':
 		overwrite = False
 	else:
 		overwrite = bool(sys.argv[1])
 	
 	#Whether to raise errors instead of passing them
-	if eval(sys.argv[2]) == None:
+	if sys.argv[2] == 'None':
 		raiseErrors = False
 	else:
 		raiseErrors = bool(sys.argv[2])
 	
 	#Whether to zip saved files or leave them in the saved/ folder
-	if eval(sys.argv[3]) == None:
+	if sys.argv[3] == 'None':
 		zipFiles = True
 	else:
-		zipFiles = False
+		zipFiles = bool(sys.argv[3])
 
 	#Saved TODO file location
-	if eval(sys.argv[4]) == None:
+	if sys.argv[4] == 'None':
 		todoFile = 'crawler_todo.txt'
 	else:
 		todoFile = sys.argv[4]
 
 	#Saved done file location
-	if eval(sys.argv[5]) == None:
+	if sys.argv[5] == 'None':
 		doneFile = 'crawler_done.txt'
 	else:
 		doneFile = sys.argv[5]
 
 	#Saved log file location
-	if eval(sys.argv[6]) == None:
+	if sys.argv[6] == 'None':
 		logFile = 'crawler_log.txt'
 	else:
 		logFile = sys.argv[6]
 
 	#Saved words file location
-	if eval(sys.argv[7]) == None:
+	if sys.argv[7] == 'None':
 		wordFile = 'crawler_words.txt'
 	else:
 		wordFile = sys.argv[7]
 
 	#Number of crawled links after which to autosave
-	if eval(sys.argv[8]) == None:
+	if sys.argv[8] == 'None':
 		saveCount = 100
 	else:
 		saveCount = int(sys.argv[8])
@@ -358,10 +363,10 @@ while len(todo) != 0: #While there are links to check
 			exit()
 		elif counter >= saveCount: #If it's time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
-			save_files()
-			save_words(words)
+			save_files(words)
 			info_log()
-			zip(t.time(), 'saved/')
+			if zipFiles:
+				zip(t.time(), 'saved/')
 			#Reset variables
 			counter = 0
 			words.clear()
@@ -370,7 +375,7 @@ while len(todo) != 0: #While there are links to check
 			continue
 		#Run
 		else:
-			page = requests.get(todo[0]) #Get page
+			page = requests.get(todo[0], header=headers) #Get page
 			wordList = make_words(page) #Get all words from page
 			words.update(wordList) #Add words to word list
 			links = []
