@@ -54,11 +54,12 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
     - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
-	- [GUI-spidy](#gui-spidy)
-	- [FalconWarriorr-branch](#falconwarriorr-branch)
-	- [saving-test](#saving-test)
-	- [timings](#timings)
-	- [verbose](#verbose)
+    - [tree-test](#tree-test)
+    - [FalconWarriorr-branch](#falconwarriorr-branch)
+    - [GUI-spidy](#gui-spidy)
+    - [saving-test](#saving-test)
+    - [timings](#timings)
+    - [verbose](#verbose)
   - [TODO](#todo)
   - [Acknowledgements](#acknowledgements)
   - [Contribute](#contribute)
@@ -250,13 +251,16 @@ Theoretically once the crawler finishes running post-process with run, but you'd
 ## master
 The stable, up-to-date branch.
 
-## GUI-spidy
-Falconwarriorr is working on a GUI for spidy.
-For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition to the suite.
+## tree-test
+Test branch to see how the crawler runs if allowed to crawl the link it just crawled, as opposed to picking a random one in TODO.
 
 ## FalconWarriorr-branch
 Falconwarriorr's development branch.
 He is constantly adding new features to his, and I am slowly implementing them into the master branch.
+
+## GUI-spidy
+Falconwarriorr is working on a GUI for spidy.
+For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition to the suite.
 
 ## saving-test
 The old development branch for implementing word saving.
@@ -271,8 +275,7 @@ The old development branch for implementing logging.
 # TODO
   - Upload spidy to PyPI
   - Multiple HTTP threads
-  - Log length of wordFile to logFile
-  - Log saving of webpage to console.
+  - Better logging, both to console and logFile
   - Add webpage saving functionality to README
   - Talk about hashcat in README
 
@@ -298,5 +301,5 @@ Thanks!
 
 ### Asterisk
 Studies have shown that the spidy web crawler will run to infinity, however it has not yet been proven whether there is computing power *beyond* infinity.
-If there is, then yes - spidy will run to infinity **and bey**-
+If there is, then yes - spidy will run to infinity **and beyond**-
 ![](/media/physics.dll.png?raw=true)
