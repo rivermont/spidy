@@ -394,13 +394,14 @@ while len(todo) != 0: #While there are links to check
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
 			print('[{0}] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
+			del todo[0]#Remove crawled link from TODO list
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
-		save_files()
+		save_files(words)
 		exit()
 	except urllib.error.HTTPError as e: #Bad HTTP Response
 		# HTTPErrorCount += 1
@@ -462,8 +463,6 @@ while len(todo) != 0: #While there are links to check
 			continue
 	finally:
 		counter += 1
-		del todo[0]#Remove crawled link from TODO list
-		
 		#For debugging purposes; to check one link and then stop
 		# save_files()
 		# exit()
