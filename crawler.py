@@ -101,7 +101,8 @@ def save_files(wordList):
 		for site in done:
 			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
 		print('[{0}] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
-	save_words(wordList)
+	update_file(wordFile, wordList, 'words')
+	update_file(badFile, badLinks, 'bad links')
 
 def save_page(url):
 	'''
@@ -121,16 +122,19 @@ def save_page(url):
 	with urllib.request.urlopen(url) as response, open('{0}/saved/{1}'.format(crawlerLocation, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
-def save_words(wordList):
-	with open(wordFile, 'r+') as f: #Open save file for reading and writing
-		file = f.readlines() #Make list of all lines in wordFile
+def update_file(file, content, type):
+	with open(file, 'r+') as f: #Open save file for reading and writing
+		file = f.readlines() #Make list of all lines in file
 		file = [x.strip() for x in file]
 		for item in file:
-			wordList.update(item) #Otherwise add item to wordList (set)
-		for word in wordList:
-			f.write('\n' + word) #Write all words to wordFile
-		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
-	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
+			content.update(item) #Otherwise add item to content (set)
+		for word in content:
+			f.write('\n' + word) #Write all words to file
+		f.truncate() #Delete everything in file beyond what has been written (old stuff)
+	print('[{0}] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
+
+def save_badLinks(badLinks):
+	with open(badFile, 'w;
 
 def info_log():
 	'''
@@ -381,6 +385,7 @@ while len(todo) != 0: #While there are links to check
 			counter = 0
 			words.clear()
 			invalidLinkPercents.clear()
+			badLinks.clear()
 		elif check_link(todo[0]): #If the link is invalid
 			del todo[0]
 			continue
