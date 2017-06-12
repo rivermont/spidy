@@ -62,10 +62,10 @@ def check_word(word):
 	else:
 		return False
 
-def check_filePath(path):
+def check_extension(path):
 	'''
-	Returns True if path is an invalid system path.
-	Returns False if is a valid path.
+	Returns True if file should be saved as .html.
+	Returns False if file extension is (probably) a valid type.
 	'''
 	if path in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
 		return True
@@ -114,7 +114,7 @@ def save_page(url):
 		newUrl = newUrl.replace(char, '-')
 	for char in '''|:?<>*''': #Remove illegal filename characters
 		newUrl = newUrl.replace(char, '')
-	if check_filePath(ext): #If the extension is invalid, default to .html
+	if check_extension(ext): #If the extension is invalid, default to .html
 		ext = 'html'
 	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
@@ -382,6 +382,7 @@ while len(todo) != 0: #While there are links to check
 			words.clear()
 			invalidLinkPercents.clear()
 		elif check_link(todo[0]): #If the link is invalid
+			del todo[0]
 			continue
 		#Run
 		else:
@@ -415,54 +416,72 @@ while len(todo) != 0: #While there are links to check
 		exit()
 	except urllib.error.HTTPError as e: #Bad HTTP Response
 		HTTPErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
 		err_log('Bad Response', e)
 		err_saved_message()
 	except (etree.XMLSyntaxError, etree.ParserError) as e: #Error processing html/xml
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 		err_log('XMLSyntaxError', e)
 		err_saved_message()
 	except UnicodeError as e: #Error trying to convert foreign characters to Unicode
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
 		err_log('UnicodeError', e)
 		err_saved_message()
 	except requests.exceptions.SSLError as e: #Invalid SSL certificate
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 		err_log('SSLError', e)
 		err_saved_message()
 	except requests.exceptions.ConnectionError as e: #Error connecting to page
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 		err_log('ConnectionError', e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 		err_log('TooManyRedirects', e)
 		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e: #Received response with content-encoding: gzip, but failed to decode it.
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
 		err_log('ContentDecodingError', e)
 		err_saved_message()
 	except OSError as e:
 		knownErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
 		err_log('OSError', e)
 		err_saved_message()
 	except Exception as e: #Any other error
 		newErrorCount += 1
+		badLinks.update(todo[0])
+		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
 		err_log('Unknown', e)
