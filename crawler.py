@@ -128,8 +128,8 @@ def update_file(file, content, type):
 		fileContent = [x.strip() for x in fileContent]
 		for item in fileContent:
 			content.update(item) #Otherwise add item to content (set)
-		for word in content:
-			f.write('\n' + word) #Write all words to file
+		for item in content:
+			f.write('\n' + item) #Write all words to file
 		f.truncate() #Delete everything in file beyond what has been written (old stuff)
 	print('[{0}] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
 
@@ -418,7 +418,7 @@ while len(todo) != 0: #While there are links to check
 		exit()
 	except urllib.error.HTTPError as e: #Bad HTTP Response
 		HTTPErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
@@ -426,7 +426,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except (etree.XMLSyntaxError, etree.ParserError) as e: #Error processing html/xml
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
@@ -434,7 +434,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except UnicodeError as e: #Error trying to convert foreign characters to Unicode
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
@@ -442,7 +442,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except requests.exceptions.SSLError as e: #Invalid SSL certificate
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
@@ -450,7 +450,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except requests.exceptions.ConnectionError as e: #Error connecting to page
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
@@ -458,7 +458,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
@@ -466,7 +466,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e: #Received response with content-encoding: gzip, but failed to decode it.
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
@@ -474,7 +474,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except OSError as e:
 		knownErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
@@ -482,7 +482,7 @@ while len(todo) != 0: #While there are links to check
 		err_saved_message()
 	except Exception as e: #Any other error
 		newErrorCount += 1
-		badLinks.update(todo[0])
+		badLinks.add(todo[0])
 		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
@@ -495,7 +495,7 @@ while len(todo) != 0: #While there are links to check
 	finally:
 		counter += 1
 		#For debugging purposes; to check one link and then stop
-		# save_files()
+		# save_files(words)
 		# exit()
 
 print('[{0}] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
