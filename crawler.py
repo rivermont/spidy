@@ -88,17 +88,6 @@ def make_words(page):
 			wordList.remove(word) #Remove invalid word from list
 	return wordList
 
-def save_words(wordList):
-	with open(wordFile, 'r+') as f: #Open save file for reading and writing
-		file = f.readlines() #Make list of all lines in wordFile
-		file = [x.strip() for x in file]
-		for item in file:
-			wordList.update(item) #Otherwise add item to wordList (set)
-		for word in wordList:
-			f.write('\n' + word) #Write all words to wordFile
-		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
-	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
-                                                 
 def save_files(wordList):
 	'''
 	Saves the TODO and done lists into their respective files.
@@ -132,6 +121,17 @@ def save_page(url):
 	with urllib.request.urlopen(url) as response, open('{0}/saved/{1}'.format(crawlerLocation, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
+def save_words(wordList):
+	with open(wordFile, 'r+') as f: #Open save file for reading and writing
+		file = f.readlines() #Make list of all lines in wordFile
+		file = [x.strip() for x in file]
+		for item in file:
+			wordList.update(item) #Otherwise add item to wordList (set)
+		for word in wordList:
+			f.write('\n' + word) #Write all words to wordFile
+		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
+	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
+
 def info_log():
 	'''
 	Logs important information to the console and log file.
@@ -154,6 +154,30 @@ def info_log():
 		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
 		log.write(endLog) #Write closing line
 
+def log(message):
+	'''
+	Logs a single message.
+	Prints message verbatim, so message must formatted correctly outside of the function call.
+	'''
+	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
+	with open(logFile, 'a') as log:
+		log.write('\n\n======LOG======') #Write opening line
+		log.write('\nTIME: {0}'.format(time)) #Write current time
+		log.write(message) #Write message
+		log.write(endLog) #Write closing line
+
+def err_print(item):
+	'''
+	Announce that an error occurred.
+	'''
+	print('[{0}] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
+
+def err_saved_message():
+	'''
+	Announce that error was successfully saved to log.
+	'''
+	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
+
 def err_log(error1, error2):
 	'''
 	Saves the triggering error to the log file.
@@ -169,18 +193,6 @@ def err_log(error1, error2):
 		except: #If an error (usually UnicodeEncodeError), write encoded log
 			log.write('\n\n=====ERROR=====') #Write opening line
 			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
-		log.write(endLog) #Write closing line
-
-def log(message):
-	'''
-	Logs a single message.
-	Prints message verbatim, so message must formatted correctly outside of the function call.
-	'''
-	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	with open(logFile, 'a') as log:
-		log.write('\n\n======LOG======') #Write opening line
-		log.write('\nTIME: {0}'.format(time)) #Write current time
-		log.write(message) #Write message
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -199,18 +211,6 @@ def zip(out_fileName, dir):
 	shutil.make_archive(str(out_fileName), 'zip', dir)
 	shutil.rmtree(dir)
 	makedirs(dir[:-1])
-
-def err_print(item):
-	'''
-	Announce that an error occurred.
-	'''
-	print('[{0}] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
-
-def err_saved_message():
-	'''
-	Announce that error was successfully saved to log.
-	'''
-	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
 
 
 ##########
@@ -232,6 +232,7 @@ crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
 #Fallback pages in case the TODO file is empty
 start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
 
+#Pages that cause problems with the crawler in some way
 killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
 
 badLinkPercents = []
@@ -311,7 +312,7 @@ except IndexError:
 	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, saveCount'.format(get_time()))
 	print('[{0}] [ERR]:           Bool,       Bool,       Bool      str,      str,     str,     str,       int   '.format(get_time()))
 	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
-	raise
+	exit()
 
 #Import saved TODO file data
 if overwrite:
