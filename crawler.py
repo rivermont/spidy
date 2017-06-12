@@ -124,17 +124,14 @@ def save_page(url):
 
 def update_file(file, content, type):
 	with open(file, 'r+') as f: #Open save file for reading and writing
-		file = f.readlines() #Make list of all lines in file
-		file = [x.strip() for x in file]
-		for item in file:
+		fileContent = f.readlines() #Make list of all lines in file
+		fileContent = [x.strip() for x in fileContent]
+		for item in fileContent:
 			content.update(item) #Otherwise add item to content (set)
 		for word in content:
 			f.write('\n' + word) #Write all words to file
 		f.truncate() #Delete everything in file beyond what has been written (old stuff)
 	print('[{0}] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
-
-def save_badLinks(badLinks):
-	with open(badFile, 'w;
 
 def info_log():
 	'''
