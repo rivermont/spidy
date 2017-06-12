@@ -208,9 +208,9 @@ def zip(out_fileName, dir):
 	'''
 	Creates a .zip file in the current directory containing all contents of dir, then deletes dir.
 	'''
-	shutil.make_archive(str(out_fileName), 'zip', dir)
-	shutil.rmtree(dir)
-	makedirs(dir[:-1])
+	shutil.make_archive(str(out_fileName), 'zip', dir) #Zips files
+	shutil.rmtree(dir) #Deletes folder
+	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
 
 
 ##########
@@ -220,6 +220,8 @@ def zip(out_fileName, dir):
 print('[{0}] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
+
+invalidLinkPercents = []
 
 #User-Agent Header String
 headers = {
@@ -235,9 +237,10 @@ start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', '
 #Pages that cause problems with the crawler in some way
 killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
 
-badLinkPercents = []
+#Empty set for error-causing links
+badLinks = set([])
 
-#Create empty list for word scraping
+#Empty set for word scraping
 words = set([])
 
 #Counter variables
@@ -301,16 +304,22 @@ try:
 		wordFile = 'crawler_words.txt'
 	else:
 		wordFile = sys.argv[7]
+	
+	#Bad links file location
+	if sys.argv[8] == 'None':
+		badFile = 'crawler_bad.txt'
+	else:
+		badFile = sys.argv[8]
 
 	#Number of crawled links after which to autosave
-	if sys.argv[8] == 'None':
+	if sys.argv[9] == 'None':
 		saveCount = 100
 	else:
-		saveCount = int(sys.argv[8])
+		saveCount = int(sys.argv[9])
 except IndexError:
 	print('[{0}] [ERR]: Provide a valid argument list'.format(get_time()))
-	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, saveCount'.format(get_time()))
-	print('[{0}] [ERR]:           Bool,       Bool,       Bool      str,      str,     str,     str,       int   '.format(get_time()))
+	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, badFile, saveCount'.format(get_time()))
+	print('[{0}] [ERR]:           Bool,       Bool,       Bool,     str,      str,     str,      str,     str,       int   '.format(get_time()))
 	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
 	exit()
 
@@ -371,7 +380,7 @@ while len(todo) != 0: #While there are links to check
 			#Reset variables
 			counter = 0
 			words.clear()
-			badLinkPercents.clear()
+			invalidLinkPercents.clear()
 		elif check_link(todo[0]): #If the link is invalid
 			continue
 		#Run
@@ -385,7 +394,7 @@ while len(todo) != 0: #While there are links to check
 			before = len(links)
 			links = (list(set(links))) #Remove duplicates and shuffle links
 			after = len(links)
-			badLinkPercents.append(get_avg(before, after)) #Get percentage of links removed
+			invalidLinkPercents.append(get_avg(before, after)) #Get percentage of links removed
 			for link in links: #Check for invalid links
 				if check_link(link):
 					links.remove(link)
@@ -405,7 +414,7 @@ while len(todo) != 0: #While there are links to check
 		save_files(words)
 		exit()
 	except urllib.error.HTTPError as e: #Bad HTTP Response
-		# HTTPErrorCount += 1
+		HTTPErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
 		err_log('Bad Response', e)

@@ -44,14 +44,21 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
 	  - [Force Quit](#force-quit)
 	  - [End](#end)
   - [Files](#files)
-    - [media/](#media)
-	- [saved/](#saved)
-	- [broken.txt](#brokentxt)
-    - [clear.bat](#clearbat)
-    - [crawler.py](#crawlerpy)
-    - [post-process.py](#post-processpy)
     - [README.md](#readmemd)
-    - [run.bat](#runbat)
+	- [Folders](#folders)
+      - [media/](#media)
+	  - [saved/](#saved)
+    - [Save Files](#save-files)
+	  - [crawler_todo.txt](#crawler-todotxt)
+	  - [crawler_done.txt](#crawler-donetxt)
+	  - [crawler_log.txt](#crawler-logtxt)
+	  - [crawler_words.txt](#crawler-wordstxt)
+	  - [crawler_bad.txt](#crawler-badtxt)
+	- [Run Files](#run-files)
+	  - [clear.bat](#clearbat)
+      - [crawler.py](#crawlerpy)
+      - [post-process.py](#post-processpy)
+      - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
     - [tree-test](#tree-test)
@@ -149,11 +156,11 @@ You can do `1, 2, 3`, but not `1, 3, 4`.
 
 > python crawler.py [overwrite] [raiseErrors] [zipFiles] [todoFile] [doneFile] [logFile] [wordFile] [saveCount]
 
-The defaults are `False`, `False`, `True`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log`, `crawler_words.txt`, `100`.
+The defaults are `False`, `False`, `True`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log.txt`, `crawler_bad.txt`, `crawler_words.txt`, `100`.
 
 To run spidy with all of its default values, use
 
-> python crawler.py 'None' 'None' 'None' 'None' 'None' 'None' 'None' 'None'
+> python crawler.py 'None' 'None' 'None' 'None' 'None' 'None' 'None' 'None' 'None'
 
  - overwrite (Bool): Whether to load from the save files or not. Spidy will always save to the save files.
  - raiseErrors (Bool): Whether to stop the script when an error occurs that it can't handle by default.
@@ -162,6 +169,7 @@ To run spidy with all of its default values, use
  - doneFile (str): The location of the done file. Spidy will load from and save to this file.
  - logFile (str): The location of the log file. Spidy will save to this file, apppending logs to the end.
  - wordFile (str): The location of the words file. Spidy will load from and save to this file.
+ - badFile (str): The location of the bad links file. Spidy will save to this file.
  - saveCount (int): The number of processed links after which to autosave.
 
 ### Windows (Command Line)
@@ -204,44 +212,49 @@ Sample log after crawler visits all links in TODO.
 
 # Files
 
-## media/
-Images used in this readme file.
-
-## saved/
-Location for document saving.
-
-## broken.txt
-Contains links that are known to either break the crawler or make it run for some indefinite amount of.
-Broken links can be identified by noticing that the crawler reached the line
-
-> [INIT]: Starting crawler...
-
-but never kept going. While the running prompt will be there, performing a `CTRL^C` will appear to do nothing.
-Technically, the command will resolve eventually, but that happens 10 minutes after starting.
-
-### Removing Broken Links
-There are too many 'broken' links out there to check against them in the code, so they must be removed by hand.
-This is a regular expression, or [regex](http://www.regular-expressions.info) line that will get all lines containing `link`.
-
-> ^.*link.*\r\n
-
-In a text editor that supports regex, like [Notepad++](https://notepad-plus-plus.org), finding that expression and replacing with nothing will remove all the links.
-
-## clear.bat
-Clears all save files by deleting them and creating empty ones.
-
-## crawler.py
-The important code. This is what you will run to crawl links and save information.
-Because the internet is so big, this will practically never end.
-
-## post-process.py
-This removes all the lines in `crawler_words.txt` longer than 16 characters.
-Run this after running crawler.py for a while.
-
 ## README.md
 This readme file.
 
-## run.bat
+## Folders
+
+### media/
+Images used in this readme file.
+
+### saved/
+Location for document saving.
+
+## Save Files
+
+### crawler_todo.txt
+Contains all of the links that spidy has found but not yet crawled.
+
+### crawler_done.txt
+Contains all of the links that spidy has already visited.
+
+### crawler_log.txt
+The log file for the crawler.
+Contains errors and other important information.
+
+### crawler_words.txt
+Contains all of the words that spidy has found.
+
+### crawler_bad.txt
+Contains all of the links that caused errors for some reason.
+
+## Run Files
+
+### clear.bat
+Clears all save files by deleting them and creating empty ones.
+
+### crawler.py
+The important code. This is what you will run to crawl links and save information.
+Because the internet is so big, this will practically never end.
+
+### post-process.py
+This removes all the lines in `crawler_words.txt` longer than 16 characters.
+Run this after running crawler.py for a while.
+
+### run.bat
 A Windows batch file to run the program.
 Theoretically once the crawler finishes running post-process with run, but you'd have to get the entire internet first, so...
 
