@@ -44,12 +44,12 @@ def check_link(item):
 		return True
 	elif item[0:4] != 'http': #Must be an http or https link
 		return True
-	elif:
+	elif item in done: #Can't have visited already
+		return True
+	else:
 		for badLink in killList:
 			if badLink in item:
 				return True
-	elif item in done: #Can't have visited already
-		return True
 	return False
 
 def check_word(word):
@@ -88,17 +88,6 @@ def make_words(page):
 			wordList.remove(word) #Remove invalid word from list
 	return wordList
 
-def save_words(wordList):
-	with open(wordFile, 'r+') as f: #Open save file for reading and writing
-		file = f.readlines() #Make list of all lines in wordFile
-		file = [x.strip() for x in file]
-		for item in file:
-			wordList.update(item) #Otherwise add item to wordList (set)
-		for word in wordList:
-			f.write('\n' + word) #Write all words to wordFile
-		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
-	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
-                                                 
 def save_files(wordList):
 	'''
 	Saves the TODO and done lists into their respective files.
@@ -132,6 +121,17 @@ def save_page(url):
 	with urllib.request.urlopen(url) as response, open('{0}/saved/{1}'.format(crawlerLocation, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
+def save_words(wordList):
+	with open(wordFile, 'r+') as f: #Open save file for reading and writing
+		file = f.readlines() #Make list of all lines in wordFile
+		file = [x.strip() for x in file]
+		for item in file:
+			wordList.update(item) #Otherwise add item to wordList (set)
+		for word in wordList:
+			f.write('\n' + word) #Write all words to wordFile
+		f.truncate() #Delete everything in wordFile beyond what has been written (old stuff)
+	print('[{0}] [LOG]: Saved {1} words to {2}'.format(get_time(), len(wordList), wordFile))
+
 def info_log():
 	'''
 	Logs important information to the console and log file.
@@ -154,6 +154,30 @@ def info_log():
 		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
 		log.write(endLog) #Write closing line
 
+def log(message):
+	'''
+	Logs a single message.
+	Prints message verbatim, so message must formatted correctly outside of the function call.
+	'''
+	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
+	with open(logFile, 'a') as log:
+		log.write('\n\n======LOG======') #Write opening line
+		log.write('\nTIME: {0}'.format(time)) #Write current time
+		log.write(message) #Write message
+		log.write(endLog) #Write closing line
+
+def err_print(item):
+	'''
+	Announce that an error occurred.
+	'''
+	print('[{0}] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
+
+def err_saved_message():
+	'''
+	Announce that error was successfully saved to log.
+	'''
+	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
+
 def err_log(error1, error2):
 	'''
 	Saves the triggering error to the log file.
@@ -169,18 +193,6 @@ def err_log(error1, error2):
 		except: #If an error (usually UnicodeEncodeError), write encoded log
 			log.write('\n\n=====ERROR=====') #Write opening line
 			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
-		log.write(endLog) #Write closing line
-
-def log(message):
-	'''
-	Logs a single message.
-	Prints message verbatim, so message must formatted correctly outside of the function call.
-	'''
-	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	with open(logFile, 'a') as log:
-		log.write('\n\n======LOG======') #Write opening line
-		log.write('\nTIME: {0}'.format(time)) #Write current time
-		log.write(message) #Write message
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -199,18 +211,6 @@ def zip(out_fileName, dir):
 	shutil.make_archive(str(out_fileName), 'zip', dir)
 	shutil.rmtree(dir)
 	makedirs(dir[:-1])
-
-def err_print(item):
-	'''
-	Announce that an error occurred.
-	'''
-	print('[{0}] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
-
-def err_saved_message():
-	'''
-	Announce that error was successfully saved to log.
-	'''
-	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
 
 
 ##########
@@ -232,6 +232,7 @@ crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
 #Fallback pages in case the TODO file is empty
 start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
 
+#Pages that cause problems with the crawler in some way
 killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
 
 badLinkPercents = []
@@ -260,7 +261,7 @@ print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 #Read variables from arguments or set to defaults if args not present.
 try:
 	#Whether to load from save files or overwrite them
-	if sys.argv[1) == 'None':
+	if sys.argv[1] == 'None':
 		overwrite = False
 	else:
 		overwrite = bool(sys.argv[1])
@@ -311,7 +312,7 @@ except IndexError:
 	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, saveCount'.format(get_time()))
 	print('[{0}] [ERR]:           Bool,       Bool,       Bool      str,      str,     str,     str,       int   '.format(get_time()))
 	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
-	raise
+	exit()
 
 #Import saved TODO file data
 if overwrite:
@@ -359,7 +360,7 @@ while len(todo) != 0: #While there are links to check
 	try:
 		if newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors or HTTPErrorCount >= maxHTTPErrors: #If too many errors have occurred
 			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
-			save_files()
+			save_files(words)
 			exit()
 		elif counter >= saveCount: #If it's time for an autosave
 			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
@@ -375,7 +376,7 @@ while len(todo) != 0: #While there are links to check
 			continue
 		#Run
 		else:
-			page = requests.get(todo[0], header=headers) #Get page
+			page = requests.get(todo[0], headers=headers) #Get page
 			wordList = make_words(page) #Get all words from page
 			words.update(wordList) #Add words to word list
 			links = []
@@ -394,16 +395,17 @@ while len(todo) != 0: #While there are links to check
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
 			print('[{0}] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
+			del todo[0]#Remove crawled link from TODO list
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
 		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
-		save_files()
+		save_files(words)
 		exit()
 	except urllib.error.HTTPError as e: #Bad HTTP Response
-		HTTPErrorCount += 1
+		# HTTPErrorCount += 1
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
 		err_log('Bad Response', e)
@@ -462,14 +464,9 @@ while len(todo) != 0: #While there are links to check
 			continue
 	finally:
 		counter += 1
-		rand = set(todo)  #Convert TODO to set
-		todo = list(rand) #and back to list.
-						  #This both removes duplicates and mixes up the list, as sets are unordered collections without duplicates
-		del todo[0]#Remove crawled link from TODO list
-		
 		#For debugging purposes; to check one link and then stop
 		# save_files()
 		# exit()
 
 print('[{0}] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
-save_files()
+save_files(words)
