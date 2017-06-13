@@ -419,71 +419,55 @@ while len(todo) != 0: #While there are links to check
 	except urllib.error.HTTPError as e: #Bad HTTP Response
 		HTTPErrorCount += 1
 		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
 		err_log('Bad Response', e)
 		err_saved_message()
+		del todo[0]
 	except (etree.XMLSyntaxError, etree.ParserError) as e: #Error processing html/xml
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 		err_log('XMLSyntaxError', e)
 		err_saved_message()
 	except UnicodeError as e: #Error trying to convert foreign characters to Unicode
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0].encode('utf-8'))
 		print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
 		err_log('UnicodeError', e)
 		err_saved_message()
 	except requests.exceptions.SSLError as e: #Invalid SSL certificate
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 		err_log('SSLError', e)
 		err_saved_message()
 	except requests.exceptions.ConnectionError as e: #Error connecting to page
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 		err_log('ConnectionError', e)
 		err_saved_message()
 	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 		err_log('TooManyRedirects', e)
 		err_saved_message()
 	except requests.exceptions.ContentDecodingError as e: #Received response with content-encoding: gzip, but failed to decode it.
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
 		err_log('ContentDecodingError', e)
 		err_saved_message()
 	except OSError as e:
 		knownErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
 		err_log('OSError', e)
 		err_saved_message()
 	except Exception as e: #Any other error
 		newErrorCount += 1
-		badLinks.add(todo[0])
-		del todo[0]
 		err_print(todo[0])
 		print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
 		err_log('Unknown', e)
