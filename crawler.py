@@ -261,71 +261,80 @@ maxHTTPErrors = 50
 #Line to print at the end of each logFile log
 endLog = '\n======END======'
 
-print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
+yes = ['y', 'yes', 'Y', 'Yes']
+no = ['n', 'no', 'N', 'No']
 
-#Read variables from arguments or set to defaults if args not present.
-try:
-	#Whether to load from save files or overwrite them
-	if sys.argv[1] == 'True':
-		overwrite = True
-	elif sys.argv[1] == 'False':
-		overwrite = False
-	elif sys.argv[1] == 'None':
-		overwrite = False
-	
-	#Whether to raise errors instead of passing them
-	if sys.argv[2] == 'None':
-		raiseErrors = False
-	elif sys.argv[2] == 'True':
-		raiseErrors = True
-	
-	#Whether to zip saved files or leave them in the saved/ folder
-	if sys.argv[3] == 'None':
-		zipFiles = True
-	elif sys.argv[2] == 'True':
-		zipFiles = True
+#Getting arguments
 
-	#Saved TODO file location
-	if sys.argv[4] == 'None':
-		todoFile = 'crawler_todo.txt'
-	else:
-		todoFile = sys.argv[4]
+print('Please enter the following arguments. Leave blank to use the default values.')
 
-	#Saved done file location
-	if sys.argv[5] == 'None':
-		doneFile = 'crawler_done.txt'
-	else:
-		doneFile = sys.argv[5]
+overwrite = input('Should spidy load from existing save files? (y/n)')
+if not bool(overwrite): #Use default value
+	overwrite = False
+elif overwrite in yes: #Yes
+	overwrite = True
+elif overwrite in no: #No
+	overwrite = False
+else: #Invalid input
+	raise InputError('Please enter a valid input. (yes/no)')
 
-	#Saved log file location
-	if sys.argv[6] == 'None':
-		logFile = 'crawler_log.txt'
-	else:
-		logFile = sys.argv[6]
+raiseErrors = input('Should spidy raise NEW errors and stop crawling? (y/n)')
+if not bool(raiseErrors):
+	raiseErrors = False
+elif raiseErrors in yes:
+	raiseErrors = True
+elif raiseErrors in no:
+	raiseErrors = False
+else:
+	raise InputError('Please enter a valid input. (yes/no)')
 
-	#Saved words file location
-	if sys.argv[7] == 'None':
-		wordFile = 'crawler_words.txt'
-	else:
-		wordFile = sys.argv[7]
-	
-	#Bad links file location
-	if sys.argv[8] == 'None':
-		badFile = 'crawler_bad.txt'
-	else:
-		badFile = sys.argv[8]
+zipFiles = input('Should spidy zip saved documents when autosaving? (y/n)')
+if not bool(zipFiles):
+	zipFiles = True
+elif zipFiles in yes:
+	zipFiles = True
+elif zipFiles in no:
+	zipFiles = False
+else:
+	raise InputError('Please enter a valid input. (yes/no)')
 
-	#Number of crawled links after which to autosave
-	if sys.argv[9] == 'None':
-		saveCount = 100
-	else:
-		saveCount = int(sys.argv[9])
-except IndexError:
-	print('[{0}] [ERR]: Provide a valid argument list'.format(get_time()))
-	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, badFile, saveCount'.format(get_time()))
-	print('[{0}] [ERR]:           Bool,       Bool,       Bool,     str,      str,     str,      str,     str,       int   '.format(get_time()))
-	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
-	exit()
+todoFile = input('Location of the TODO save file:')
+if not bool(todoFile):
+	todoFile = 'crawler_todo.txt'
+else:
+	todoFile = todoFile
+
+doneFile = input('Location of the done save file:')
+if not bool(doneFile):
+	doneFile = 'crawler_done.txt'
+else:
+	doneFile = doneFile
+
+logFile = input('Location of spidy\'s log file:')
+if not bool(logFile):
+	logFile = 'crawler_log.txt'
+else:
+	logFile = logFile
+
+wordFile = input('Location of the word save file:')
+if not bool(wordFile):
+	wordFile = 'crawler_words.txt'
+else:
+	wordFile = wordFile
+
+badFile = input('Location of the bad link save file:')
+if not bool(badFile):
+	badFile = 'crawler_bad.txt'
+else:
+	badFile = badFile
+
+saveCount = input('After how many queried links should spidy autosave? (default 100)')
+if not bool(saveCount):
+	saveCount = 100
+elif not saveCount.isdigit():
+	raise InputError('Please enter a valid integer.')
+else:
+	saveCount = saveCount
 
 #Import saved TODO file data
 if overwrite:
