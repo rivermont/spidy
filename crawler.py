@@ -138,21 +138,21 @@ def info_log():
 	Logs important information to the console and log file.
 	'''
 	sinceStart = int(t.time() - startTime)
-	badLinkPercent = int(sum(badLinkPercents) / len(badLinkPercents))
+	invalidLinkPercent = int(sum(invalidLinkPercents) / len(invalidLinkPercents))
 	#Print to console
 	time = get_time()
 	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
 	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
 	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
 	print('[{0}] [LOG]: {1} bad links removed.'.format(time, removedCount))
-	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, badLinkPercent))
+	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, invalidLinkPercent))
 	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
 	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y') #Get current time
 	with open(logFile, 'a') as log:
 		log.write('\n\n====AUTOSAVE===') #Write opening line
-		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, badLinkPercent, newErrorCount, knownErrorCount))
+		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, invalidLinkPercent, newErrorCount, knownErrorCount))
 		log.write(endLog) #Write closing line
 
 def log(message):
@@ -212,6 +212,7 @@ def zip(out_fileName, dir):
 	shutil.make_archive(str(out_fileName), 'zip', dir) #Zips files
 	shutil.rmtree(dir) #Deletes folder
 	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
+	print('[{0}] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_filename))
 
 
 ##########
@@ -265,22 +266,24 @@ print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
 #Read variables from arguments or set to defaults if args not present.
 try:
 	#Whether to load from save files or overwrite them
-	if sys.argv[1] == 'None':
+	if sys.argv[1] == 'True':
+		overwrite = True
+	elif sys.argv[1] == 'False':
 		overwrite = False
-	else:
-		overwrite = bool(sys.argv[1])
+	elif sys.argv[1] == 'None':
+		overwrite = False
 	
 	#Whether to raise errors instead of passing them
 	if sys.argv[2] == 'None':
 		raiseErrors = False
-	else:
-		raiseErrors = bool(sys.argv[2])
+	elif sys.argv[2] == 'True':
+		raiseErrors = True
 	
 	#Whether to zip saved files or leave them in the saved/ folder
 	if sys.argv[3] == 'None':
 		zipFiles = True
-	else:
-		zipFiles = bool(sys.argv[3])
+	elif sys.argv[2] == 'True':
+		zipFiles = True
 
 	#Saved TODO file location
 	if sys.argv[4] == 'None':
