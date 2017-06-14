@@ -423,71 +423,65 @@ while len(todo) != 0: #While there are links to check
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
-		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 		save_files(words)
 		exit()
-	except urllib.error.HTTPError as e: #Bad HTTP Response
-		HTTPErrorCount += 1
+	except BaseException as e:
 		badLinks.add(todo[0])
-		err_print(todo[0])
-		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
-		err_log('Bad Response', e)
-		err_saved_message()
-		del todo[0]
-	except (etree.XMLSyntaxError, etree.ParserError) as e: #Error processing html/xml
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
-		err_log('XMLSyntaxError', e)
-		err_saved_message()
-	except UnicodeError as e: #Error trying to convert foreign characters to Unicode
-		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
-		print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
-		err_log('UnicodeError', e)
+		del todo[0]
+		
+		if e == urllib.error.HTTPError: #Bad HTTP Response
+			HTTPErrorCount += 1
+			print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
+			err_log('Bad Response', e)
+		
+		elif e in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
+			knownErrorCount += 1
+			print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+			err_log('XMLSyntaxError', e)
+		
+		elif e == UnicodeError: #Error trying to convert foreign characters to Unicode
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
+			err_log('UnicodeError', e)
+		
+		elif e == requests.exceptions.SSLError: #Invalid SSL certificate
+			knownErrorCount += 1
+			print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
+			err_log('SSLError', e)
+		
+		elif e == requests.exceptions.ConnectionError: #Error connecting to page
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
+			err_log('ConnectionError', e)
+		
+		elif e == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
+			err_log('TooManyRedirects', e)
+		
+		elif e == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
+			err_log('ContentDecodingError', e)
+		
+		elif e == OSError:
+			knownErrorCount += 1
+			print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
+			err_log('OSError', e)
+		
+		else: #Any other error
+			newErrorCount += 1
+			print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
+			err_log('Unknown', e)
+			if raiseErrors:
+				raise
+			else:
+				continue
+		
 		err_saved_message()
-	except requests.exceptions.SSLError as e: #Invalid SSL certificate
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-		err_log('SSLError', e)
-		err_saved_message()
-	except requests.exceptions.ConnectionError as e: #Error connecting to page
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-		err_log('ConnectionError', e)
-		err_saved_message()
-	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
-		err_log('TooManyRedirects', e)
-		err_saved_message()
-	except requests.exceptions.ContentDecodingError as e: #Received response with content-encoding: gzip, but failed to decode it.
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
-		err_log('ContentDecodingError', e)
-		err_saved_message()
-	except OSError as e:
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
-		err_log('OSError', e)
-		err_saved_message()
-	except Exception as e: #Any other error
-		newErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
-		err_log('Unknown', e)
-		err_saved_message()
-		if raiseErrors:
-			raise
-		else:
-			continue
 	finally:
 		counter += 1
 		#For debugging purposes; to check one link and then stop
