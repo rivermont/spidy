@@ -261,71 +261,80 @@ maxHTTPErrors = 50
 #Line to print at the end of each logFile log
 endLog = '\n======END======'
 
-print('[{0}] [INIT]: Reading arguments...'.format(get_time()))
+yes = ['y', 'yes', 'Y', 'Yes']
+no = ['n', 'no', 'N', 'No']
 
-#Read variables from arguments or set to defaults if args not present.
-try:
-	#Whether to load from save files or overwrite them
-	if sys.argv[1] == 'True':
-		overwrite = True
-	elif sys.argv[1] == 'False':
-		overwrite = False
-	elif sys.argv[1] == 'None':
-		overwrite = False
-	
-	#Whether to raise errors instead of passing them
-	if sys.argv[2] == 'None':
-		raiseErrors = False
-	elif sys.argv[2] == 'True':
-		raiseErrors = True
-	
-	#Whether to zip saved files or leave them in the saved/ folder
-	if sys.argv[3] == 'None':
-		zipFiles = True
-	elif sys.argv[2] == 'True':
-		zipFiles = True
+#Getting arguments
 
-	#Saved TODO file location
-	if sys.argv[4] == 'None':
-		todoFile = 'crawler_todo.txt'
-	else:
-		todoFile = sys.argv[4]
+print('Please enter the following arguments. Leave blank to use the default values.')
 
-	#Saved done file location
-	if sys.argv[5] == 'None':
-		doneFile = 'crawler_done.txt'
-	else:
-		doneFile = sys.argv[5]
+overwrite = input('Should spidy load from existing save files? (y/n)')
+if not bool(overwrite): #Use default value
+	overwrite = False
+elif overwrite in yes: #Yes
+	overwrite = True
+elif overwrite in no: #No
+	overwrite = False
+else: #Invalid input
+	raise InputError('Please enter a valid input. (yes/no)')
 
-	#Saved log file location
-	if sys.argv[6] == 'None':
-		logFile = 'crawler_log.txt'
-	else:
-		logFile = sys.argv[6]
+raiseErrors = input('Should spidy raise NEW errors and stop crawling? (y/n)')
+if not bool(raiseErrors):
+	raiseErrors = False
+elif raiseErrors in yes:
+	raiseErrors = True
+elif raiseErrors in no:
+	raiseErrors = False
+else:
+	raise InputError('Please enter a valid input. (yes/no)')
 
-	#Saved words file location
-	if sys.argv[7] == 'None':
-		wordFile = 'crawler_words.txt'
-	else:
-		wordFile = sys.argv[7]
-	
-	#Bad links file location
-	if sys.argv[8] == 'None':
-		badFile = 'crawler_bad.txt'
-	else:
-		badFile = sys.argv[8]
+zipFiles = input('Should spidy zip saved documents when autosaving? (y/n)')
+if not bool(zipFiles):
+	zipFiles = True
+elif zipFiles in yes:
+	zipFiles = True
+elif zipFiles in no:
+	zipFiles = False
+else:
+	raise InputError('Please enter a valid input. (yes/no)')
 
-	#Number of crawled links after which to autosave
-	if sys.argv[9] == 'None':
-		saveCount = 100
-	else:
-		saveCount = int(sys.argv[9])
-except IndexError:
-	print('[{0}] [ERR]: Provide a valid argument list'.format(get_time()))
-	print('[{0}] [ERR]: Format: overwrite, raiseErrors, zipFiles, todoFile, doneFile, logFile, wordFile, badFile, saveCount'.format(get_time()))
-	print('[{0}] [ERR]:           Bool,       Bool,       Bool,     str,      str,     str,      str,     str,       int   '.format(get_time()))
-	print('[{0}] [ERR]: \'None\' will use the default setting.'.format(get_time()))
-	exit()
+todoFile = input('Location of the TODO save file:')
+if not bool(todoFile):
+	todoFile = 'crawler_todo.txt'
+else:
+	todoFile = todoFile
+
+doneFile = input('Location of the done save file:')
+if not bool(doneFile):
+	doneFile = 'crawler_done.txt'
+else:
+	doneFile = doneFile
+
+logFile = input('Location of spidy\'s log file:')
+if not bool(logFile):
+	logFile = 'crawler_log.txt'
+else:
+	logFile = logFile
+
+wordFile = input('Location of the word save file:')
+if not bool(wordFile):
+	wordFile = 'crawler_words.txt'
+else:
+	wordFile = wordFile
+
+badFile = input('Location of the bad link save file:')
+if not bool(badFile):
+	badFile = 'crawler_bad.txt'
+else:
+	badFile = badFile
+
+saveCount = input('After how many queried links should spidy autosave? (default 100)')
+if not bool(saveCount):
+	saveCount = 100
+elif not saveCount.isdigit():
+	raise InputError('Please enter a valid integer.')
+else:
+	saveCount = saveCount
 
 #Import saved TODO file data
 if overwrite:
@@ -414,71 +423,65 @@ while len(todo) != 0: #While there are links to check
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt as e: #If the user does ^C
-		err_print(todo[0])
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 		save_files(words)
 		exit()
-	except urllib.error.HTTPError as e: #Bad HTTP Response
-		HTTPErrorCount += 1
+	except BaseException as e:
 		badLinks.add(todo[0])
-		err_print(todo[0])
-		print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
-		err_log('Bad Response', e)
-		err_saved_message()
-		del todo[0]
-	except (etree.XMLSyntaxError, etree.ParserError) as e: #Error processing html/xml
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
-		err_log('XMLSyntaxError', e)
-		err_saved_message()
-	except UnicodeError as e: #Error trying to convert foreign characters to Unicode
-		knownErrorCount += 1
 		err_print(todo[0].encode('utf-8'))
-		print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
-		err_log('UnicodeError', e)
+		del todo[0]
+		
+		if e == urllib.error.HTTPError: #Bad HTTP Response
+			HTTPErrorCount += 1
+			print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
+			err_log('Bad Response', e)
+		
+		elif e in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
+			knownErrorCount += 1
+			print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+			err_log('XMLSyntaxError', e)
+		
+		elif e == UnicodeError: #Error trying to convert foreign characters to Unicode
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
+			err_log('UnicodeError', e)
+		
+		elif e == requests.exceptions.SSLError: #Invalid SSL certificate
+			knownErrorCount += 1
+			print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
+			err_log('SSLError', e)
+		
+		elif e == requests.exceptions.ConnectionError: #Error connecting to page
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
+			err_log('ConnectionError', e)
+		
+		elif e == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
+			err_log('TooManyRedirects', e)
+		
+		elif e == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
+			knownErrorCount += 1
+			print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
+			err_log('ContentDecodingError', e)
+		
+		elif e == OSError:
+			knownErrorCount += 1
+			print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
+			err_log('OSError', e)
+		
+		else: #Any other error
+			newErrorCount += 1
+			print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
+			err_log('Unknown', e)
+			if raiseErrors:
+				raise
+			else:
+				continue
+		
 		err_saved_message()
-	except requests.exceptions.SSLError as e: #Invalid SSL certificate
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-		err_log('SSLError', e)
-		err_saved_message()
-	except requests.exceptions.ConnectionError as e: #Error connecting to page
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-		err_log('ConnectionError', e)
-		err_saved_message()
-	except requests.exceptions.TooManyRedirects as e: #Exceeded 30 redirects.
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
-		err_log('TooManyRedirects', e)
-		err_saved_message()
-	except requests.exceptions.ContentDecodingError as e: #Received response with content-encoding: gzip, but failed to decode it.
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
-		err_log('ContentDecodingError', e)
-		err_saved_message()
-	except OSError as e:
-		knownErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
-		err_log('OSError', e)
-		err_saved_message()
-	except Exception as e: #Any other error
-		newErrorCount += 1
-		err_print(todo[0])
-		print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
-		err_log('Unknown', e)
-		err_saved_message()
-		if raiseErrors:
-			raise
-		else:
-			continue
 	finally:
 		counter += 1
 		#For debugging purposes; to check one link and then stop
