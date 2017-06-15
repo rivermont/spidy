@@ -18,13 +18,13 @@ def get_time():
 print('[{0}] [INIT]: Importing libraries...'.format(get_time()))
 
 #Import required libraries
-from lxml import html
-from lxml import etree
-from os import makedirs
 import requests
 import sys
 import urllib.request
 import shutil
+from lxml import html
+from lxml import etree
+from os import makedirs
 
 
 ###############
@@ -38,13 +38,17 @@ def check_link(item):
 	Returns True if item is not a valid url.
 	Returns False if item passes all inspections (is valid url).
 	'''
-	if len(item) < 10: #Shortest possible url being 'http://a.b'
+	#Shortest possible url being 'http://a.b'
+	if len(item) < 10:
 		return True
-	elif len(item) > 250: #Links longer than 250 characters usually are useless or full of foreign characters
+	#Links longer than 250 characters usually are useless or full of foreign characters
+	elif len(item) > 250:
 		return True
-	elif item[0:4] != 'http': #Must be an http or https link
+	#Must be an http or https link
+	elif item[0:4] != 'http':
 		return True
-	elif item in done: #Can't have visited already
+	#Can't have visited already
+	elif item in done:
 		return True
 	else:
 		for badLink in killList:
@@ -57,7 +61,8 @@ def check_word(word):
 	Returns True if word is not valid.
 	Returns False if word passes all inspections (is valid).
 	'''
-	if len(word) > 16: #If word is longer than 16 characters (avg password length is ~8)
+	#If word is longer than 16 characters (avg password length is ~8)
+	if len(word) > 16:
 		return True
 	else:
 		return False
@@ -97,10 +102,12 @@ def save_files(wordList):
 		for site in todo:
 			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
 		print('[{0}] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
+	
 	with open(doneFile, 'w') as doneList:
 		for site in done:
 			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
 		print('[{0}] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
+	
 	update_file(wordFile, wordList, 'words')
 	update_file(badFile, badLinks, 'bad links')
 
@@ -110,7 +117,7 @@ def save_page(url):
 	'''
 	url = str(url) #Sanitize input
 	newUrl = url
-	ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension, hopefully
+	ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension.
 	for char in '''"/\ ''': #Replace folders with -
 		newUrl = newUrl.replace(char, '-')
 	for char in '''|:?<>*''': #Remove illegal filename characters
@@ -119,6 +126,7 @@ def save_page(url):
 		ext = 'html'
 	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
+	
 	with urllib.request.urlopen(url) as response, open('{0}/saved/{1}'.format(crawlerLocation, fileName), 'wb+') as saveFile:
 		shutil.copyfileobj(response, saveFile)
 
@@ -139,6 +147,7 @@ def info_log():
 	'''
 	sinceStart = int(t.time() - startTime)
 	invalidLinkPercent = int(sum(invalidLinkPercents) / len(invalidLinkPercents))
+	
 	#Print to console
 	time = get_time()
 	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
@@ -148,6 +157,7 @@ def info_log():
 	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, invalidLinkPercent))
 	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
 	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
+	
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y') #Get current time
 	with open(logFile, 'a') as log:
@@ -157,7 +167,7 @@ def info_log():
 
 def log(message):
 	'''
-	Logs a single message.
+	Logs a single message to the logFile.
 	Prints message verbatim, so message must formatted correctly outside of the function call.
 	'''
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
@@ -212,7 +222,7 @@ def zip(out_fileName, dir):
 	shutil.make_archive(str(out_fileName), 'zip', dir) #Zips files
 	shutil.rmtree(dir) #Deletes folder
 	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
-	print('[{0}] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_filename))
+	print('[{0}] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 
 
 ##########
@@ -234,7 +244,11 @@ headers = {
 crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
 
 #Fallback pages in case the TODO file is empty
-start = ['https://en.wikipedia.org/wiki/Main_Page', 'https://www.reddit.com/', 'https://www.google.com/']
+start = [
+'https://en.wikipedia.org/wiki/Main_Page',
+'https://www.reddit.com/',
+'https://www.google.com/'
+]
 
 #Pages that cause problems with the crawler in some way
 killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
@@ -422,12 +436,13 @@ while len(todo) != 0: #While there are links to check
 			del todo[0]#Remove crawled link from TODO list
 	
 	#ERROR HANDLING
-	except KeyboardInterrupt as e: #If the user does ^C
+	except KeyboardInterrupt: #If the user does ^C
 		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 		save_files(words)
 		exit()
 	except BaseException as e:
+		print(e)
 		badLinks.add(todo[0])
 		err_print(todo[0].encode('utf-8'))
 		del todo[0]
@@ -482,7 +497,7 @@ while len(todo) != 0: #While there are links to check
 				continue
 		
 		err_saved_message()
-	finally:
+	else:
 		counter += 1
 		#For debugging purposes; to check one link and then stop
 		# save_files(words)
