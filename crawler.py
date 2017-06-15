@@ -224,6 +224,11 @@ def zip(out_fileName, dir):
 	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
 	print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 
+def clear_vars():
+	counter = 0
+	words.clear()
+	invalidLinkPercents.clear()
+	badLinks.clear()
 
 ##########
 ## INIT ##
@@ -404,11 +409,7 @@ while len(todo) != 0: #While there are links to check
 			info_log()
 			if zipFiles:
 				zip(t.time(), 'saved/')
-			#Reset variables
-			counter = 0
-			words.clear()
-			invalidLinkPercents.clear()
-			badLinks.clear()
+			clear_vars()
 		elif check_link(todo[0]): #If the link is invalid
 			del todo[0]
 			continue
@@ -445,58 +446,70 @@ while len(todo) != 0: #While there are links to check
 		badLinks.add(todo[0])
 		err_print(todo[0].encode('utf-8'))
 		
+		#Specific HTTP errors
+		if e == 'HTTP Error 429: Too Many Requests':
+			
 		if type(e) == urllib.error.HTTPError: #Bad HTTP Response
 			HTTPErrorCount += 1
 			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
 			err_log(todo[0], 'Bad Response', e)
+			del todo[0]
 		
+		#Other errors
 		elif type(e) in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 			err_log(todo[0], 'XMLSyntaxError', e)
+			del todo[0]
 		
 		elif type(e) == UnicodeError: #Error trying to convert foreign characters to Unicode
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
 			err_log(todo[0], 'UnicodeError', e)
+			del todo[0]
 		
 		elif type(e) == requests.exceptions.SSLError: #Invalid SSL certificate
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 			err_log(todo[0], 'SSLError', e)
+			del todo[0]
 		
 		elif type(e) == requests.exceptions.ConnectionError: #Error connecting to page
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 			err_log(todo[0], 'ConnectionError', e)
+			del todo[0]
 		
 		elif type(e) == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 			err_log(todo[0], 'TooManyRedirects', e)
+			del todo[0]
 		
 		elif type(e) == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
 			err_log(todo[0], 'ContentDecodingError', e)
+			del todo[0]
 		
 		elif type(e) == OSError:
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
 			err_log(todo[0], 'OSError', e)
+			del todo[0]
 		
 		else: #Any other error
 			newErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
 			err_log(todo[0], 'Unknown', e)
+			del todo[0]
 			if raiseErrors:
 				raise
 			else:
 				continue
 		
 		err_saved_message()
-		del todo[0]
-	else:
+	finally:
 		counter += 1
 		#For debugging purposes; to check one link and then stop
 		# save_files(words)
