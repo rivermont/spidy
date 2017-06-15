@@ -189,7 +189,7 @@ def err_saved_message():
 	'''
 	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
 
-def err_log(error1, error2):
+def err_log(url, error1, error2):
 	'''
 	Saves the triggering error to the log file.
 	error1 is the trimmed error source.
@@ -199,11 +199,11 @@ def err_log(error1, error2):
 	with open(logFile, 'a') as log:
 		try:
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, todo[0], error1, type(error2), str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, url, error1, type(error2), str(error2)))
 			log.write(endLog) #Write closing line
 		except: #If an error (usually UnicodeEncodeError), write encoded log
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(todo[0].encode('utf-8')), error1, type(error2), str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(url.encode('utf-8')), error1, type(error2), str(error2)))
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -378,7 +378,7 @@ else:
 	if len(todo) == 0:
 		todo += start
 
-	after = before - len(todo)
+	after = abs(before - len(todo))
 	removedCount += after
 	print('[{0}] [spidy] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
 
@@ -444,58 +444,58 @@ while len(todo) != 0: #While there are links to check
 	except Exception as e:
 		badLinks.add(todo[0])
 		err_print(todo[0].encode('utf-8'))
-		del todo[0]
 		
 		if type(e) == urllib.error.HTTPError: #Bad HTTP Response
 			HTTPErrorCount += 1
 			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
-			err_log('Bad Response', e)
+			err_log(todo[0], 'Bad Response', e)
 		
 		elif type(e) in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
-			err_log('XMLSyntaxError', e)
+			err_log(todo[0], 'XMLSyntaxError', e)
 		
 		elif type(e) == UnicodeError: #Error trying to convert foreign characters to Unicode
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
-			err_log('UnicodeError', e)
+			err_log(todo[0], 'UnicodeError', e)
 		
 		elif type(e) == requests.exceptions.SSLError: #Invalid SSL certificate
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-			err_log('SSLError', e)
+			err_log(todo[0], 'SSLError', e)
 		
 		elif type(e) == requests.exceptions.ConnectionError: #Error connecting to page
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-			err_log('ConnectionError', e)
+			err_log(todo[0], 'ConnectionError', e)
 		
 		elif type(e) == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
-			err_log('TooManyRedirects', e)
+			err_log(todo[0], 'TooManyRedirects', e)
 		
 		elif type(e) == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
-			err_log('ContentDecodingError', e)
+			err_log(todo[0], 'ContentDecodingError', e)
 		
 		elif type(e) == OSError:
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
-			err_log('OSError', e)
+			err_log(todo[0], 'OSError', e)
 		
 		else: #Any other error
 			newErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
-			err_log('Unknown', e)
+			err_log(todo[0], 'Unknown', e)
 			if raiseErrors:
 				raise
 			else:
 				continue
 		
 		err_saved_message()
+		del todo[0]
 	else:
 		counter += 1
 		#For debugging purposes; to check one link and then stop
