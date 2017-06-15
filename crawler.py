@@ -448,7 +448,8 @@ while len(todo) != 0: #While there are links to check
 		
 		#Specific HTTP errors
 		if e == 'HTTP Error 429: Too Many Requests':
-			
+			print('[{0}] [spidy] [ERR]: HTTP Error 426 Too Many Requests'.format(get_time()))
+			err_log(todo[0], 'Too Many Requests', e)
 		if type(e) == urllib.error.HTTPError: #Bad HTTP Response
 			HTTPErrorCount += 1
 			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
@@ -510,6 +511,7 @@ while len(todo) != 0: #While there are links to check
 		
 		err_saved_message()
 	finally:
+		todo = list(set(todo)) #Removes duplicates and shuffles links so trees don't form.
 		counter += 1
 		#For debugging purposes; to check one link and then stop
 		# save_files(words)
