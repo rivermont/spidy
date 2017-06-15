@@ -199,11 +199,11 @@ def err_log(error1, error2):
 	with open(logFile, 'a') as log:
 		try:
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, todo[0], error1, str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, todo[0], error1, type(error2), str(error2)))
 			log.write(endLog) #Write closing line
 		except: #If an error (usually UnicodeEncodeError), write encoded log
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, str(todo[0].encode('utf-8')), error1, str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(todo[0].encode('utf-8')), error1, type(error2), str(error2)))
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -290,7 +290,7 @@ elif overwrite in yes: #Yes
 elif overwrite in no: #No
 	overwrite = False
 else: #Invalid input
-	raise InputError('Please enter a valid input. (yes/no)')
+	raise SyntaxError('Please enter a valid input. (yes/no)')
 
 raiseErrors = input('Should spidy raise NEW errors and stop crawling? (y/n)')
 if not bool(raiseErrors):
@@ -300,7 +300,7 @@ elif raiseErrors in yes:
 elif raiseErrors in no:
 	raiseErrors = False
 else:
-	raise InputError('Please enter a valid input. (yes/no)')
+	raise SyntaxError('Please enter a valid input. (yes/no)')
 
 zipFiles = input('Should spidy zip saved documents when autosaving? (y/n)')
 if not bool(zipFiles):
@@ -310,7 +310,7 @@ elif zipFiles in yes:
 elif zipFiles in no:
 	zipFiles = False
 else:
-	raise InputError('Please enter a valid input. (yes/no)')
+	raise SyntaxError('Please enter a valid input. (yes/no)')
 
 todoFile = input('Location of the TODO save file:')
 if not bool(todoFile):
@@ -346,7 +346,7 @@ saveCount = input('After how many queried links should spidy autosave? (default 
 if not bool(saveCount):
 	saveCount = 100
 elif not saveCount.isdigit():
-	raise InputError('Please enter a valid integer.')
+	raise SyntaxError('Please enter a valid integer.')
 else:
 	saveCount = saveCount
 
