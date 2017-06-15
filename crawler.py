@@ -15,7 +15,7 @@ startTime = int(t.time())
 def get_time():
 	return t.strftime('%H:%M:%S')
 
-print('[{0}] [INIT]: Importing libraries...'.format(get_time()))
+print('[{0}] [spidy] [INIT]: Importing libraries...'.format(get_time()))
 
 #Import required libraries
 import requests
@@ -31,7 +31,7 @@ from os import makedirs
 ## FUNCTIONS ##
 ###############
 
-print('[{0}] [INIT]: Creating functions...'.format(get_time()))
+print('[{0}] [spidy] [INIT]: Creating functions...'.format(get_time()))
 
 def check_link(item):
 	'''
@@ -101,12 +101,12 @@ def save_files(wordList):
 	with open(todoFile, 'w') as todoList:
 		for site in todo:
 			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
-		print('[{0}] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
+		print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	
 	with open(doneFile, 'w') as doneList:
 		for site in done:
 			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
-		print('[{0}] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
+		print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
 	
 	update_file(wordFile, wordList, 'words')
 	update_file(badFile, badLinks, 'bad links')
@@ -139,7 +139,7 @@ def update_file(file, content, type):
 		for item in content:
 			f.write('\n' + item) #Write all words to file
 		f.truncate() #Delete everything in file beyond what has been written (old stuff)
-	print('[{0}] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
+	print('[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
 
 def info_log():
 	'''
@@ -150,13 +150,13 @@ def info_log():
 	
 	#Print to console
 	time = get_time()
-	print('[{0}] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
-	print('[{0}] [LOG]: {1} links in TODO.'.format(time, len(todo)))
-	print('[{0}] [LOG]: {1} links in done.'.format(time, len(done)))
-	print('[{0}] [LOG]: {1} bad links removed.'.format(time, removedCount))
-	print('[{0}] [LOG]: {1}% of links were bad.'.format(time, invalidLinkPercent))
-	print('[{0}] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
-	print('[{0}] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
+	print('[{0}] [spidy] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
+	print('[{0}] [spidy] [LOG]: {1} links in TODO.'.format(time, len(todo)))
+	print('[{0}] [spidy] [LOG]: {1} links in done.'.format(time, len(done)))
+	print('[{0}] [spidy] [LOG]: {1} bad links removed.'.format(time, removedCount))
+	print('[{0}] [spidy] [LOG]: {1}% of links were bad.'.format(time, invalidLinkPercent))
+	print('[{0}] [spidy] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
+	print('[{0}] [spidy] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	
 	#Save to logFile
 	fullTime = t.strftime('%H:%M:%S, %A %b %Y') #Get current time
@@ -181,13 +181,13 @@ def err_print(item):
 	'''
 	Announce that an error occurred.
 	'''
-	print('[{0}] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
+	print('[{0}] [spidy] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
 
 def err_saved_message():
 	'''
 	Announce that error was successfully saved to log.
 	'''
-	print('[{0}] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
+	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), logFile))
 
 def err_log(error1, error2):
 	'''
@@ -222,14 +222,14 @@ def zip(out_fileName, dir):
 	shutil.make_archive(str(out_fileName), 'zip', dir) #Zips files
 	shutil.rmtree(dir) #Deletes folder
 	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
-	print('[{0}] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
+	print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 
 
 ##########
 ## INIT ##
 ##########
 
-print('[{0}] [INIT]: Creating variables...'.format(get_time()))
+print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
 
@@ -352,11 +352,11 @@ else:
 
 #Import saved TODO file data
 if overwrite:
-	print('[{0}] [INIT]: Creating save files...'.format(get_time()))
+	print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
 	todo = start
 	done = []
 else:
-	print('[{0}] [INIT]: Loading save files...'.format(get_time()))
+	print('[{0}] [spidy] [INIT]: Loading save files...'.format(get_time()))
 	with open(todoFile, 'r') as f:
 		todo = f.readlines()
 	todo = [x.strip() for x in todo]
@@ -365,7 +365,7 @@ else:
 		done = f.readlines()
 	done = [x.strip() for x in done]
 
-	print('[{0}] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
+	print('[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
 
 	before = len(todo)
 
@@ -380,11 +380,11 @@ else:
 
 	after = before - len(todo)
 	removedCount += after
-	print('[{0}] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
+	print('[{0}] [spidy] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
 
-print('[{0}] [INIT]: TODO first value: {1}'.format(get_time(), todo[0]))
+print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), todo[0]))
 
-print('[{0}] [INIT]: Starting crawler...'.format(get_time()))
+print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
 log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
 
 
@@ -395,11 +395,11 @@ log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
 while len(todo) != 0: #While there are links to check
 	try:
 		if newErrorCount >= maxNewErrors or knownErrorCount >= maxKnownErrors or HTTPErrorCount >= maxHTTPErrors: #If too many errors have occurred
-			print('[{0}] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 			save_files(words)
-			exit()
+			sys.exit()
 		elif counter >= saveCount: #If it's time for an autosave
-			print('[{0}] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
+			print('[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
 			save_files(words)
 			info_log()
 			if zipFiles:
@@ -432,64 +432,63 @@ while len(todo) != 0: #While there are links to check
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
-			print('[{0}] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
+			print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
 			del todo[0]#Remove crawled link from TODO list
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt: #If the user does ^C
-		print('[{0}] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
+		print('[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
 		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 		save_files(words)
-		exit()
-	except BaseException as e:
-		print(e)
+		sys.exit()
+	except Exception as e:
 		badLinks.add(todo[0])
 		err_print(todo[0].encode('utf-8'))
 		del todo[0]
 		
-		if e == urllib.error.HTTPError: #Bad HTTP Response
+		if type(e) == urllib.error.HTTPError: #Bad HTTP Response
 			HTTPErrorCount += 1
-			print('[{0}] [ERR]: Bad HTTP response.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
 			err_log('Bad Response', e)
 		
-		elif e in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
+		elif type(e) in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
 			knownErrorCount += 1
-			print('[{0}] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 			err_log('XMLSyntaxError', e)
 		
-		elif e == UnicodeError: #Error trying to convert foreign characters to Unicode
+		elif type(e) == UnicodeError: #Error trying to convert foreign characters to Unicode
 			knownErrorCount += 1
-			print('[{0}] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
 			err_log('UnicodeError', e)
 		
-		elif e == requests.exceptions.SSLError: #Invalid SSL certificate
+		elif type(e) == requests.exceptions.SSLError: #Invalid SSL certificate
 			knownErrorCount += 1
-			print('[{0}] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 			err_log('SSLError', e)
 		
-		elif e == requests.exceptions.ConnectionError: #Error connecting to page
+		elif type(e) == requests.exceptions.ConnectionError: #Error connecting to page
 			knownErrorCount += 1
-			print('[{0}] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 			err_log('ConnectionError', e)
 		
-		elif e == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
+		elif type(e) == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
 			knownErrorCount += 1
-			print('[{0}] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 			err_log('TooManyRedirects', e)
 		
-		elif e == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
+		elif type(e) == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
 			knownErrorCount += 1
-			print('[{0}] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
 			err_log('ContentDecodingError', e)
 		
-		elif e == OSError:
+		elif type(e) == OSError:
 			knownErrorCount += 1
-			print('[{0}] [ERR]: An OSError occurred.'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
 			err_log('OSError', e)
 		
 		else: #Any other error
 			newErrorCount += 1
-			print('[{0}] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
+			print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
 			err_log('Unknown', e)
 			if raiseErrors:
 				raise
@@ -501,7 +500,7 @@ while len(todo) != 0: #While there are links to check
 		counter += 1
 		#For debugging purposes; to check one link and then stop
 		# save_files(words)
-		# exit()
+		# sys.exit()
 
-print('[{0}] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
+print('[{0}] [spidy] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
 save_files(words)
