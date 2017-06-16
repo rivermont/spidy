@@ -113,12 +113,12 @@ def save_files(wordList):
 	'''
 	with open(todoFile, 'w') as todoList:
 		for site in todo:
-			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
+			todoList.write(site + '\n') #Save TODO list
 	print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	
 	with open(doneFile, 'w') as doneList:
 		for site in done:
-			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
+			doneList.write(site + '\n') #Save done list
 	print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
 	
 	update_file(wordFile, wordList, 'words')
