@@ -108,17 +108,17 @@ def make_words(page):
 
 def save_files(wordList):
 	'''
-	Saves the TODO and done lists into their respective files.
+	Saves the TODO, done, word, and bad lists into their respective files.
 	Also logs the action to the console.
 	'''
 	with open(todoFile, 'w') as todoList:
 		for site in todo:
-			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
+			todoList.write(site + '\n') #Save TODO list
 	print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	
 	with open(doneFile, 'w') as doneList:
 		for site in done:
-			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
+			doneList.write(site + '\n') #Save done list
 	print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
 	
 	update_file(wordFile, wordList, 'words')
@@ -210,13 +210,8 @@ def err_log(url, error1, error2):
 	'''
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	with open(logFile, 'a') as log:
-		try:
-			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, url, error1, str(error2)[8:-2], str(error2)))
-			log.write(endLog) #Write closing line
-		except: #If an error (usually UnicodeEncodeError), write encoded log
-			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(url.encode('utf-8')), error1, str(error2)[8:-2], str(error2)))
+		log.write('\n\n=====ERROR=====') #Write opening line
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, url, error1, str(error2)[8:-2], str(error2)))
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -450,7 +445,7 @@ while len(todo) != 0: #While there are links to check
 		sys.exit()
 	except Exception as e:
 		badLinks.add(todo[0])
-		err_print(todo[0].encode('utf-8'))
+		err_print(todo[0])
 		
 		#Specific HTTP errors
 		if e == 'HTTP Error 429: Too Many Requests':
