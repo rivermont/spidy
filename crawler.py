@@ -212,11 +212,11 @@ def err_log(url, error1, error2):
 	with open(logFile, 'a') as log:
 		try:
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, url, error1, type(error2), str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, url, error1, str(error2)[8:-2], str(error2)))
 			log.write(endLog) #Write closing line
 		except: #If an error (usually UnicodeEncodeError), write encoded log
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(url.encode('utf-8')), error1, str(type(error2)), str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(url.encode('utf-8')), error1, str(error2)[8:-2], str(error2)))
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -295,9 +295,9 @@ no = ['n', 'no', 'N', 'No']
 
 #Getting arguments
 
-print('Please enter the following arguments. Leave blank to use the default values.')
+print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 
-overwrite = input('Should spidy load from existing save files? (y/n)')
+overwrite = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n)'.format(get_time()))
 if not bool(overwrite): #Use default value
 	overwrite = False
 elif overwrite in yes: #Yes
@@ -305,9 +305,9 @@ elif overwrite in yes: #Yes
 elif overwrite in no: #No
 	overwrite = False
 else: #Invalid input
-	raise SyntaxError('Please enter a valid input. (yes/no)')
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-raiseErrors = input('Should spidy raise NEW errors and stop crawling? (y/n)')
+raiseErrors = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n)'.format(get_time()))
 if not bool(raiseErrors):
 	raiseErrors = False
 elif raiseErrors in yes:
@@ -315,9 +315,9 @@ elif raiseErrors in yes:
 elif raiseErrors in no:
 	raiseErrors = False
 else:
-	raise SyntaxError('Please enter a valid input. (yes/no)')
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-zipFiles = input('Should spidy zip saved documents when autosaving? (y/n)')
+zipFiles = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
 if not bool(zipFiles):
 	zipFiles = True
 elif zipFiles in yes:
@@ -325,43 +325,43 @@ elif zipFiles in yes:
 elif zipFiles in no:
 	zipFiles = False
 else:
-	raise SyntaxError('Please enter a valid input. (yes/no)')
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-todoFile = input('Location of the TODO save file:')
+todoFile = input('[{0}] [spidy] [INPUT]: Location of the TODO save file:'.format(get_time()))
 if not bool(todoFile):
 	todoFile = 'crawler_todo.txt'
 else:
 	todoFile = todoFile
 
-doneFile = input('Location of the done save file:')
+doneFile = input('[{0}] [spidy] [INPUT]: Location of the done save file:'.format(get_time()))
 if not bool(doneFile):
 	doneFile = 'crawler_done.txt'
 else:
 	doneFile = doneFile
 
-logFile = input('Location of spidy\'s log file:')
+logFile = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file:'.format(get_time()))
 if not bool(logFile):
 	logFile = 'crawler_log.txt'
 else:
 	logFile = logFile
 
-wordFile = input('Location of the word save file:')
+wordFile = input('[{0}] [spidy] [INPUT]: Location of the word save file:'.format(get_time()))
 if not bool(wordFile):
 	wordFile = 'crawler_words.txt'
 else:
 	wordFile = wordFile
 
-badFile = input('Location of the bad link save file:')
+badFile = input('[{0}] [spidy] [INPUT]: Location of the bad link save file:'.format(get_time()))
 if not bool(badFile):
 	badFile = 'crawler_bad.txt'
 else:
 	badFile = badFile
 
-saveCount = input('After how many queried links should spidy autosave? (default 100)')
+saveCount = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
 if not bool(saveCount):
 	saveCount = 100
 elif not saveCount.isdigit():
-	raise SyntaxError('Please enter a valid integer.')
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
 else:
 	saveCount = saveCount
 
