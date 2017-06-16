@@ -22,9 +22,8 @@ import requests
 import sys
 import urllib.request
 import shutil
-from lxml import html
-from lxml import etree
-from os import makedirs
+from lxml import html, etree
+from os import makedirs, path
 
 
 ###############
@@ -32,6 +31,9 @@ from os import makedirs
 ###############
 
 print('[{0}] [spidy] [INIT]: Creating functions...'.format(get_time()))
+
+def get_full_time():
+	return t.strftime('%H:%M:%S, %A %b %Y')
 
 def check_link(item):
 	'''
@@ -41,8 +43,8 @@ def check_link(item):
 	#Shortest possible url being 'http://a.b'
 	if len(item) < 10:
 		return True
-	#Links longer than 250 characters usually are useless or full of foreign characters
-	elif len(item) > 250:
+	#Links longer than 255 characters usually are useless or full of foreign characters, and will also cause problems when saving
+	elif len(item) > 255:
 		return True
 	#Must be an http or https link
 	elif item[0:4] != 'http':
@@ -80,6 +82,17 @@ def check_extension(path):
 		return True
 	else:
 		return False
+
+def check_path(filePath):
+	'''
+	Checks the path of a given filename to see whether it will cause errors when saving.
+	Returns True if path is valid.
+	Returns False if path is invalid.
+	'''
+	if len(filePath) > 256:
+		return False
+	else:
+		return True
 
 def make_words(page):
 	'''
@@ -126,9 +139,13 @@ def save_page(url):
 		ext = 'html'
 	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
-	
-	with urllib.request.urlopen(url) as response, open('{0}/saved/{1}'.format(crawlerLocation, fileName), 'wb+') as saveFile:
-		shutil.copyfileobj(response, saveFile)
+	path = '{0}/saved/{1}'.format(crawlerLocation, fileName)
+	if check_path(path):
+		with urllib.request.urlopen(url) as response, open(path, 'wb+') as saveFile:
+			shutil.copyfileobj(response, saveFile)
+	else:
+		log('\nLINK: {0}\nLOG: Filename too long.'.format(url))
+		print('[{0}] [spidy] [ERR]: Filename too long, page will not be saved.'.format(get_time()))
 
 def update_file(file, content, type):
 	with open(file, 'r+') as f: #Open save file for reading and writing
@@ -159,21 +176,19 @@ def info_log():
 	print('[{0}] [spidy] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	
 	#Save to logFile
-	fullTime = t.strftime('%H:%M:%S, %A %b %Y') #Get current time
 	with open(logFile, 'a') as log:
 		log.write('\n\n====AUTOSAVE===') #Write opening line
-		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(time, sinceStart, len(todo), len(done), removedCount, invalidLinkPercent, newErrorCount, knownErrorCount))
+		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(get_full_time(), sinceStart, len(todo), len(done), removedCount, invalidLinkPercent, newErrorCount, knownErrorCount))
 		log.write(endLog) #Write closing line
 
 def log(message):
 	'''
 	Logs a single message to the logFile.
-	Prints message verbatim, so message must formatted correctly outside of the function call.
+	Prints message verbatim, so message must be formatted correctly outside of the function call.
 	'''
-	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	with open(logFile, 'a') as log:
 		log.write('\n\n======LOG======') #Write opening line
-		log.write('\nTIME: {0}'.format(time)) #Write current time
+		log.write('\nTIME: {0}'.format(get_full_time())) #Write current time
 		log.write(message) #Write message
 		log.write(endLog) #Write closing line
 
@@ -203,7 +218,7 @@ def err_log(url, error1, error2):
 			log.write(endLog) #Write closing line
 		except: #If an error (usually UnicodeEncodeError), write encoded log
 			log.write('\n\n=====ERROR=====') #Write opening line
-			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(url.encode('utf-8')), error1, type(error2), str(error2)))
+			log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, str(url.encode('utf-8')), error1, str(type(error2)), str(error2)))
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -246,7 +261,7 @@ headers = {
 }
 
 #Folder location of spidy
-crawlerLocation = 'C:/Users/Will Bennett/Documents/Code/web-crawler'
+crawlerLocation = path.dirname(path.realpath(__file__))
 
 #Fallback pages in case the TODO file is empty
 start = [
@@ -390,7 +405,7 @@ else:
 print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), todo[0]))
 
 print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
-log('\nTIME: {0}\nLOG: Successfully started crawler.'.format(get_time()))
+log('LOG: Successfully started crawler.')
 
 
 #########
