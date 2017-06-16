@@ -114,12 +114,12 @@ def save_files(wordList):
 	with open(todoFile, 'w') as todoList:
 		for site in todo:
 			todoList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save TODO list
-		print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
+	print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	
 	with open(doneFile, 'w') as doneList:
 		for site in done:
 			doneList.write(str(site.encode('utf-8'))[2:-1] + '\n') #Save done list
-		print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
+	print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
 	
 	update_file(wordFile, wordList, 'words')
 	update_file(badFile, badLinks, 'bad links')
@@ -236,11 +236,6 @@ def zip(out_fileName, dir):
 	shutil.rmtree(dir) #Deletes folder
 	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
 	print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
-
-def clear_vars():
-	counter = 0
-	words.clear()
-	badLinks.clear()
 
 ##########
 ## INIT ##
@@ -419,7 +414,10 @@ while len(todo) != 0: #While there are links to check
 			info_log()
 			if zipFiles:
 				zip(t.time(), 'saved/')
-			clear_vars()
+			#Reset variables
+			counter = 0
+			words.clear()
+			badLinks.clear()
 		elif check_link(todo[0]): #If the link is invalid
 			del todo[0]
 			continue
@@ -440,7 +438,7 @@ while len(todo) != 0: #While there are links to check
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
-			print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
+			print('[{0}] [spidy] [CRWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
 			del todo[0]#Remove crawled link from TODO list
 			counter += 1
 	
