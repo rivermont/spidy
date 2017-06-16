@@ -163,11 +163,6 @@ def info_log():
 	Logs important information to the console and log file.
 	'''
 	sinceStart = int(t.time() - startTime)
-	try:
-		invalidLinkPercent = int(sum(invalidLinkPercents) / len(invalidLinkPercents))
-	except ZeroDivisionError:
-		print('[{0}] [spidy] [INFO]: Congrats! No bad links so far!'.format(get_time()))
-		invalidLinkPercent = 0
 	
 	#Print to console
 	time = get_time()
@@ -175,14 +170,13 @@ def info_log():
 	print('[{0}] [spidy] [LOG]: {1} links in TODO.'.format(time, len(todo)))
 	print('[{0}] [spidy] [LOG]: {1} links in done.'.format(time, len(done)))
 	print('[{0}] [spidy] [LOG]: {1} bad links removed.'.format(time, removedCount))
-	print('[{0}] [spidy] [LOG]: {1}% of links were bad.'.format(time, invalidLinkPercent))
 	print('[{0}] [spidy] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
 	print('[{0}] [spidy] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	
 	#Save to logFile
 	with open(logFile, 'a') as log:
 		log.write('\n\n====AUTOSAVE===') #Write opening line
-		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nBAD: {5}%\nNEW ERRORS: {6}\nOLD ERRORS: {7}'.format(get_full_time(), sinceStart, len(todo), len(done), removedCount, invalidLinkPercent, newErrorCount, knownErrorCount))
+		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(get_full_time(), sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
 		log.write(endLog) #Write closing line
 
 def log(message):
@@ -246,7 +240,6 @@ def zip(out_fileName, dir):
 def clear_vars():
 	counter = 0
 	words.clear()
-	invalidLinkPercents.clear()
 	badLinks.clear()
 
 ##########
@@ -256,8 +249,6 @@ def clear_vars():
 print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
-
-invalidLinkPercents = []
 
 #User-Agent Header String
 headers = {
@@ -440,10 +431,7 @@ while len(todo) != 0: #While there are links to check
 			links = []
 			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 				links.append(link)
-			before = len(links)
 			links = (list(set(links))) #Remove duplicates and shuffle links
-			after = len(links)
-			invalidLinkPercents.append(get_avg(before, after)) #Get percentage of links removed
 			for link in links: #Check for invalid links
 				if check_link(link):
 					links.remove(link)
@@ -454,6 +442,7 @@ while len(todo) != 0: #While there are links to check
 			save_page(todo[0])
 			print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
 			del todo[0]#Remove crawled link from TODO list
+			counter += 1
 	
 	#ERROR HANDLING
 	except KeyboardInterrupt: #If the user does ^C
@@ -529,9 +518,9 @@ while len(todo) != 0: #While there are links to check
 				continue
 		
 		err_saved_message()
+		counter += 1
 	finally:
 		todo = list(set(todo)) #Removes duplicates and shuffles links so trees don't form.
-		counter += 1
 		#For debugging purposes; to check one link and then stop
 		# save_files(words)
 		# sys.exit()
