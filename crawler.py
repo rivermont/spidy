@@ -163,7 +163,11 @@ def info_log():
 	Logs important information to the console and log file.
 	'''
 	sinceStart = int(t.time() - startTime)
-	invalidLinkPercent = int(sum(invalidLinkPercents) / len(invalidLinkPercents))
+	try:
+		invalidLinkPercent = int(sum(invalidLinkPercents) / len(invalidLinkPercents))
+	except ZeroDivisionError:
+		print('[{0}] [spidy] [INFO]: Congrats! No bad links so far!'.format(get_time()))
+		invalidLinkPercent = 0
 	
 	#Print to console
 	time = get_time()
