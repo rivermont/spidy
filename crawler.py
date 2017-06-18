@@ -429,7 +429,7 @@ while len(todo) != 0: #While there are links to check
 				if check_link(link):
 					links.remove(link)
 					removedCount += 1
-				link = link.encode('utf-8') #Encode each link to UTF-8 to minimize errors
+				link = link.encode('utf-8', 'ignore') #Encode each link to UTF-8 to minimize errors
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
@@ -444,7 +444,7 @@ while len(todo) != 0: #While there are links to check
 		save_files(words)
 		sys.exit()
 	except Exception as e:
-		link = todo[0].encode('utf-8')
+		link = todo[0].encode('utf-8', 'ignore')
 		badLinks.add(link)
 		err_print(link)
 		
