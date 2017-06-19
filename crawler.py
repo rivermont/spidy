@@ -249,11 +249,7 @@ headers = {
 crawlerLocation = path.dirname(path.realpath(__file__))
 
 #Fallback pages in case the TODO file is empty
-start = [
-'https://en.wikipedia.org/wiki/Main_Page',
-'https://www.reddit.com/',
-'https://www.google.com/'
-]
+start = ['https://botw.org/']
 
 #Pages that cause problems with the crawler in some way
 killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
@@ -404,15 +400,17 @@ while len(todo) != 0: #While there are links to check
 			save_files(words)
 			sys.exit()
 		elif counter >= saveCount: #If it's time for an autosave
-			print('[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
-			save_files(words)
-			info_log()
-			if zipFiles:
-				zip(t.time(), 'saved/')
-			#Reset variables
-			counter = 0
-			words.clear()
-			badLinks.clear()
+			try:
+				print('[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(counter)))
+				save_files(words)
+				info_log()
+				if zipFiles:
+					zip(t.time(), 'saved/')
+			finally:
+				#Reset variables
+				counter = 0
+				words.clear()
+				badLinks.clear()
 		elif check_link(todo[0]): #If the link is invalid
 			del todo[0]
 			continue
