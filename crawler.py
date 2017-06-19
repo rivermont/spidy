@@ -155,6 +155,7 @@ def save_page(url):
 	else:
 		log('\nLINK: {0}\nLOG: Filename too long.'.format(url))
 		print('[{0}] [spidy] [ERR]: Filename too long, page will not be saved.'.format(get_time()))
+		err_saved_message()
 
 def update_file(file, content, type):
 	with open(file, 'r+') as f: #Open save file for reading and writing
@@ -221,7 +222,7 @@ def err_log(url, error1, error2):
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
 	with open(logFile, 'a') as log:
 		log.write('\n\n=====ERROR=====') #Write opening line
-		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nTYPE: {3}\nEXT: {4}'.format(time, url, error1, str(error2)[8:-2], str(error2)))
+		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, url, error1, str(error2)))
 		log.write(endLog) #Write closing line
 
 def get_avg(state1, state2):
@@ -320,7 +321,11 @@ directories = [
 ]
 
 #Pages that cause problems with the crawler in some way
-killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
+killList = [
+'http://scores.usaultimate.org/',
+'https://web.archive.org/web/',
+'https://therapists.psychologytoday.com/rms/prof_results.php'
+]
 
 #Empty set for error-causing links
 badLinks = set([])
