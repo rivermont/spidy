@@ -180,12 +180,13 @@ def info_log():
 	print('[{0}] [spidy] [LOG]: {1} links in done.'.format(time, len(done)))
 	print('[{0}] [spidy] [LOG]: {1} bad links removed.'.format(time, removedCount))
 	print('[{0}] [spidy] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
+	print('[{0}] [spidy] [LOG]: {1} HTTP errors encountered.'.format(time, HTTPErrorCount))
 	print('[{0}] [spidy] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
 	
 	#Save to logFile
 	with open(logFile, 'a') as log:
 		log.write('\n\n====AUTOSAVE===') #Write opening line
-		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nOLD ERRORS: {6}'.format(get_full_time(), sinceStart, len(todo), len(done), removedCount, newErrorCount, knownErrorCount))
+		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nHTTP ERRORS: {6}\nOLD ERRORS: {7}'.format(get_full_time(), sinceStart, len(todo), len(done), removedCount, newErrorCount, HTTPErrorCount, knownErrorCount))
 		log.write(endLog) #Write closing line
 
 def log(message):
