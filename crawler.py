@@ -136,7 +136,10 @@ def save_page(url):
 	'''
 	url = str(url) #Sanitize input
 	newUrl = url
-	ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension.
+	if newUrl[-1] == '.':
+		ext = 'html'
+	else:
+		ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension.
 	for char in '''"/\ ''': #Replace folders with -
 		newUrl = newUrl.replace(char, '-')
 	for char in '''|:?<>*''': #Remove illegal filename characters
