@@ -113,12 +113,18 @@ def save_files(wordList):
 	'''
 	with open(todoFile, 'w') as todoList:
 		for site in todo:
-			todoList.write(site + '\n') #Save TODO list
+			try:
+				todoList.write(site + '\n') #Save TODO list
+			except UnicodeError:
+				continue
 	print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), todoFile))
 	
 	with open(doneFile, 'w') as doneList:
 		for site in done:
-			doneList.write(site + '\n') #Save done list
+			try:
+				doneList.write(site + '\n') #Save done list
+			except UnicodeErorr:
+				continue
 	print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), doneFile))
 	
 	update_file(wordFile, wordList, 'words')
@@ -154,7 +160,7 @@ def update_file(file, content, type):
 		for item in fileContent:
 			content.update(item) #Otherwise add item to content (set)
 		for item in content:
-			f.write('\n' + item) #Write all words to file
+			f.write('\n' + str(item)) #Write all words to file
 		f.truncate() #Delete everything in file beyond what has been written (old stuff)
 	print('[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
 
