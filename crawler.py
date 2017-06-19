@@ -447,44 +447,45 @@ while len(todo) != 0: #While there are links to check
 		link = todo[0].encode('utf-8', 'ignore')
 		badLinks.add(link)
 		err_print(link)
+		errMRO = type(e).mro()
 		
-		if type(e) == urllib.error.HTTPError: #Bad HTTP Response
+		if urllib.error.HTTPError in errMRO: #Bad HTTP Response
 			HTTPErrorCount += 1
 			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
 			err_log(link, 'Bad Response', e)
 		
 		#Other errors
-		elif type(e) in (etree.XMLSyntaxError, etree.ParserError): #Error processing html/xml
+		elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
 			err_log(link, 'XMLSyntaxError', e)
 		
-		elif type(e) == UnicodeError: #Error trying to convert foreign characters to Unicode
+		elif UnicodeError in errMRO: #Error trying to convert foreign characters to Unicode
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
 			err_log(link, 'UnicodeError', e)
 		
-		elif type(e) == requests.exceptions.SSLError: #Invalid SSL certificate
+		elif requests.exceptions.SSLError in errMRO: #Invalid SSL certificate
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 			err_log(link, 'SSLError', e)
 		
-		elif type(e) == requests.exceptions.ConnectionError: #Error connecting to page
+		elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
 			err_log(link, 'ConnectionError', e)
 		
-		elif type(e) == requests.exceptions.TooManyRedirects: #Exceeded 30 redirects.
+		elif requests.exceptions.TooManyRedirects in errMRO: #Exceeded 30 redirects.
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 			err_log(link, 'TooManyRedirects', e)
 		
-		elif type(e) == requests.exceptions.ContentDecodingError: #Received response with content-encoding: gzip, but failed to decode it.
+		elif requests.exceptions.ContentDecodingError in errMRO: #Received response with content-encoding: gzip, but failed to decode it.
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
 			err_log(link, 'ContentDecodingError', e)
 		
-		elif type(e) == OSError:
+		elif OSError in errMRO:
 			knownErrorCount += 1
 			print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
 			err_log(link, 'OSError', e)
