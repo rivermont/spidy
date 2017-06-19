@@ -433,7 +433,7 @@ while len(todo) != 0: #While there are links to check
 			todo += links #Add scraped links to the TODO list
 			done.append(todo[0]) #Add crawled link to done list
 			save_page(todo[0])
-			print('[{0}] [spidy] [CRWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
+			print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), todo[0])) #Announce which link was crawled
 			del todo[0]#Remove crawled link from TODO list
 			counter += 1
 	
