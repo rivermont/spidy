@@ -258,8 +258,66 @@ headers = {
 #Folder location of spidy
 crawlerLocation = path.dirname(path.realpath(__file__))
 
-#Fallback pages in case the TODO file is empty
-start = ['https://botw.org/']
+#Web directories to use in case TODO file is empty
+directories = [
+'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
+'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
+# 'https://botw.org/',
+# 'http://greenstalk.com/',
+# 'http://www.directoryworld.net/',
+# 'https://www.somuch.com/',
+# 'http://www.jayde.com/',
+# 'http://dmoz.in.net/',
+# 'http://www.tsection.com/',
+# 'http://www.rakcha.com/',
+# 'http://www.joeant.com/',
+# 'http://www.splashdirectory.com/',
+# 'http://www.goguides.org/',
+# 'http://www.dataspear.com/',
+# 'http://www.zorg-directory.com/',
+# 'http://www.gimpsy.com/',
+# 'http://www.links2go.com/',
+# 'http://www.global-weblinks.com/',
+# 'http://www.skaffe.com/',
+# 'http://www.nextsbd.com/',
+# 'http://www.octopedia.com/',
+# 'http://www.info-listings.com/',
+# 'https://www.enquira.com/',
+# 'http://www.worldsiteindex.com/',
+# 'https://www.findwebsite.net/',
+# 'http://www.dir4uk.com/',
+# 'http://www.royallinkup.com/',
+# 'http://www.leadinglinkdirectory.com/',
+# 'http://www.visionwebseo.com/',
+# 'http://uklistingz.co.uk/',
+# 'http://www.webappsdirectory.com/',
+# 'http://xysyst.net/',
+# 'http://www.10directory.com/%E2%80%9C%20rel=',
+# 'http://www.sighbercafe.com/',
+# 'http://www.nipao.org/',
+# 'https://www.bestfreewebsites.net/',
+# 'http://www.linkdir.info/',
+# 'http://www.the-net-directory.com/',
+# 'http://www.nexusdirectory.com/',
+# www.247webdirectory.com
+# 'https://www.9sites.net/',
+# www.piseries.com
+# www.cipinet.com
+# 'http://www.synergy-directory.com/',
+# 'http://www.wikidweb.com/',
+# www.directoryfire.com
+# www.prolinkdirectory.com
+# www.amray.com
+# www.gainweb.org
+# www.the-web-directory.co.uk
+# 'http://www.submission4u.com/',
+# 'http://www.elitesitesdirectory.com/',
+# 'http://www.linkpedia.net/',
+# 'http://www.scrabblestop.com/dir/',
+# 'http://www.inteligentd.com/,',
+# 'http://www.pr3plus.com/',
+# 'http://www.suggest-url.net/'
+]
 
 #Pages that cause problems with the crawler in some way
 killList = ['http://scores.usaultimate.org/', 'https://web.archive.org/web/']
@@ -364,7 +422,7 @@ else:
 #Import saved TODO file data
 if overwrite:
 	print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
-	todo = start
+	todo = directories
 	done = []
 else:
 	print('[{0}] [spidy] [INIT]: Loading save files...'.format(get_time()))
@@ -385,9 +443,9 @@ else:
 		if check_link(link):
 			todo.remove(link)
 
-	#If TODO list is empty, add default start page
+	#If TODO list is empty, add default starting pages
 	if len(todo) == 0:
-		todo += start
+		todo += directories
 
 	after = abs(before - len(todo))
 	removedCount += after
