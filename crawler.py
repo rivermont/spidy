@@ -526,18 +526,18 @@ while len(TODO) != 0: #While there are links to check
 		sys.exit()
 	except Exception as e:
 		link = TODO[0].encode('utf-8', 'ignore')
-		BAD_LINKS.add(link)
 		err_print(link)
 		errMRO = type(e).mro()
 		
 		if str(e) == 'HTTP Error 429: Too Many Requests':
 			print('[{0}] [spidy] [ERR]: Too Many Requests.'.format(get_time()))
-			TODO += [TODO.pop(0)] #Move link to end of TODO list
+			TODO += TODO[0] #Move link to end of TODO list
 		
 		elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
 			HTTP_ERROR_COUNT += 1
 			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
 			err_log(link, 'Bad Response', e)
+			BAD_LINKS.add(link)
 		
 		#Other errors
 		elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
@@ -554,6 +554,7 @@ while len(TODO) != 0: #While there are links to check
 			KNOWN_ERROR_COUNT += 1
 			print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
 			err_log(link, 'SSLError', e)
+			BAD_LINKS.add(link)
 		
 		elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
 			KNOWN_ERROR_COUNT += 1
@@ -564,6 +565,7 @@ while len(TODO) != 0: #While there are links to check
 			KNOWN_ERROR_COUNT += 1
 			print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
 			err_log(link, 'TooManyRedirects', e)
+			BAD_LINKS.add(link)
 		
 		elif requests.exceptions.ContentDecodingError in errMRO: #Received response with content-encoding: gzip, but failed to decode it.
 			KNOWN_ERROR_COUNT += 1
@@ -574,6 +576,7 @@ while len(TODO) != 0: #While there are links to check
 			KNOWN_ERROR_COUNT += 1
 			print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
 			err_log(link, 'OSError', e)
+			BAD_LINKS.add(link)
 		
 		else: #Any other error
 			NEW_ERROR_COUNT += 1
