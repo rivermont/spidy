@@ -181,7 +181,7 @@ def info_log():
 	print('[{0}] [spidy] [LOG]: {1} links in done.'.format(time, len(done)))
 	print('[{0}] [spidy] [LOG]: {1} bad links removed.'.format(time, removedCount))
 	print('[{0}] [spidy] [LOG]: {1}/{2} new errors caught.'.format(time, newErrorCount, maxNewErrors))
-	print('[{0}] [spidy] [LOG]: {1}/{2} HTTP errors encountered.'.format(time, HTTPErrorCount, maxHTTPErorrs))
+	print('[{0}] [spidy] [LOG]: {1}/{2} HTTP errors encountered.'.format(time, HTTPErrorCount, maxHTTPErrors))
 	print('[{0}] [spidy] [LOG]: {1}/{2} known errors caught.'.format(time, knownErrorCount, maxKnownErrors))
 	
 	#Save to logFile
@@ -343,8 +343,8 @@ HTTPErrorCount = 0
 
 #Amount of errors allowed to happen before automatic shutdown
 maxNewErrors = 10
-maxKnownErrors = 20
-maxHTTPErrors = 50
+maxKnownErrors = 25
+maxHTTPErrors = 100
 
 #Line to print at the end of each logFile log
 endLog = '\n======END======'
@@ -378,7 +378,7 @@ else:
 
 zipFiles = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
 if not bool(zipFiles):
-	zipFiles = True
+	zipFiles = False
 elif zipFiles in yes:
 	zipFiles = True
 elif zipFiles in no:
