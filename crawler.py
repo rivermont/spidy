@@ -530,7 +530,11 @@ while len(TODO) != 0: #While there are links to check
 		err_print(link)
 		errMRO = type(e).mro()
 		
-		if urllib.error.HTTPError in errMRO: #Bad HTTP Response
+		if str(e) == 'HTTP Error 429: Too Many Requests':
+			print('[{0}] [spidy] [ERR]: Too Many Requests.'.format(get_time()))
+			TODO += [TODO.pop(0)] #Move link to end of TODO list
+		
+		elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
 			HTTP_ERROR_COUNT += 1
 			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
 			err_log(link, 'Bad Response', e)
