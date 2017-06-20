@@ -95,12 +95,13 @@ def check_path(filePath):
 	else:
 		return True
 
-def make_words(page):
+def make_words(site):
 	'''
 	Returns list of all valid words in page.
 	'''
-	page = str(page.content) #Get page content
+	page = str(site.content) #Get page content
 	wordList = page.split() #Split content into lits of words, as separated by spaces
+	del page
 	wordList = list(set(wordList)) #Remove duplicates
 	for word in wordList:
 		if check_word(word): #If word is invalid
