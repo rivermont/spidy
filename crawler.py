@@ -180,9 +180,9 @@ def info_log():
 	print('[{0}] [spidy] [LOG]: {1} links in TODO.'.format(time, len(todo)))
 	print('[{0}] [spidy] [LOG]: {1} links in done.'.format(time, len(done)))
 	print('[{0}] [spidy] [LOG]: {1} bad links removed.'.format(time, removedCount))
-	print('[{0}] [spidy] [LOG]: {1} new errors caught.'.format(time, newErrorCount))
-	print('[{0}] [spidy] [LOG]: {1} HTTP errors encountered.'.format(time, HTTPErrorCount))
-	print('[{0}] [spidy] [LOG]: {1} known errors caught.'.format(time, knownErrorCount))
+	print('[{0}] [spidy] [LOG]: {1}/{2} new errors caught.'.format(time, newErrorCount, maxNewErrors))
+	print('[{0}] [spidy] [LOG]: {1}/{2} HTTP errors encountered.'.format(time, HTTPErrorCount, maxHTTPErorrs))
+	print('[{0}] [spidy] [LOG]: {1}/{2} known errors caught.'.format(time, knownErrorCount, maxKnownErrors))
 	
 	#Save to logFile
 	with open(logFile, 'a') as log:
@@ -324,7 +324,7 @@ directories = [
 killList = [
 'http://scores.usaultimate.org/',
 'https://web.archive.org/web/',
-'https://therapists.psychologytoday.com/rms/prof_results.php'
+'psychologytoday.com/rms'
 ]
 
 #Empty set for error-causing links
