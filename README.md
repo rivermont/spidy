@@ -249,15 +249,23 @@ A Windows batch file to run the program.<br>
 ## master
 The stable, up-to-date branch.
 
+## function
+UNSTABLE branch for converting spidy from a script to a usable function.<br>
+Basically we're adding the
+
+> if __name__ == '__main'
+
+block and debugging that.
+
+## GUI-spidy
+We are currently working on a GUI for spidy.<br>
+For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
+
 ## tree-test
 Test branch to see how the crawler runs if allowed to crawl the link it just crawled, as opposed to picking a random one in TODO.
 
 ## FalconWarriorr-branch
 Falconwarriorr's development branch.
-
-## GUI-spidy
-We are currently working on a GUI for spidy.<br>
-For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
 
 ## saving-test
 The old development branch for implementing word saving.
