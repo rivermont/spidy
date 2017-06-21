@@ -541,7 +541,7 @@ def Run():
 	no = ['n', 'no', 'N', 'No']
 	
 	OVERWRITE, RAISE_ERRORS, ZIP_FILES, TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE, SAVE_COUNT = Get_Arguments()
-	Import_Files()
+	
 	TODO, DONE = Import_Files()
 	
 	print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
