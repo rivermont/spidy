@@ -150,37 +150,22 @@ Open `crawler.py` in your favorite text editor, and find line `225`:
 Change the folder path to the directory that spidy is located in.<br>
 If you do not change this, spidy will not be able to save pages and will stop after accumulating too many errors.
 
-### Command Arguments
-Spidy has 7 different command line arguments that control the behavior of the crawler.<br>
-Because of the way it's written, args are optional but you must do them in a set order.<br>
-You can do `1, 2, 3`, but not `1, 3, 4`.
+### Arguments
+On running, spidy will ask for input regarding its various arguments.<br>
+To run spidy with all of its defaults, use:
 
-> python crawler.py [overwrite] [raiseErrors] [zipFiles] [todoFile] [doneFile] [logFile] [wordFile] [saveCount]
-
-The defaults are `False`, `False`, `True`, `crawler_todo.txt`, `crawler_done.txt`, `crawler_log.txt`, `crawler_bad.txt`, `crawler_words.txt`, `100`.
-
-To run spidy with all of its default values, use
-
-> python crawler.py 'None' 'None' 'None' 'None' 'None' 'None' 'None' 'None' 'None'
-
- - overwrite (Bool): Whether to load from the save files or not. Spidy will always save to the save files.
- - raiseErrors (Bool): Whether to stop the script when an error occurs that it can't handle by default.
- - zipFiles (Bool): Whether to zip saved files or leave them in the saved/ folder.
- - todoFile (str): The location of the TODO file. Spidy will load from and save to this file.
- - doneFile (str): The location of the done file. Spidy will load from and save to this file.
- - logFile (str): The location of the log file. Spidy will save to this file, apppending logs to the end.
- - wordFile (str): The location of the words file. Spidy will load from and save to this file.
- - badFile (str): The location of the bad links file. Spidy will save to this file.
- - saveCount (int): The number of processed links after which to autosave.
+> python crawler.py Default
 
 ### Windows (Command Line)
-Use `cd` to navigate to the directory spidy's located in, then run the `makefiles.bat`.<br>
+Use `cd` to navigate to the directory spidy's located in, then run `makefiles.bat`.<br>
 This will create all of the necessary files if they don't already exist.
 
-> python crawler.py True False crawler_todo.txt crawler_done.txt crawler_log.txt 100
+> python crawler.py
+
+We like to use Windows Powershell, but spidy will work in either `cmd.exe` or Powershell.
 
 ### Windows (batch file)
-Use `cd` to navigate to spidy's directory and run the `makefiles.bat`.<br>
+Use `cd` to navigate to spidy's directory and run `makefiles.bat`.<br>
 This will create all of the necessary files if they don't already exist.<br>
 Then run `run.bat`.
 
@@ -201,7 +186,7 @@ Sample log after hitting the autosave cap.
 ![](/media/log.png?raw=true)
 
 ### Force Quit
-Sample log after performing a `^C` to force quit the crawler.
+Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 ![](/media/keyboardinterrupt.png?raw=true)
 
