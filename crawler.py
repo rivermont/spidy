@@ -324,13 +324,23 @@ elif INPUT in no:
 else:
 	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-IPNUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
 if not bool(INPUT):
 	ZIP_FILES = False
 elif INPUT in yes:
 	ZIP_FILES = True
 elif INPUT in no:
 	ZIP_FILES = False
+else:
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n)'.format(get_time()))
+if not bool(INPUT):
+	SAVE_WORDS = True
+elif INPUT in yes:
+	SAVE_WORDS = True
+elif INPUT in no:
+	SAVE_WORDS = False
 else:
 	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
@@ -351,12 +361,14 @@ if not bool(INPUT):
 	LOG_FILE = 'crawler_log.txt'
 else:
 	LOG_FILE = INPUT
-
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file:'.format(get_time()))
-if not bool(INPUT):
-	WORD_FILE = 'crawler_words.txt'
+if SAVE_WORDS:
+	INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file:'.format(get_time()))
+	if not bool(INPUT):
+		WORD_FILE = 'crawler_words.txt'
+	else:
+		WORD_FILE = INPUT
 else:
-	WORD_FILE = INPUT
+	WORD_FILE = ''
 
 INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file:'.format(get_time()))
 if not bool(INPUT):
@@ -418,7 +430,7 @@ def main():
 	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
 	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
-	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_COUNT
+	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
 	
@@ -449,8 +461,9 @@ def main():
 			#Run
 			else:
 				page = requests.get(TODO[0], headers=HEADERS) #Get page
-				wordList = make_words(page) #Get all words from page
-				WORDS.update(wordList) #Add words to word list
+				if SAVE_WORDS:
+					wordList = make_words(page) #Get all words from page
+					WORDS.update(wordList) #Add words to word list
 				links = []
 				for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
 					links.append(link)
