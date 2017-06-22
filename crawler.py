@@ -299,22 +299,22 @@ START = [
 'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
 ]
 
-yes = ['y', 'yes', 'Y', 'Yes']
-no = ['n', 'no', 'N', 'No']
+yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
+no = ['n', 'no', 'N', 'No', 'False', 'false']
 
 print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n)'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes)'.format(get_time()))
 if not bool(INPUT): #Use default value
 	OVERWRITE = False
 elif INPUT in yes: #Yes
-	OVERWRITE = True
-elif INPUT in no: #No
 	OVERWRITE = False
+elif INPUT in no: #No
+	OVERWRITE = True
 else: #Invalid input
 	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n)'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No)'.format(get_time()))
 if not bool(INPUT):
 	RAISE_ERRORS = False
 elif INPUT in yes:
@@ -324,7 +324,7 @@ elif INPUT in no:
 else:
 	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No)'.format(get_time()))
 if not bool(INPUT):
 	ZIP_FILES = False
 elif INPUT in yes:
@@ -334,7 +334,7 @@ elif INPUT in no:
 else:
 	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n)'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes)'.format(get_time()))
 if not bool(INPUT):
 	SAVE_WORDS = True
 elif INPUT in yes:
@@ -344,25 +344,25 @@ elif INPUT in no:
 else:
 	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file:'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt):'.format(get_time()))
 if not bool(INPUT):
 	TODO_FILE = 'crawler_todo.txt'
 else:
 	TODO_FILE = INPUT
 
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file:'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt):'.format(get_time()))
 if not bool(INPUT):
 	DONE_FILE = 'crawler_done.txt'
 else:
 	DONE_FILE = INPUT
 
-INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file:'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file (Default: crawler_log.txt):'.format(get_time()))
 if not bool(INPUT):
 	LOG_FILE = 'crawler_log.txt'
 else:
 	LOG_FILE = INPUT
 if SAVE_WORDS:
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file:'.format(get_time()))
+	INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt)'.format(get_time()))
 	if not bool(INPUT):
 		WORD_FILE = 'crawler_words.txt'
 	else:
@@ -370,7 +370,7 @@ if SAVE_WORDS:
 else:
 	WORD_FILE = ''
 
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file:'.format(get_time()))
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt):'.format(get_time()))
 if not bool(INPUT):
 	BAD_FILE = 'crawler_bad.txt'
 else:
@@ -476,7 +476,10 @@ def main():
 				TODO += links #Add scraped links to the TODO list
 				DONE.append(TODO[0]) #Add crawled link to done list
 				save_page(TODO[0])
-				print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
+				if SAVE_WORDS:
+					print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
+				else:
+					print('[{0}] [spidy] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), TODO[0])) #Announce which link was crawled
 				del TODO[0]#Remove crawled link from TODO list
 				COUNTER += 1
 		
