@@ -247,9 +247,9 @@ def zip(out_fileName, dir):
 	makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
 	print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 
-##########
-## INIT ##
-##########
+#########
+## RUN ##
+#########
 
 def Get_Arguments():
 	print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
@@ -327,7 +327,7 @@ def Get_Arguments():
 	
 	return OVERWRITE, RAISE_ERRORS, ZIP_FILES, TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE, SAVE_COUNT
 
-def Import_Files():
+def Import_Files(OVERWRITE, TODO_FILE, DONE_FILE, REMOVED_COUNT):
 	#Import saved TODO file data
 	if OVERWRITE:
 		print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
@@ -490,7 +490,7 @@ def Work():
 	print('[{0}] [spidy] [END]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
 	save_files(WORDS)
 
-def Run():
+def main():
 	#Initialize required variables
 	print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 	
@@ -542,15 +542,16 @@ def Run():
 	
 	OVERWRITE, RAISE_ERRORS, ZIP_FILES, TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE, SAVE_COUNT = Get_Arguments()
 	
-	TODO, DONE = Import_Files()
+	TODO, DONE = Import_Files(OVERWRITE, TODO_FILE, DONE_FILE, REMOVED_COUNT, DONE)
 	
 	print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
 	
 	print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
 	log('LOG: Successfully started crawler.')
-
+	
+	Work()
 
 if __name__ == '__main__':
-	Run()
+	main()
 else:
-	print('[{0}] [spidy] [IMPORT]: Successfully imported spidy Web Crawler.'.format(get_time()))
+	print('[{0}] [spidy] [INIT]: Successfully imported spidy Web Crawler.'.format(get_time()))
