@@ -250,232 +250,228 @@ def zip(out_fileName, dir):
 ##########
 ## INIT ##
 ##########
+
+print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
+
+#Initialize required variables
+
+#User-Agent Header String
+HEADERS = {
+'User-Agent': 'Mozilla/5.0 (compatible; spidy (bot, +https://github.com/rivermont/spidy))'
+}
+
+#Folder location of spidy
+CRAWLER_DIR = path.dirname(path.realpath(__file__))
+
+#Web directories to use in case TODO file is empty
+START = [
+'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
+'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
+# 'https://botw.org/',
+# 'http://greenstalk.com/',
+# 'http://www.directoryworld.net/',
+# 'https://www.somuch.com/',
+# 'http://www.jayde.com/',
+# 'http://dmoz.in.net/',
+# 'http://www.tsection.com/',
+# 'http://www.rakcha.com/',
+# 'http://www.joeant.com/',
+# 'http://www.splashdirectory.com/',
+# 'http://www.goguides.org/',
+# 'http://www.dataspear.com/',
+# 'http://www.zorg-directory.com/',
+# 'http://www.gimpsy.com/',
+# 'http://www.links2go.com/',
+# 'http://www.global-weblinks.com/',
+# 'http://www.skaffe.com/',
+# 'http://www.nextsbd.com/',
+# 'http://www.octopedia.com/',
+# 'http://www.info-listings.com/',
+# 'https://www.enquira.com/',
+# 'http://www.worldsiteindex.com/',
+# 'https://www.findwebsite.net/',
+# 'http://www.dir4uk.com/',
+# 'http://www.royallinkup.com/',
+# 'http://www.leadinglinkdirectory.com/',
+# 'http://www.visionwebseo.com/',
+# 'http://uklistingz.co.uk/',
+# 'http://www.webappsdirectory.com/',
+# 'http://xysyst.net/',
+# 'http://www.10directory.com/%E2%80%9C%20rel=',
+# 'http://www.sighbercafe.com/',
+# 'http://www.nipao.org/',
+# 'https://www.bestfreewebsites.net/',
+# 'http://www.linkdir.info/',
+# 'http://www.the-net-directory.com/',
+# 'http://www.nexusdirectory.com/',
+# www.247webdirectory.com
+# 'https://www.9sites.net/',
+# www.piseries.com
+# www.cipinet.com
+# 'http://www.synergy-directory.com/',
+# 'http://www.wikidweb.com/',
+# www.directoryfire.com
+# www.prolinkdirectory.com
+# www.amray.com
+# www.gainweb.org
+# www.the-web-directory.co.uk
+# 'http://www.submission4u.com/',
+# 'http://www.elitesitesdirectory.com/',
+# 'http://www.linkpedia.net/',
+# 'http://www.scrabblestop.com/dir/',
+# 'http://www.inteligentd.com/,',
+# 'http://www.pr3plus.com/',
+# 'http://www.suggest-url.net/'
+]
+
+#Pages that cause problems with the crawler in some way
+KILL_LIST = [
+'http://scores.usaultimate.org/',
+'https://web.archive.org/web/',
+'psychologytoday.com/rms'
+]
+
+#Empty set for error-causing links
+BAD_LINKS = set([])
+
+#Empty set for word scraping
+WORDS = set([])
+
+#Counter variables
+COUNTER = 0
+REMOVED_COUNT = 0
+NEW_ERROR_COUNT = 0
+KNOWN_ERROR_COUNT = 0
+HTTP_ERROR_COUNT = 0
+
+#Amount of errors allowed to happen before automatic shutdown
+MAX_NEW_ERRORS = 10
+MAX_KNOWN_ERRORS = 25
+MAX_HTTP_ERRORS = 100
+
+#Line to print at the end of each logFile log
+LOG_END = '\n======END======'
+
+yes = ['y', 'yes', 'Y', 'Yes']
+no = ['n', 'no', 'N', 'No']
+
+#Getting arguments
+
+print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
+
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n)'.format(get_time()))
+if not bool(INPUT): #Use default value
+	OVERWRITE = False
+elif INPUT in yes: #Yes
+	OVERWRITE = True
+elif INPUT in no: #No
+	OVERWRITE = False
+else: #Invalid input
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n)'.format(get_time()))
+if not bool(INPUT):
+	RAISE_ERRORS = False
+elif INPUT in yes:
+	RAISE_ERRORS = True
+elif INPUT in no:
+	RAISE_ERRORS = False
+else:
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+IPNUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
+if not bool(INPUT):
+	ZIP_FILES = False
+elif INPUT in yes:
+	ZIP_FILES = True
+elif INPUT in no:
+	ZIP_FILES = False
+else:
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file:'.format(get_time()))
+if not bool(INPUT):
+	TODO_FILE = 'crawler_todo.txt'
+else:
+	TODO_FILE = INPUT
+
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file:'.format(get_time()))
+if not bool(INPUT):
+	DONE_FILE = 'crawler_done.txt'
+else:
+	DONE_FILE = INPUT
+
+INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file:'.format(get_time()))
+if not bool(INPUT):
+	LOG_FILE = 'crawler_log.txt'
+else:
+	LOG_FILE = INPUT
+
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file:'.format(get_time()))
+if not bool(INPUT):
+	WORD_FILE = 'crawler_words.txt'
+else:
+	WORD_FILE = INPUT
+
+INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file:'.format(get_time()))
+if not bool(INPUT):
+	BAD_FILE = 'crawler_bad.txt'
+else:
+	BAD_FILE = INPUT
+
+INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
+if not bool(INPUT):
+	SAVE_COUNT = 100
+elif not INPUT.isdigit():
+	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+else:
+	SAVE_COUNT = INPUT
+
+#Remove INPUT variable from memory
+del INPUT
+
+#Import saved TODO file data
+if OVERWRITE:
+	print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
+	TODO = START
+	DONE = []
+else:
+	print('[{0}] [spidy] [INIT]: Loading save files...'.format(get_time()))
+	with open(TODO_FILE, 'r') as f:
+		contents = f.readlines()
+	TODO = [x.strip() for x in contents]
+	#Import saved done file data
+	with open(DONE_FILE, 'r') as f:
+		contents = f.readlines()
+	DONE = [x.strip() for x in contents]
+	del contents
+
+	print('[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
+
+	before = len(TODO)
+
+	#Remove invalid links from TODO list
+	for link in TODO:
+		if check_link(link):
+			TODO.remove(link)
+
+	#If TODO list is empty, add default starting pages
+	if len(TODO) == 0:
+		TODO += START
+
+	after = abs(before - len(TODO))
+	REMOVED_COUNT += after
+	print('[{0}] [spidy] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
+	
+	del before
+	del after
+
+print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
+
 def main():
-	print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
-
-	#Initialize required variables
-
-	#User-Agent Header String
-	HEADERS = {
-	'User-Agent': 'Mozilla/5.0 (compatible; spidy (bot, +https://github.com/rivermont/spidy))'
-	}
-
-	#Folder location of spidy
-	CRAWLER_DIR = path.dirname(path.realpath(__file__))
-
-	#Web directories to use in case TODO file is empty
-	START = [
-	'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
-	'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
-	# 'https://botw.org/',
-	# 'http://greenstalk.com/',
-	# 'http://www.directoryworld.net/',
-	# 'https://www.somuch.com/',
-	# 'http://www.jayde.com/',
-	# 'http://dmoz.in.net/',
-	# 'http://www.tsection.com/',
-	# 'http://www.rakcha.com/',
-	# 'http://www.joeant.com/',
-	# 'http://www.splashdirectory.com/',
-	# 'http://www.goguides.org/',
-	# 'http://www.dataspear.com/',
-	# 'http://www.zorg-directory.com/',
-	# 'http://www.gimpsy.com/',
-	# 'http://www.links2go.com/',
-	# 'http://www.global-weblinks.com/',
-	# 'http://www.skaffe.com/',
-	# 'http://www.nextsbd.com/',
-	# 'http://www.octopedia.com/',
-	# 'http://www.info-listings.com/',
-	# 'https://www.enquira.com/',
-	# 'http://www.worldsiteindex.com/',
-	# 'https://www.findwebsite.net/',
-	# 'http://www.dir4uk.com/',
-	# 'http://www.royallinkup.com/',
-	# 'http://www.leadinglinkdirectory.com/',
-	# 'http://www.visionwebseo.com/',
-	# 'http://uklistingz.co.uk/',
-	# 'http://www.webappsdirectory.com/',
-	# 'http://xysyst.net/',
-	# 'http://www.10directory.com/%E2%80%9C%20rel=',
-	# 'http://www.sighbercafe.com/',
-	# 'http://www.nipao.org/',
-	# 'https://www.bestfreewebsites.net/',
-	# 'http://www.linkdir.info/',
-	# 'http://www.the-net-directory.com/',
-	# 'http://www.nexusdirectory.com/',
-	# www.247webdirectory.com
-	# 'https://www.9sites.net/',
-	# www.piseries.com
-	# www.cipinet.com
-	# 'http://www.synergy-directory.com/',
-	# 'http://www.wikidweb.com/',
-	# www.directoryfire.com
-	# www.prolinkdirectory.com
-	# www.amray.com
-	# www.gainweb.org
-	# www.the-web-directory.co.uk
-	# 'http://www.submission4u.com/',
-	# 'http://www.elitesitesdirectory.com/',
-	# 'http://www.linkpedia.net/',
-	# 'http://www.scrabblestop.com/dir/',
-	# 'http://www.inteligentd.com/,',
-	# 'http://www.pr3plus.com/',
-	# 'http://www.suggest-url.net/'
-	]
-
-	#Pages that cause problems with the crawler in some way
-	KILL_LIST = [
-	'http://scores.usaultimate.org/',
-	'https://web.archive.org/web/',
-	'psychologytoday.com/rms'
-	]
-
-	#Empty set for error-causing links
-	BAD_LINKS = set([])
-
-	#Empty set for word scraping
-	WORDS = set([])
-
-	#Counter variables
-	COUNTER = 0
-	REMOVED_COUNT = 0
-	NEW_ERROR_COUNT = 0
-	KNOWN_ERROR_COUNT = 0
-	HTTP_ERROR_COUNT = 0
-
-	#Amount of errors allowed to happen before automatic shutdown
-	MAX_NEW_ERRORS = 10
-	MAX_KNOWN_ERRORS = 25
-	MAX_HTTP_ERRORS = 100
-
-	#Line to print at the end of each logFile log
-	LOG_END = '\n======END======'
-
-	yes = ['y', 'yes', 'Y', 'Yes']
-	no = ['n', 'no', 'N', 'No']
-
-	#Getting arguments
-
-	print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n)'.format(get_time()))
-	if not bool(INPUT): #Use default value
-		OVERWRITE = False
-	elif INPUT in yes: #Yes
-		OVERWRITE = True
-	elif INPUT in no: #No
-		OVERWRITE = False
-	else: #Invalid input
-		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n)'.format(get_time()))
-	if not bool(INPUT):
-		RAISE_ERRORS = False
-	elif INPUT in yes:
-		RAISE_ERRORS = True
-	elif INPUT in no:
-		RAISE_ERRORS = False
-	else:
-		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-	IPNUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n)'.format(get_time()))
-	if not bool(INPUT):
-		ZIP_FILES = False
-	elif INPUT in yes:
-		ZIP_FILES = True
-	elif INPUT in no:
-		ZIP_FILES = False
-	else:
-		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file:'.format(get_time()))
-	if not bool(INPUT):
-		TODO_FILE = 'crawler_todo.txt'
-	else:
-		TODO_FILE = INPUT
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file:'.format(get_time()))
-	if not bool(INPUT):
-		DONE_FILE = 'crawler_done.txt'
-	else:
-		DONE_FILE = INPUT
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file:'.format(get_time()))
-	if not bool(INPUT):
-		LOG_FILE = 'crawler_log.txt'
-	else:
-		LOG_FILE = INPUT
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file:'.format(get_time()))
-	if not bool(INPUT):
-		WORD_FILE = 'crawler_words.txt'
-	else:
-		WORD_FILE = INPUT
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file:'.format(get_time()))
-	if not bool(INPUT):
-		BAD_FILE = 'crawler_bad.txt'
-	else:
-		BAD_FILE = INPUT
-
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
-	if not bool(INPUT):
-		SAVE_COUNT = 100
-	elif not INPUT.isdigit():
-		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-	else:
-		SAVE_COUNT = INPUT
-
-	#Remove INPUT variable from memory
-	del INPUT
-
-	#Import saved TODO file data
-	if OVERWRITE:
-		print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
-		TODO = START
-		DONE = []
-	else:
-		print('[{0}] [spidy] [INIT]: Loading save files...'.format(get_time()))
-		with open(TODO_FILE, 'r') as f:
-			contents = f.readlines()
-		TODO = [x.strip() for x in contents]
-		#Import saved done file data
-		with open(DONE_FILE, 'r') as f:
-			contents = f.readlines()
-		DONE = [x.strip() for x in contents]
-		del contents
-
-		print('[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
-
-		before = len(TODO)
-
-		#Remove invalid links from TODO list
-		for link in TODO:
-			if check_link(link):
-				TODO.remove(link)
-
-		#If TODO list is empty, add default starting pages
-		if len(TODO) == 0:
-			TODO += START
-
-		after = abs(before - len(TODO))
-		REMOVED_COUNT += after
-		print('[{0}] [spidy] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
-		
-		del before
-		del after
-
-	print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
-
 	print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
 	log('LOG: Successfully started crawler.')
-
-
-	#########
-	## RUN ##
-	#########
-
+	
 	while len(TODO) != 0: #While there are links to check
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS: #If too many errors have occurred
