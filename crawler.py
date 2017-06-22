@@ -2,7 +2,7 @@
 Python Web Crawler
 Built by rivermont and FalconWarriorr
 '''
-
+VERSION = 1.0
 
 ############
 ## IMPORT ##
@@ -18,6 +18,8 @@ def get_time():
 	
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
+
+print('[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
 
 print('[{0}] [spidy] [INIT]: Importing libraries...'.format(get_time()))
 
@@ -428,15 +430,17 @@ print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
 
 def main():
 	#Declare global variables
-	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
+	global VERSION, HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
 	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
 	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
 	
-	print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
+	print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
 	log('LOG: Successfully started crawler.')
+	
+	print('[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADERS)
 	
 	while len(TODO) != 0: #While there are links to check
 		try:
