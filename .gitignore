@@ -5,3 +5,4 @@ crawler_words.txt
 saved/
 *.zip
 crawler_bad.txt
+*.pyc

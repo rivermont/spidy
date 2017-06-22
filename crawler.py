@@ -134,7 +134,7 @@ def save_files(wordList):
 
 def save_page(url):
 	'''
-	Download content of page and save to the save folder.
+	Download content of url and save to the save folder.
 	'''
 	url = str(url) #Sanitize input
 	newUrl = url
@@ -263,67 +263,6 @@ HEADERS = {
 #Folder location of spidy
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
-#Web directories to use in case TODO file is empty
-START = [
-'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
-'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
-# 'https://botw.org/',
-# 'http://greenstalk.com/',
-# 'http://www.directoryworld.net/',
-# 'https://www.somuch.com/',
-# 'http://www.jayde.com/',
-# 'http://dmoz.in.net/',
-# 'http://www.tsection.com/',
-# 'http://www.rakcha.com/',
-# 'http://www.joeant.com/',
-# 'http://www.splashdirectory.com/',
-# 'http://www.goguides.org/',
-# 'http://www.dataspear.com/',
-# 'http://www.zorg-directory.com/',
-# 'http://www.gimpsy.com/',
-# 'http://www.links2go.com/',
-# 'http://www.global-weblinks.com/',
-# 'http://www.skaffe.com/',
-# 'http://www.nextsbd.com/',
-# 'http://www.octopedia.com/',
-# 'http://www.info-listings.com/',
-# 'https://www.enquira.com/',
-# 'http://www.worldsiteindex.com/',
-# 'https://www.findwebsite.net/',
-# 'http://www.dir4uk.com/',
-# 'http://www.royallinkup.com/',
-# 'http://www.leadinglinkdirectory.com/',
-# 'http://www.visionwebseo.com/',
-# 'http://uklistingz.co.uk/',
-# 'http://www.webappsdirectory.com/',
-# 'http://xysyst.net/',
-# 'http://www.10directory.com/%E2%80%9C%20rel=',
-# 'http://www.sighbercafe.com/',
-# 'http://www.nipao.org/',
-# 'https://www.bestfreewebsites.net/',
-# 'http://www.linkdir.info/',
-# 'http://www.the-net-directory.com/',
-# 'http://www.nexusdirectory.com/',
-# www.247webdirectory.com
-# 'https://www.9sites.net/',
-# www.piseries.com
-# www.cipinet.com
-# 'http://www.synergy-directory.com/',
-# 'http://www.wikidweb.com/',
-# www.directoryfire.com
-# www.prolinkdirectory.com
-# www.amray.com
-# www.gainweb.org
-# www.the-web-directory.co.uk
-# 'http://www.submission4u.com/',
-# 'http://www.elitesitesdirectory.com/',
-# 'http://www.linkpedia.net/',
-# 'http://www.scrabblestop.com/dir/',
-# 'http://www.inteligentd.com/,',
-# 'http://www.pr3plus.com/',
-# 'http://www.suggest-url.net/'
-]
-
 #Pages that cause problems with the crawler in some way
 KILL_LIST = [
 'http://scores.usaultimate.org/',
@@ -334,8 +273,8 @@ KILL_LIST = [
 #Empty set for error-causing links
 BAD_LINKS = set([])
 
-#Empty set for word scraping
-WORDS = set([])
+#Line to print at the end of each logFile log
+LOG_END = '\n======END======'
 
 #Counter variables
 COUNTER = 0
@@ -349,13 +288,19 @@ MAX_NEW_ERRORS = 10
 MAX_KNOWN_ERRORS = 25
 MAX_HTTP_ERRORS = 100
 
-#Line to print at the end of each logFile log
-LOG_END = '\n======END======'
+#Empty set for word scraping
+WORDS = set([])
+
+#Getting arguments
+
+#Web directories to use in case TODO file is empty
+START = [
+'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
+'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
+]
 
 yes = ['y', 'yes', 'Y', 'Yes']
 no = ['n', 'no', 'N', 'No']
-
-#Getting arguments
 
 print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 
@@ -468,133 +413,142 @@ else:
 
 print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
 
-print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
-log('LOG: Successfully started crawler.')
-
-
-#########
-## RUN ##
-#########
-
-while len(TODO) != 0: #While there are links to check
-	try:
-		if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS: #If too many errors have occurred
-			print('[{0}] [spidy] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+def main():
+	#Declare global variables
+	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
+	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
+	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
+	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_COUNT
+	global TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE
+	global WORDS, TODO, DONE
+	
+	print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
+	log('LOG: Successfully started crawler.')
+	
+	while len(TODO) != 0: #While there are links to check
+		try:
+			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS: #If too many errors have occurred
+				print('[{0}] [spidy] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+				save_files(WORDS)
+				sys.exit()
+			elif COUNTER >= SAVE_COUNT: #If it's time for an autosave
+				try:
+					print('[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
+					save_files(WORDS)
+					info_log()
+					if ZIP_FILES:
+						zip(t.time(), 'saved/')
+				finally:
+					#Reset variables
+					COUNTER = 0
+					WORDS.clear()
+					BAD_LINKS.clear()
+			elif check_link(TODO[0]): #If the link is invalid
+				del TODO[0]
+				continue
+			#Run
+			else:
+				page = requests.get(TODO[0], headers=HEADERS) #Get page
+				wordList = make_words(page) #Get all words from page
+				WORDS.update(wordList) #Add words to word list
+				links = []
+				for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
+					links.append(link)
+				links = (list(set(links))) #Remove duplicates and shuffle links
+				for link in links: #Check for invalid links
+					if check_link(link):
+						links.remove(link)
+						REMOVED_COUNT += 1
+					link = link.encode('utf-8', 'ignore') #Encode each link to UTF-8 to minimize errors
+				TODO += links #Add scraped links to the TODO list
+				DONE.append(TODO[0]) #Add crawled link to done list
+				save_page(TODO[0])
+				print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
+				del TODO[0]#Remove crawled link from TODO list
+				COUNTER += 1
+		
+		#ERROR HANDLING
+		except KeyboardInterrupt: #If the user does ^C
+			print('[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
+			log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 			save_files(WORDS)
 			sys.exit()
-		elif COUNTER >= SAVE_COUNT: #If it's time for an autosave
-			try:
-				print('[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
-				save_files(WORDS)
-				info_log()
-				if ZIP_FILES:
-					zip(t.time(), 'saved/')
-			finally:
-				#Reset variables
-				COUNTER = 0
-				WORDS.clear()
-				BAD_LINKS.clear()
-		elif check_link(TODO[0]): #If the link is invalid
+		except Exception as e:
+			link = TODO[0].encode('utf-8', 'ignore')
+			err_print(link)
+			errMRO = type(e).mro()
+			
+			if str(e) == 'HTTP Error 429: Too Many Requests':
+				print('[{0}] [spidy] [ERR]: Too Many Requests.'.format(get_time()))
+				TODO += TODO[0] #Move link to end of TODO list
+			
+			elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
+				HTTP_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
+				err_log(link, 'Bad Response', e)
+				BAD_LINKS.add(link)
+			
+			#Other errors
+			elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+				err_log(link, 'XMLSyntaxError', e)
+			
+			elif UnicodeError in errMRO: #Error trying to convert foreign characters to Unicode
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
+				err_log(link, 'UnicodeError', e)
+			
+			elif requests.exceptions.SSLError in errMRO: #Invalid SSL certificate
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
+				err_log(link, 'SSLError', e)
+				BAD_LINKS.add(link)
+			
+			elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
+				err_log(link, 'ConnectionError', e)
+			
+			elif requests.exceptions.TooManyRedirects in errMRO: #Exceeded 30 redirects.
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
+				err_log(link, 'TooManyRedirects', e)
+				BAD_LINKS.add(link)
+			
+			elif requests.exceptions.ContentDecodingError in errMRO: #Received response with content-encoding: gzip, but failed to decode it.
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
+				err_log(link, 'ContentDecodingError', e)
+			
+			elif OSError in errMRO:
+				KNOWN_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
+				err_log(link, 'OSError', e)
+				BAD_LINKS.add(link)
+			
+			else: #Any other error
+				NEW_ERROR_COUNT += 1
+				print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
+				err_log(link, 'Unknown', e)
+				if RAISE_ERRORS:
+					raise
+				else:
+					continue
+			
+			err_saved_message()
 			del TODO[0]
-			continue
-		#Run
-		else:
-			page = requests.get(TODO[0], headers=HEADERS) #Get page
-			wordList = make_words(page) #Get all words from page
-			WORDS.update(wordList) #Add words to word list
-			links = []
-			for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
-				links.append(link)
-			links = (list(set(links))) #Remove duplicates and shuffle links
-			for link in links: #Check for invalid links
-				if check_link(link):
-					links.remove(link)
-					REMOVED_COUNT += 1
-				link = link.encode('utf-8', 'ignore') #Encode each link to UTF-8 to minimize errors
-			TODO += links #Add scraped links to the TODO list
-			DONE.append(TODO[0]) #Add crawled link to done list
-			save_page(TODO[0])
-			print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
-			del TODO[0]#Remove crawled link from TODO list
 			COUNTER += 1
+		finally:
+			TODO = list(set(TODO)) #Removes duplicates and shuffles links so trees don't form.
+			#For debugging purposes; to check one link and then stop
+			# save_files(WORDS)
+			# sys.exit()
 	
-	#ERROR HANDLING
-	except KeyboardInterrupt: #If the user does ^C
-		print('[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
-		log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
-		save_files(WORDS)
-		sys.exit()
-	except Exception as e:
-		link = TODO[0].encode('utf-8', 'ignore')
-		err_print(link)
-		errMRO = type(e).mro()
-		
-		if str(e) == 'HTTP Error 429: Too Many Requests':
-			print('[{0}] [spidy] [ERR]: Too Many Requests.'.format(get_time()))
-			TODO += TODO[0] #Move link to end of TODO list
-		
-		elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
-			HTTP_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
-			err_log(link, 'Bad Response', e)
-			BAD_LINKS.add(link)
-		
-		#Other errors
-		elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
-			err_log(link, 'XMLSyntaxError', e)
-		
-		elif UnicodeError in errMRO: #Error trying to convert foreign characters to Unicode
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
-			err_log(link, 'UnicodeError', e)
-		
-		elif requests.exceptions.SSLError in errMRO: #Invalid SSL certificate
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-			err_log(link, 'SSLError', e)
-			BAD_LINKS.add(link)
-		
-		elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-			err_log(link, 'ConnectionError', e)
-		
-		elif requests.exceptions.TooManyRedirects in errMRO: #Exceeded 30 redirects.
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
-			err_log(link, 'TooManyRedirects', e)
-			BAD_LINKS.add(link)
-		
-		elif requests.exceptions.ContentDecodingError in errMRO: #Received response with content-encoding: gzip, but failed to decode it.
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
-			err_log(link, 'ContentDecodingError', e)
-		
-		elif OSError in errMRO:
-			KNOWN_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
-			err_log(link, 'OSError', e)
-			BAD_LINKS.add(link)
-		
-		else: #Any other error
-			NEW_ERROR_COUNT += 1
-			print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
-			err_log(link, 'Unknown', e)
-			if RAISE_ERRORS:
-				raise
-			else:
-				continue
-		
-		err_saved_message()
-		del TODO[0]
-		COUNTER += 1
-	finally:
-		TODO = list(set(TODO)) #Removes duplicates and shuffles links so trees don't form.
-		#For debugging purposes; to check one link and then stop
-		# save_files(WORDS)
-		# sys.exit()
+	print('[{0}] [spidy] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
+	save_files(WORDS)
 
-print('[{0}] [spidy] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
-save_files(WORDS)
+if __name__ == '__main__':
+	main()
+else:
+	print('[{0}] [spidy] [INIT]: Successfully imported spidy Web Crawler.'.format(get_time()))
