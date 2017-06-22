@@ -21,7 +21,7 @@ def get_full_time():
 
 print('[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
 
-print('[{0}] [spidy] [INIT]: Importing libraries...'.format(get_time()))
+print('[{0}] [spidy] [INIT]: Importing required libraries...'.format(get_time()))
 
 #Import required libraries
 import requests
@@ -183,19 +183,22 @@ def info_log():
 	
 	#Print to console
 	time = get_time()
-	print('[{0}] [spidy] [LOG]: {1} seconds elapsed since start.'.format(time, sinceStart))
-	print('[{0}] [spidy] [LOG]: {1} links in TODO.'.format(time, len(TODO)))
-	print('[{0}] [spidy] [LOG]: {1} links in done.'.format(time, len(DONE)))
-	print('[{0}] [spidy] [LOG]: {1} bad links removed.'.format(time, REMOVED_COUNT))
-	print('[{0}] [spidy] [LOG]: {1}/{2} new errors caught.'.format(time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-	print('[{0}] [spidy] [LOG]: {1}/{2} HTTP errors encountered.'.format(time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-	print('[{0}] [spidy] [LOG]: {1}/{2} known errors caught.'.format(time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1} seconds elapsed since start.'.format(time, sinceStart))
+	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(time, len(TODO)))
+	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(time, len(DONE)))
+	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(time, REMOVED_COUNT))
+	print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+	del time
 	
 	#Save to logFile
 	with open(LOG_FILE, 'a') as log:
 		log.write('\n\n====AUTOSAVE===') #Write opening line
-		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nHTTP ERRORS: {6}\nOLD ERRORS: {7}'.format(get_full_time(), sinceStart, len(TODO), len(DONE), REMOVED_COUNT, NEW_ERROR_COUNT, HTTP_ERROR_COUNT, KNOWN_ERROR_COUNT))
+		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nHTTP ERRORS: {6}\nKNOWN ERRORS: {7}'.format(get_full_time(), sinceStart, len(TODO), len(DONE), REMOVED_COUNT, NEW_ERROR_COUNT, HTTP_ERROR_COUNT, KNOWN_ERROR_COUNT))
 		log.write(LOG_END) #Write closing line
+	
+	print('[{0}] [spidy] [LOG]: Saved above info to {1}.'.format(get_time(), LOG_FILE))
 
 def log(message):
 	'''

@@ -35,7 +35,7 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
       - [Anaconda](#anaconda)
       - [Python Base](#python-base)
     - [Launching](#launching)
-      - [Command Arguments](#command-arguments)
+      - [Arguments](#arguments)
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
     - [Running](#running)
@@ -44,10 +44,8 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
 	  - [Force Quit](#force-quit)
 	  - [End](#end)
   - [Files](#files)
-    - [README.md](#readmemd)
-	- [Folders](#folders)
-      - [media/](#media)
-	  - [saved/](#saved)
+      - [README.md](#readmemd)
+	  - [media/](#media)
     - [Save Files](#save-files)
 	  - [crawler_todo.txt](#crawler-todotxt)
 	  - [crawler_done.txt](#crawler-donetxt)
@@ -184,16 +182,11 @@ Sample log after crawler visits all links in TODO.
 
 # Files
 
-## README.md
+### README.md
 This readme file.
-
-## Folders
 
 ### media/
 Images used in this readme file.
-
-### saved/
-Location for document saving.
 
 ## Save Files
 
@@ -277,4 +270,5 @@ Thanks!
 ### Asterisk
 Studies have shown that the spidy web crawler will run to infinity, however it has not yet been proven whether there is computing power *beyond* infinity.<br>
 If there is, then yes - spidy will run to infinity **and beyond**-
+
 ![](/media/physics.dll.png?raw=true)
