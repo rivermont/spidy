@@ -263,67 +263,6 @@ HEADERS = {
 #Folder location of spidy
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
-#Web directories to use in case TODO file is empty
-START = [
-'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
-'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
-# 'https://botw.org/',
-# 'http://greenstalk.com/',
-# 'http://www.directoryworld.net/',
-# 'https://www.somuch.com/',
-# 'http://www.jayde.com/',
-# 'http://dmoz.in.net/',
-# 'http://www.tsection.com/',
-# 'http://www.rakcha.com/',
-# 'http://www.joeant.com/',
-# 'http://www.splashdirectory.com/',
-# 'http://www.goguides.org/',
-# 'http://www.dataspear.com/',
-# 'http://www.zorg-directory.com/',
-# 'http://www.gimpsy.com/',
-# 'http://www.links2go.com/',
-# 'http://www.global-weblinks.com/',
-# 'http://www.skaffe.com/',
-# 'http://www.nextsbd.com/',
-# 'http://www.octopedia.com/',
-# 'http://www.info-listings.com/',
-# 'https://www.enquira.com/',
-# 'http://www.worldsiteindex.com/',
-# 'https://www.findwebsite.net/',
-# 'http://www.dir4uk.com/',
-# 'http://www.royallinkup.com/',
-# 'http://www.leadinglinkdirectory.com/',
-# 'http://www.visionwebseo.com/',
-# 'http://uklistingz.co.uk/',
-# 'http://www.webappsdirectory.com/',
-# 'http://xysyst.net/',
-# 'http://www.10directory.com/%E2%80%9C%20rel=',
-# 'http://www.sighbercafe.com/',
-# 'http://www.nipao.org/',
-# 'https://www.bestfreewebsites.net/',
-# 'http://www.linkdir.info/',
-# 'http://www.the-net-directory.com/',
-# 'http://www.nexusdirectory.com/',
-# www.247webdirectory.com
-# 'https://www.9sites.net/',
-# www.piseries.com
-# www.cipinet.com
-# 'http://www.synergy-directory.com/',
-# 'http://www.wikidweb.com/',
-# www.directoryfire.com
-# www.prolinkdirectory.com
-# www.amray.com
-# www.gainweb.org
-# www.the-web-directory.co.uk
-# 'http://www.submission4u.com/',
-# 'http://www.elitesitesdirectory.com/',
-# 'http://www.linkpedia.net/',
-# 'http://www.scrabblestop.com/dir/',
-# 'http://www.inteligentd.com/,',
-# 'http://www.pr3plus.com/',
-# 'http://www.suggest-url.net/'
-]
-
 #Pages that cause problems with the crawler in some way
 KILL_LIST = [
 'http://scores.usaultimate.org/',
@@ -334,8 +273,8 @@ KILL_LIST = [
 #Empty set for error-causing links
 BAD_LINKS = set([])
 
-#Empty set for word scraping
-WORDS = set([])
+#Line to print at the end of each logFile log
+LOG_END = '\n======END======'
 
 #Counter variables
 COUNTER = 0
@@ -349,13 +288,19 @@ MAX_NEW_ERRORS = 10
 MAX_KNOWN_ERRORS = 25
 MAX_HTTP_ERRORS = 100
 
-#Line to print at the end of each logFile log
-LOG_END = '\n======END======'
+#Empty set for word scraping
+WORDS = set([])
+
+#Getting arguments
+
+#Web directories to use in case TODO file is empty
+START = [
+'https://en.wikipedia.org/wiki/List_of_most_popular_websites',
+'http://www.clambr.com/49-free-web-directories-for-building-backlinks/'
+]
 
 yes = ['y', 'yes', 'Y', 'Yes']
 no = ['n', 'no', 'N', 'No']
-
-#Getting arguments
 
 print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 
@@ -469,6 +414,14 @@ else:
 print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
 
 def main():
+	#Declare global variables
+	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
+	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
+	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
+	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_COUNT
+	global TODO_FILE, DONE_FILE, LOG_FILE, WORD_FILE, BAD_FILE
+	global WORDS, TODO, DONE
+	
 	print('[{0}] [spidy] [INIT]: Starting crawler...'.format(get_time()))
 	log('LOG: Successfully started crawler.')
 	
