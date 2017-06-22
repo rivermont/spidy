@@ -308,90 +308,104 @@ START = [
 yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
 no = ['n', 'no', 'N', 'No', 'False', 'false']
 
-print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
-
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes)'.format(get_time()))
-if not bool(INPUT): #Use default value
+if sys.argv[1] == 'Default':
+	print('[{0}] [spidy] [INFO]: Using default configuration.'.format(get_time()))
 	OVERWRITE = False
-elif INPUT in yes: #Yes
-	OVERWRITE = False
-elif INPUT in no: #No
-	OVERWRITE = True
-else: #Invalid input
-	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No)'.format(get_time()))
-if not bool(INPUT):
 	RAISE_ERRORS = False
-elif INPUT in yes:
-	RAISE_ERRORS = True
-elif INPUT in no:
-	RAISE_ERRORS = False
-else:
-	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No)'.format(get_time()))
-if not bool(INPUT):
 	ZIP_FILES = False
-elif INPUT in yes:
-	ZIP_FILES = True
-elif INPUT in no:
-	ZIP_FILES = False
-else:
-	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes)'.format(get_time()))
-if not bool(INPUT):
 	SAVE_WORDS = True
-elif INPUT in yes:
-	SAVE_WORDS = True
-elif INPUT in no:
-	SAVE_WORDS = False
-else:
-	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt):'.format(get_time()))
-if not bool(INPUT):
 	TODO_FILE = 'crawler_todo.txt'
-else:
-	TODO_FILE = INPUT
-
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt):'.format(get_time()))
-if not bool(INPUT):
 	DONE_FILE = 'crawler_done.txt'
-else:
-	DONE_FILE = INPUT
-
-INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file (Default: crawler_log.txt):'.format(get_time()))
-if not bool(INPUT):
 	LOG_FILE = 'crawler_log.txt'
-else:
-	LOG_FILE = INPUT
-if SAVE_WORDS:
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt)'.format(get_time()))
-	if not bool(INPUT):
-		WORD_FILE = 'crawler_words.txt'
-	else:
-		WORD_FILE = INPUT
-else:
-	WORD_FILE = ''
-
-INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt):'.format(get_time()))
-if not bool(INPUT):
+	WORD_FILE = 'crawler_words.txt'
 	BAD_FILE = 'crawler_bad.txt'
-else:
-	BAD_FILE = INPUT
-
-INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
-if not bool(INPUT):
 	SAVE_COUNT = 100
-elif not INPUT.isdigit():
-	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
 else:
-	SAVE_COUNT = INPUT
+	print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 
-#Remove INPUT variable from memory
-del INPUT
+	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes)'.format(get_time()))
+	if not bool(INPUT): #Use default value
+		OVERWRITE = False
+	elif INPUT in yes: #Yes
+		OVERWRITE = False
+	elif INPUT in no: #No
+		OVERWRITE = True
+	else: #Invalid input
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No)'.format(get_time()))
+	if not bool(INPUT):
+		RAISE_ERRORS = False
+	elif INPUT in yes:
+		RAISE_ERRORS = True
+	elif INPUT in no:
+		RAISE_ERRORS = False
+	else:
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No)'.format(get_time()))
+	if not bool(INPUT):
+		ZIP_FILES = False
+	elif INPUT in yes:
+		ZIP_FILES = True
+	elif INPUT in no:
+		ZIP_FILES = False
+	else:
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes)'.format(get_time()))
+	if not bool(INPUT):
+		SAVE_WORDS = True
+	elif INPUT in yes:
+		SAVE_WORDS = True
+	elif INPUT in no:
+		SAVE_WORDS = False
+	else:
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt):'.format(get_time()))
+	if not bool(INPUT):
+		TODO_FILE = 'crawler_todo.txt'
+	else:
+		TODO_FILE = INPUT
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt):'.format(get_time()))
+	if not bool(INPUT):
+		DONE_FILE = 'crawler_done.txt'
+	else:
+		DONE_FILE = INPUT
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file (Default: crawler_log.txt):'.format(get_time()))
+	if not bool(INPUT):
+		LOG_FILE = 'crawler_log.txt'
+	else:
+		LOG_FILE = INPUT
+
+	if SAVE_WORDS:
+		INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt)'.format(get_time()))
+		if not bool(INPUT):
+			WORD_FILE = 'crawler_words.txt'
+		else:
+			WORD_FILE = INPUT
+	else:
+		WORD_FILE = ''
+
+	INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt):'.format(get_time()))
+	if not bool(INPUT):
+		BAD_FILE = 'crawler_bad.txt'
+	else:
+		BAD_FILE = INPUT
+
+	INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
+	if not bool(INPUT):
+		SAVE_COUNT = 100
+	elif not INPUT.isdigit():
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+	else:
+		SAVE_COUNT = INPUT
+
+	#Remove INPUT variable from memory
+	del INPUT
 
 #Import saved TODO file data
 if OVERWRITE:
@@ -443,7 +457,7 @@ def main():
 	print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
 	log('LOG: Successfully started crawler.')
 	
-	print('[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADERS)
+	print('[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADERS))
 	
 	while len(TODO) != 0: #While there are links to check
 		try:

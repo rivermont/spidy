@@ -7,7 +7,7 @@ It does this to infinity[*](#asterisk).
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 572](https://img.shields.io/badge/lines%20of%20code-572-green.svg)](#)
+[![Lines of Code: 593](https://img.shields.io/badge/lines%20of%20code-593-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
@@ -36,6 +36,7 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
       - [Python Base](#python-base)
     - [Launching](#launching)
       - [Arguments](#arguments)
+	    - [Defaults](#defaults)
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
     - [Running](#running)
@@ -135,7 +136,9 @@ This can be done with `pip`:
 ![](/media/run.gif?raw=true)
 
 ### Arguments
-On running, spidy will ask for input regarding its various arguments.<br>
+On running, spidy will ask for input regarding its various arguments.
+
+#### Defaults
 To run spidy with all of its defaults, use:
 
 > python crawler.py Default
