@@ -61,12 +61,9 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
       - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
-    - [tree-test](#tree-test)
-    - [FalconWarriorr-branch](#falconwarriorr-branch)
     - [GUI-spidy](#gui-spidy)
-    - [saving-test](#saving-test)
-    - [timings](#timings)
-    - [verbose](#verbose)
+    - [FalconWarriorr-branch](#falconwarriorr-branch)
+    - [tree-test](#tree-test)
   - [TODO](#todo)
   - [Acknowledgements](#acknowledgements)
   - [Contribute](#contribute)
@@ -238,32 +235,15 @@ A Windows batch file to run the program.<br>
 ## master
 The stable, up-to-date branch.
 
-## function
-UNSTABLE branch for converting spidy from a script to a usable function.<br>
-Basically we're adding the
-
-> if __name__ == '__main'
-
-block and debugging that.
-
 ## GUI-spidy
 We are currently working on a GUI for spidy.<br>
 For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
 
-## tree-test
-Test branch to see how the crawler runs if allowed to crawl the link it just crawled, as opposed to picking a random one in TODO.
-
 ## FalconWarriorr-branch
 Falconwarriorr's development branch.
 
-## saving-test
-The old development branch for implementing word saving.
-
-## timings
-The old development branch for adding timestamps to all the logs.
-
-## verbose
-The old development branch for implementing logging.
+## tree-test
+Test branch to see how the crawler runs if allowed to crawl links from the link it just crawled, as opposed to picking a random one in TODO.
 
 
 # TODO
