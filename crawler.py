@@ -129,7 +129,8 @@ def save_files(wordList):
 				continue
 	print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
 	
-	update_file(WORD_FILE, wordList, 'words')
+	if SAVE_WORDS:
+		update_file(WORD_FILE, wordList, 'words')
 	update_file(BAD_FILE, BAD_LINKS, 'bad links')
 
 def save_page(url):
