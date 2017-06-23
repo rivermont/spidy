@@ -1,8 +1,0 @@
-XMLSyntaxError
-12
-
-ConnectionError
-4
-
-SSLErorr
-1
