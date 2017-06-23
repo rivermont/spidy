@@ -134,7 +134,7 @@ def save_files(wordList):
 		for site in DONE:
 			try:
 				doneList.write(site + '\n') #Save done list
-			except UnicodeErorr:
+			except UnicodeError:
 				continue
 	print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
 	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
