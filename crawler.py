@@ -343,7 +343,16 @@ try:
 		WORD_FILE = 'crawler_words.txt'
 		BAD_FILE = 'crawler_bad.txt'
 		SAVE_COUNT = 100
+		
+		GET_ARGS = False
+	else:
+		print('[{0}] [spidy] [ERR]: Invalid argument(s).'.format(get_time()))
+		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid argument(s).'.format(get_time()))
+		GET_ARGS = True
 except IndexError:
+	GET_ARGS = True
+
+if GET_ARGS:
 	print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 

@@ -7,7 +7,7 @@ It does this to infinity[*](#asterisk).
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 660](https://img.shields.io/badge/lines%20of%20code-660-green.svg)](#)
+[![Lines of Code: 669](https://img.shields.io/badge/lines%20of%20code-669-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
