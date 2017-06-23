@@ -209,23 +209,12 @@ def info_log():
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
-	del time
-	
-	#Save to logFile
-	with open(LONG_LOG_FILE, 'a') as log:
-		log.write('\n\n====AUTOSAVE===') #Write opening line
-		log.write('\nTIME: {0}\nSECS ELAPSED: {1}\nTODO: {2}\nDONE: {3}\nREMOVED: {4}\nNEW ERRORS: {5}\nHTTP ERRORS: {6}\nKNOWN ERRORS: {7}'.format(get_full_time(), sinceStart, len(TODO), len(DONE), REMOVED_COUNT, NEW_ERROR_COUNT, HTTP_ERROR_COUNT, KNOWN_ERROR_COUNT))
-		log.write(LOG_END) #Write closing line
-	
-	print('[{0}] [spidy] [LOG]: Saved above info to {1}.'.format(get_time(), LONG_LOG_FILE))
-	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved above info to {1}.'.format(get_time(), LONG_LOG_FILE))
-
 def log(message):
 	'''
 	Logs a single message to the logFile.
 	Prints message verbatim, so message must be formatted correctly outside of the function call.
 	'''
-	with open(LONG_LOG_FILE, 'a') as log:
+	with open(ERR_LOG_FILE, 'a') as log:
 		log.write('\n\n======LOG======') #Write opening line
 		log.write('\nTIME: {0}'.format(get_full_time())) #Write current time
 		log.write(message) #Write message
@@ -242,8 +231,8 @@ def err_saved_message():
 	'''
 	Announce that error was successfully saved to log.
 	'''
-	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), LONG_LOG_FILE))
-	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), LONG_LOG_FILE))
+	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), ERR_LOG_FILE_NAME))
+	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), ERR_LOG_FILE_NAME))
 
 def err_log(url, error1, error2):
 	'''
@@ -252,7 +241,7 @@ def err_log(url, error1, error2):
 	error2 is the extended text of the error.
 	'''
 	time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-	with open(LONG_LOG_FILE, 'a') as log:
+	with open(ERR_LOG_FILE, 'a') as log:
 		log.write('\n\n=====ERROR=====') #Write opening line
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, url, error1, str(error2)))
 		log.write(LOG_END) #Write closing line
@@ -284,6 +273,10 @@ print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 
 #Initialize required variables
+
+#Error log location
+ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
+ERR_LOG_FILE_NAME = 'spidy_error_log_{0}.txt'.format(START_TIME)
 
 #User-Agent Header String
 HEADERS = {
@@ -339,7 +332,6 @@ try:
 		SAVE_WORDS = True
 		TODO_FILE = 'crawler_todo.txt'
 		DONE_FILE = 'crawler_done.txt'
-		LONG_LOG_FILE = 'crawler_log.txt'
 		WORD_FILE = 'crawler_words.txt'
 		BAD_FILE = 'crawler_bad.txt'
 		SAVE_COUNT = 100
@@ -351,11 +343,11 @@ try:
 		GET_ARGS = True
 except IndexError:
 	GET_ARGS = True
-
+	
 if GET_ARGS:
 	print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes)'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes)'.format(get_time()))
 	if not bool(INPUT): #Use default value
@@ -367,7 +359,7 @@ if GET_ARGS:
 	else: #Invalid input
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No)'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No)'.format(get_time()))
 	if not bool(INPUT):
@@ -379,7 +371,7 @@ if GET_ARGS:
 	else:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No)'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No)'.format(get_time()))
 	if not bool(INPUT):
@@ -391,7 +383,7 @@ if GET_ARGS:
 	else:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes)'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes)'.format(get_time()))
 	if not bool(INPUT):
@@ -403,28 +395,21 @@ if GET_ARGS:
 	else:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt):'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt):'.format(get_time()))
 	if not bool(INPUT):
 		TODO_FILE = 'crawler_todo.txt'
 	else:
 		TODO_FILE = INPUT
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt):'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt):'.format(get_time()))
 	if not bool(INPUT):
 		DONE_FILE = 'crawler_done.txt'
 	else:
 		DONE_FILE = INPUT
-
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of spidy\'s log file (Default: crawler_log.txt):'.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of spidy\'s log file (Default: crawler_log.txt):'.format(get_time()))
-	if not bool(INPUT):
-		LONG_LOG_FILE = 'crawler_log.txt'
-	else:
-		LONG_LOG_FILE = INPUT
-
+	
 	if SAVE_WORDS:
 		INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt)'.format(get_time()))
 		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt)'.format(get_time()))
@@ -434,14 +419,14 @@ if GET_ARGS:
 			WORD_FILE = INPUT
 	else:
 		WORD_FILE = ''
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt):'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt):'.format(get_time()))
 	if not bool(INPUT):
 		BAD_FILE = 'crawler_bad.txt'
 	else:
 		BAD_FILE = INPUT
-
+	
 	INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100)'.format(get_time()))
 	if not bool(INPUT):
@@ -451,7 +436,7 @@ if GET_ARGS:
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
 	else:
 		SAVE_COUNT = INPUT
-
+	
 	#Remove INPUT variable from memory
 	del INPUT
 
@@ -500,12 +485,12 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time()
 
 def main():
 	#Declare global variables
-	global VERSION, START_TIME, LOG_FILE
+	global VERSION, START_TIME, LOG_FILE, ERR_LOG_FILE_NAME
 	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
 	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
 	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_COUNT
-	global TODO_FILE, DONE_FILE, LONG_LOG_FILE, WORD_FILE, BAD_FILE
+	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
 	
 	print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
