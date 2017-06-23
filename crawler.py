@@ -1,5 +1,5 @@
 '''
-Python Web Crawler
+spidy Web Crawler
 Built by rivermont and FalconWarriorr
 '''
 VERSION = 1.0
@@ -287,7 +287,7 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()
 
 #User-Agent Header String
 HEADERS = {
-'User-Agent': 'Mozilla/5.0 (compatible; spidy (bot, +https://github.com/rivermont/spidy))'
+'User-Agent': 'Mozilla/5.0 (compatible; spidy Web Crawler  (bot, +https://github.com/rivermont/spidy))'
 }
 
 #Pages that cause problems with the crawler in some way

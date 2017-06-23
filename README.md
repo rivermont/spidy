@@ -60,6 +60,7 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
 	  - [clear.bat](#clearbat)
       - [crawler.py](#crawlerpy)
       - [post-process.py](#post-processpy)
+	  - [profile.py](#profilepy)
       - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
@@ -224,6 +225,10 @@ Because the internet is so big, this will practically never end.
 ### post-process.py
 This removes all the lines in `crawler_words.txt` longer than 16 characters.<br>
 Run this after running crawler.py for a while.
+
+### profile.py
+Runs the crawler using python's [cProfile](https://docs.python.org/3/library/profile.html) library.<br>
+Useful for debugging, as it shows how long the crawler spent on each function call.
 
 ### run.bat
 A Windows batch file to run the program.<br>
