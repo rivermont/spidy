@@ -4,6 +4,7 @@ Built by rivermont and FalconWarriorr
 '''
 VERSION = '1.0'
 
+
 ############
 ## IMPORT ##
 ############
@@ -57,7 +58,7 @@ def check_link(item):
 	#Links longer than 255 characters usually are useless or full of foreign characters, and will also cause problems when saving
 	elif len(item) > 255:
 		return True
-	#Must be an http or https link
+	#Must be an http(s) link
 	elif item[0:4] != 'http':
 		return True
 	#Can't have visited already
@@ -335,6 +336,7 @@ try:
 		OVERWRITE = False
 		RAISE_ERRORS = False
 		ZIP_FILES = False
+		SAVE_PAGES = True
 		SAVE_WORDS = True
 		TODO_FILE = 'crawler_todo.txt'
 		DONE_FILE = 'crawler_done.txt'
@@ -386,6 +388,18 @@ if GET_ARGS:
 		ZIP_FILES = True
 	elif INPUT in no:
 		ZIP_FILES = False
+	else:
+		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+	
+	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder?'.format(get_time()))
+	LOG_FILE.write('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder?'.format(get_time()))
+	if not bool(INPUT):
+		SAVE_PAGES = True
+	elif INPUT in yes:
+		SAVE_PAGES = True
+	elif INPUT in no:
+		SAVE_PAGES = False
 	else:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
@@ -495,7 +509,7 @@ def main():
 	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
 	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
-	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_COUNT
+	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
 	
@@ -546,7 +560,8 @@ def main():
 					link = link.encode('utf-8', 'ignore') #Encode each link to UTF-8 to minimize errors
 				TODO += links #Add scraped links to the TODO list
 				DONE.append(TODO[0]) #Add crawled link to done list
-				save_page(TODO[0])
+				if SAVE_PAGES:
+					save_page(TODO[0])
 				if SAVE_WORDS:
 					print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
 					LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0]))
