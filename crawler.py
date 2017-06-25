@@ -280,14 +280,18 @@ ERR_LOG_FILE_NAME = 'spidy_error_log_{0}.txt'.format(START_TIME)
 
 #User-Agent Header String
 HEADERS = {
-'User-Agent': 'Mozilla/5.0 (compatible; spidy Web Crawler  (bot, +https://github.com/rivermont/spidy))'
+'User-Agent': 'Mozilla/5.0 (compatible; spidy Web Crawler  (bot, +https://github.com/rivermont/spidy))',
+'Accept-Encoding': 'gzip'
 }
 
-#Pages that cause problems with the crawler in some way
 KILL_LIST = [
+#Pages that cause problems with the crawler in some way
 'http://scores.usaultimate.org/',
 'https://web.archive.org/web/',
-'psychologytoday.com/rms'
+'psychologytoday.com/rms',
+'www.newsyarena.com'
+#Sites that we have been asked not to crawl:
+#None! Yay
 ]
 
 #Empty set for error-causing links
