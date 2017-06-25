@@ -584,9 +584,15 @@ def main():
 			err_print(link)
 			errMRO = type(e).mro()
 			
-			if str(e) == 'HTTP Error 429: Too Many Requests':
-				print('[{0}] [spidy] [ERR]: Too Many Requests.'.format(get_time()))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Too Many Requests.'.format(get_time()))
+			#HTTP Errors
+			if str(e) == 'HTTP Error 403: Forbidden':
+				print('[{0}]] [spiy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
+				LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
+				BAD_LINKS.add(link)
+			
+			elif str(e) == 'HTTP Error 429: Too Many Requests':
+				print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests'.format(get_time()))
+				LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 				TODO += TODO[0] #Move link to end of TODO list
 			
 			elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
