@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 '''
-VERSION = 1.0
+VERSION = '1.0'
 
 ############
 ## IMPORT ##
@@ -18,8 +18,10 @@ def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
 
 from os import path
+#Get current working directory of spidy
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
+#Open log file for logging
 LOG_FILE = open('{0}/logs/spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+')
 
 print('[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
@@ -462,8 +464,8 @@ else:
 	DONE = [x.strip() for x in contents]
 	del contents
 
-	print('[{0}] [spidy] [INIT]: Pruning invalid links from TODO - Day 1...'.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INIT]: Pruning invalid links from TODO - Day 1...'.format(get_time()))
+	print('[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
+	LOG_FILE.write('\n[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
 
 	before = len(TODO)
 

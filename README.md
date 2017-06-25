@@ -29,38 +29,39 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
   - [Features](#features)
     - [Error Handling](#error-handling)
     - [Frequent Timestamp Logging](#frequent-timestamp-logging)
-	- [Portability](#portability)
+    - [Portability](#portability)
     - [User-Friendly Logs](#user-friendly-logs)
-	- [Webpage Saving](#webpage-saving)
-	- [File Zipping](#file-zipping)
+    - [Webpage Saving](#webpage-saving)
+    - [File Zipping](#file-zipping)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
       - [Anaconda](#anaconda)
       - [Python Base](#python-base)
     - [Launching](#launching)
-      - [Arguments](#arguments)
-	    - [Defaults](#defaults)
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
+      - [Arguments](#arguments)
+        - [Defaults](#defaults)
     - [Running](#running)
-	  - [Start](#start)
-	  - [Autosave](#autosave)
-	  - [Force Quit](#force-quit)
-	  - [End](#end)
+      - [Expected Behaviour](#expected-bahaviour)
+      - [Start](#start)
+      - [Autosave](#autosave)
+      - [Force Quit](#force-quit)
+      - [End](#end)
   - [Files](#files)
       - [README.md](#readmemd)
-	  - [media/](#media)
+      - [media/](#media)
     - [Save Files](#save-files)
-	  - [crawler_todo.txt](#crawler-todotxt)
-	  - [crawler_done.txt](#crawler-donetxt)
-	  - [crawler_log.txt](#crawler-logtxt)
-	  - [crawler_words.txt](#crawler-wordstxt)
-	  - [crawler_bad.txt](#crawler-badtxt)
-	- [Run Files](#run-files)
-	  - [clear.bat](#clearbat)
+      - [crawler_todo.txt](#crawler-todotxt)
+      - [crawler_done.txt](#crawler-donetxt)
+      - [crawler_log.txt](#crawler-logtxt)
+      - [crawler_words.txt](#crawler-wordstxt)
+      - [crawler_bad.txt](#crawler-badtxt)
+    - [Run Files](#run-files)
+      - [clear.bat](#clearbat)
       - [crawler.py](#crawlerpy)
       - [post-process.py](#post-processpy)
-	  - [profile.py](#profilepy)
+      - [profile.py](#profilepy)
       - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
@@ -118,18 +119,18 @@ When autosaving, spidy can archive the contents of the `saved/` directory to a `
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.<br>
-Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the .bat file.
+Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the `.bat` file.
 
 ## Python Installation
-There are many different versions of [Python](https://www.python.org/about/), and probably hundreds of different installations of each them.<br>
-Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
+There are many different versions of [Python](https://www.python.org/about/), and hundreds of different installations for each them.<br>
+Spidy is developed for Python v3.6.1, but should run without errors in other versions of Python 3.
 
 ### Anaconda
 We recommend the [Anaconda distribution](https://www.continuum.io/downloads).<br>
-It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python distro.
+It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python package.
 
 ### Python Base
-If you do choose to go with the [default Python](https://www.python.org/downloads/) distribution, you will need to install the `lxml` library for spidy to work.<br>
+You can also just install [default Python](https://www.python.org/downloads/), and install `lxml` separately.<br>
 This can be done with `pip`:
 
 > pip install lxml
@@ -138,16 +139,8 @@ This can be done with `pip`:
 
 ![](/media/run.gif?raw=true)
 
-### Arguments
-On running, spidy will ask for input regarding its various arguments.
-
-#### Defaults
-To run spidy with all of its defaults, use:
-
-> python crawler.py Default
-
 ### Windows (Command Line)
-Use `cd` to navigate to the directory spidy's located in, then run `makefiles.bat`.<br>
+Use `cd` to navigate to the directory spidy's located in, then run `clear.bat`.<br>
 This will create all of the necessary files if they don't already exist.
 
 > python crawler.py
@@ -159,11 +152,25 @@ Use `cd` to navigate to spidy's directory and run `makefiles.bat`.<br>
 This will create all of the necessary files if they don't already exist.<br>
 Then run `run.bat`.
 
+### Arguments
+On running, spidy will ask for input regarding its various arguments.
+
+#### Defaults
+To run spidy with the default configuration, launch spidy with:
+
+> python crawler.py Default
+
 ## Running
 Spidy logs a lot of information to the command line.<br>
 Once started, a bunch of `[INIT]` lines will print.<br>
 These announce where spidy is in its initialization process.<br>
-If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's fine - it has to process every link in the TODO list, which can be hundreds of thousands of lines long.
+
+### Expected Behaviour
+Some things that spidy may do that look bad but really aren't:
+
+  - Getting stuck pruning links.
+    - At startup, the crawler sometimes gets stuck on `[spidy] [INIT]: Pruning invalid links from TODO...`.
+	- It has to process every link in the TODO list, which can be hundreds of thousands of lines long.
 
 ### Start
 Sample start log.
