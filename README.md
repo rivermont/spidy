@@ -7,7 +7,7 @@ It does this to infinity[*](#asterisk).
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 669](https://img.shields.io/badge/lines%20of%20code-669-green.svg)](#)
+[![Lines of Code: 658](https://img.shields.io/badge/lines%20of%20code-658-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
@@ -73,11 +73,11 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
   - [License](#license)
 
 # How it Works
-Spidy has to working lists, `TODO` and `done`.<br>
+Spidy has two working lists, `TODO` and `done`.<br>
 TODO is the list of URLs it hasn't yet visited.<br>
 Done is the list of URLs it has already been to.<br>
-The crawler visits each page in TODO, scrapes the HTML content for links, and adds those back into TODO.<br>
-It also saves all of the content of the page into a file for processing.
+The crawler visits each page in TODO, scrapes the DOM of the page for links, and adds those back into TODO.<br>
+It also saves each page, because datahoarding 😜.
 
 
 # Features
@@ -99,13 +99,13 @@ Currently spidy has built-in support for:
   - XMLSyntaxError, ParserError
 
 ## Frequent Timestamp Logging
-Spidy logs almost every action it takes to both the command console and the logFile.
+Spidy logs almost every action it takes to both the console and one of two log files.
 
 ## Portability
-Move spidy's folder and it's contents somewhere else and it will run right where it left off.
+Move spidy's folder and its contents somewhere else and it will run right where it left off.
 
 ## User-Friendly Logs
-Both the console and logFile messages are simple and easy to interpret, but packed with information.
+Both the console and log file messages are simple and easy to interpret, but packed with information.
 
 ## Webpage saving
 Spidy downloads each page that it runs into, regardless of file type.<br>
@@ -113,8 +113,7 @@ The crawler attempts to save to the correct file type, but it defaults to `.html
 Renaming the file extension will fix this.
 
 ## File Zipping
-When autosaving, spidy will archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.<br>
-The name of each zip file will be unique, as it is generated from the current time.
+When autosaving, spidy can archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
 
 
 # Tutorial
@@ -252,6 +251,8 @@ Test branch to see how the crawler runs if allowed to crawl links from the link 
 
 # TODO
   - Upload spidy to PyPI
+  - More configuration options
+  - Presets for configuration
   - Multiple HTTP threads
   - Use Chrome/Safari-mimicking headers after being rejected
   - Respect robots.txt
