@@ -586,7 +586,7 @@ def main():
 			
 			#HTTP Errors
 			if str(e) == 'HTTP Error 403: Forbidden':
-				print('[{0}]] [spiy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
+				print('[{0}] [spiy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
 				LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
 				BAD_LINKS.add(link)
 			
