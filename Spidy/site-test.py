@@ -1,10 +1,16 @@
 from lxml import html
 import msvcrt
 import time
+import shutil
+from os import makedirs
 import requests
 import sys
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+
+###############
+## Functions ##
+###############
 
 def start():
     #initializing variables
@@ -54,11 +60,12 @@ def start():
 
     #defines a text file if save text is requested
     if saveText == 'y':
-        print('Enter valid text file for text or just press enter to use the default crawler_text.txt')
+        print('Enter valid text file in the text folder for text or just press enter to use the default crawler_text.txt')
         textFile = input()
         #used default if no input is given
         if textFile == None or textFile == '':
             textFile = 'crawler_text.txt'
+        textFile = 'text\\' + textFile
         #defines var to clear text
         print('Enter y if you want to clear the previous text file\n')
         clearText = input()
@@ -66,10 +73,6 @@ def start():
         #defines a text list to avoid errors
         text = []
         clearText = ''
-
-    #displays requested info on command prompt
-    display = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed\n')
-    print('[INIT]: Opening saved files')
 
 
     #open saved files
@@ -87,7 +90,7 @@ def start():
         print('[INIT]: Clearing todoFile')
         with open(todoFile, 'w') as f:
             f.write('')
-            todo = []
+            todo = ['https://en.wikipedia.org/wiki/Main_Page']
     else:
         with open(todoFile, 'r+') as f:
             print('[INIT]: opening todoFile')
@@ -106,6 +109,10 @@ def start():
             print('[INIT]: opening doneFile')
             done = f.readlines()
             done = [x.strip() for x in todo]
+
+    #displays requested info on command prompt
+    display = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed\n')
+    print('[INIT]: Opening saved files')
 
     #initializes todoFile with default start website
     print('[INIT]: Initializing todoFile with wikipedia main page')
@@ -149,9 +156,9 @@ def save():
     print('[LOG]: Links already done: ' + str(len(done)))
     print('[LOG]: Links in todo: ' + str(len(todo)))
     print('[LOG]: number of words in text: ' + str(len(text)))
-    doneList = open(doneFile, 'w')
-    todoList = open(todoFile, 'w')
-    textList = open(textFile, 'w')
+    doneList = open(doneFile, 'a')
+    todoList = open(todoFile, 'a')
+    textList = open(textFile, 'a')
     todoList.seek(0)
     doneList.seek(0)
     print('[LOG]: Saving done to done file(crawler_dont.txt by default)')
@@ -169,10 +176,13 @@ def save():
             if word != None:
                 try:
                     textList.write(str(word.encode('utf-8'))[2:-1] + '\n')
+                    textList.close()
                 except:
                     pass
+        #shutil.make_archive(str(textFile), 'zip', 'text')
+        #shutil.rmtree(textFile)
     doneList.close()
-    todoList.close()
+    todoList.close() 
     textList.close()
 #called when u key is pressed
 def update():
@@ -218,7 +228,6 @@ def restart():
     save()
     print('\r[RESTART]\n[RESTART]\n[RESTART]: Restarting crawl . . .\n[RESTART]\n[RESTART]\n[RESTART]')
     #calls start to completely start over
-    start()
     todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display = start()
 
 #used to draw keyboard commmands to the bottom of the command prompt
@@ -273,10 +282,18 @@ def textFromHtml(link):
                 text.append(word)
     flush()
     
+
+##########
+## Init ##
+##########
     
 todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display = start()
 print('[INIT]: Starting Crawler...')
 
+
+#########
+## Run ##
+#########
 
 #loops as long as we haven't mastered the internet
 while len(todo) != 0:
@@ -322,8 +339,13 @@ while len(todo) != 0:
                 links = tree.xpath('//a/@href') #parses the html for all links
                 for item in list(links):
                     item = item.encode('utf-8') #adds all links into todo separately
-                todo += list(links)
-                todo = list(set(todo)) #removes duplicates and also disorders the list
+                if len(todo) < 2000:
+                    todo += list(links)
+                    todo = list(set(todo)) #removes duplicates and also disorders the list
+                else:
+                    todo = todo[500:-1]
+                    todo += list(links)
+                    todo = list(set(todo)) #removes duplicates and also disorders the list
                 #prune()
                 flush()
         else:
@@ -341,8 +363,8 @@ while len(todo) != 0:
         knownErrors += 1
         print('\r\n[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
         print('[LOG]: Saved error to ' + logFile + '                             ')
-        todo.remove(todo[0])
         log(e)
+        todo.remove(todo[0])
         
     except requests.exceptions.HTTPError as e:
         if debug:
@@ -351,8 +373,8 @@ while len(todo) != 0:
         knownErrors += 1
         print('\r\n[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
         print('[LOG]: Saved error to ' + logFile + '                                ')
-        todo.remove(todo[0])
         log(e)
+        todo.remove(todo[0])
     
     except UnicodeEncodeError as e:
         if debug:
@@ -360,7 +382,7 @@ while len(todo) != 0:
             raise
         knownErrors += 1
         log(e)
-        print('\r\n[ERROR]: Unicode Error with link: ' + todo[0] + ', probably a foreign character in the link title.')
+        print('\r\n[ERROR]: Unicode Error with link: ' + str(todo[0].encode('utf-8')) + ', probably a foreign character in the link title.')
         print('[LOG]: Saved error to ' + logFile + '                                ')
         todo.remove(todo[0])
         pass        
