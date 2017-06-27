@@ -282,7 +282,7 @@ def textFromHtml(link):
             if word in text:
                 pass
             else:
-                count += 1
+                words += 1
                 text.append(word)
     print("[LOG]: " + words + " words found on site: " + todo[0])
     
