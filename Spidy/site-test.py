@@ -197,7 +197,7 @@ def status():   #outputs the length of all relevant files
     print('[LOG]: Unknown errors encountered: ' + str(errors))
     print('[LOG] Links in done: ' + str(len(done)))
     print('[LOG] Links in todo: ' + str(len(todo)))
-    if saveText == '':
+    if saveText == 'y':
         print('[LOG]: Words in text: ' + str(len(text)))
 
 #called when p key is pressed
