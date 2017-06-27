@@ -183,7 +183,7 @@ def save():
         shutil.make_archive(str(textFile), 'zip', 'text')
         shutil.rmtree(textFile)
         textList = open(textFile, 'w+')
-        textList.close()s
+        textList.close()
     doneList.close()
     todoList.close() 
     textList.close()
@@ -260,7 +260,7 @@ def textFromHtml(link):
     info()
     with urlopen(link) as url:
         html =  url.read()
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, "lxml")
     
     # kill all script and style elements
     for script in soup(["script", "style"]):
