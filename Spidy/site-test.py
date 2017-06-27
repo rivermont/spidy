@@ -175,10 +175,11 @@ def save():
         for word in text:
             if word != None:
                 try:
+                    print(word)
                     textList.write(str(word.encode('utf-8'))[2:-1] + '\n')
-                    textList.close()
                 except:
                     pass
+        textList.close()
         #shutil.make_archive(str(textFile), 'zip', 'text')
         #shutil.rmtree(textFile)
     doneList.close()
