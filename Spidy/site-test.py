@@ -251,6 +251,7 @@ def flush():
 
 #given a link this parses the html on the webpage for the text and outputs it to crawler_text.txt by default with one word per line
 def textFromHtml(link):
+    words = 0
     flush()
     print('\r[LOG]: Parsing: ' + todo[0] + ' for text\n')
     
@@ -280,14 +281,15 @@ def textFromHtml(link):
             if word in text:
                 pass
             else:
+                count += 1
                 text.append(word)
-    flush()
+    print("[LOG]: " + words + " words found on site: " + todo[0])
     
 
 ##########
 ## Init ##
 ##########
-    
+words = 0
 todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display = start()
 print('[INIT]: Starting Crawler...')
 
