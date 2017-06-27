@@ -226,8 +226,8 @@ def err_print(item):
 	'''
 	Announce that an error occurred.
 	'''
-	print('[{0}] [spidy] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
-	LOG_FILE.write('\n[{0}] [spidy] [ERR]: An error was raised trying to process {1}'.format(get_time(), item))
+	print('[{0}] [spidy] [INFO]: An error was raised trying to process {1}'.format(get_time(), item))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: An error was raised trying to process {1}'.format(get_time(), item))
 
 def err_saved_message():
 	'''
@@ -282,7 +282,7 @@ ERR_LOG_FILE_NAME = 'spidy_error_log_{0}.txt'.format(START_TIME)
 
 #User-Agent Header String
 HEADERS = {
-'User-Agent': 'Mozilla/5.0 (compatible; spidy Web Crawler  (bot, +https://github.com/rivermont/spidy))',
+'User-Agent': 'Mozilla/5.0 (compatible; spidy Web Crawler (bot, +https://github.com/rivermont/spidy))',
 'Accept-Encoding': 'gzip'
 }
 
@@ -293,7 +293,7 @@ KILL_LIST = [
 'psychologytoday.com/rms',
 'www.newsyarena.com'
 #Sites that we have been asked not to crawl:
-#None! Yay
+
 ]
 
 #Empty set for error-causing links
@@ -493,14 +493,14 @@ else:
 
 	after = abs(before - len(TODO))
 	REMOVED_COUNT += after
-	print('[{0}] [spidy] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
-	LOG_FILE.write('\n[{0}] [spidy] [INIT]: {1} invalid links removed from TODO.'.format(get_time(), after))
+	print('[{0}] [spidy] [INFO]: {1} invalid links removed from TODO.'.format(get_time(), after))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} invalid links removed from TODO.'.format(get_time(), after))
 	
 	del before
 	del after
 
-print('[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
-LOG_FILE.write('\n[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time(), TODO[0]))
+print('[{0}] [spidy] [INFO]: TODO first value: {1}'.format(get_time(), TODO[0]))
+LOG_FILE.write('\n[{0}] [spidy] [INFO]: TODO first value: {1}'.format(get_time(), TODO[0]))
 
 def main():
 	#Declare global variables
@@ -522,14 +522,14 @@ def main():
 	while len(TODO) != 0: #While there are links to check
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS: #If too many errors have occurred
-				print('[{0}] [spidy] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+				print('[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+				LOG_FILE.write('\n[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 				save_files(WORDS)
 				sys.exit()
 			elif COUNTER >= SAVE_COUNT: #If it's time for an autosave
 				try:
-					print('[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
-					LOG_FILE.write('\n[{0}] [spidy] [LOG]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
+					print('[{0}] [spidy] [INFO]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
+					LOG_FILE.write('\n[{0}] [spidy] [INFO]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
 					save_files(WORDS)
 					info_log()
 					if ZIP_FILES:
