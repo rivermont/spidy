@@ -67,7 +67,7 @@ def start():
             textFile = 'crawler_text.txt'
         textFile = 'text\\' + textFile
         #defines var to clear text
-        print('Enter y if you want to clear the previous text file\n')
+        print('Enter y if you want to clear the previous text file')
         clearText = input()
     else:
         #defines a text list to avoid errors
