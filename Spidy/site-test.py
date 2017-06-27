@@ -175,7 +175,6 @@ def save():
         for word in text:
             if word != None:
                 try:
-                    print(word)
                     textList.write(str(word.encode('utf-8'))[2:-1] + '\n')
                 except:
                     pass
