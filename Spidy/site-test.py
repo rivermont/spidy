@@ -180,8 +180,10 @@ def save():
                 except:
                     pass
         textList.close()
-        #shutil.make_archive(str(textFile), 'zip', 'text')
-        #shutil.rmtree(textFile)
+        shutil.make_archive(str(textFile), 'zip', 'text')
+        shutil.rmtree(textFile)
+        textList = open(textFile, 'w+')
+        textList.close()s
     doneList.close()
     todoList.close() 
     textList.close()
