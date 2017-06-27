@@ -15,6 +15,7 @@ import time as t
 START_TIME = int(t.time())
 def get_time():
 	return t.strftime('%H:%M:%S')
+START_TIME_LONG = get_time()
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
 
@@ -192,25 +193,23 @@ def info_log():
 	'''
 	Logs important information to the console and log file.
 	'''
-	sinceStart = int(t.time() - START_TIME)
-	
 	#Print to console
-	time = get_time()
-	print('[{0}] [spidy] [INFO]: {1} seconds elapsed since start.'.format(time, sinceStart))
-	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(time, len(TODO)))
-	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(time, len(DONE)))
-	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(time, REMOVED_COUNT))
-	print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-	print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-	print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+	print('[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
+	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time, len(TODO)))
+	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time, len(DONE)))
+	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time, REMOVED_COUNT))
+	print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} seconds elapsed since start.'.format(time, sinceStart))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(time, len(TODO)))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(time, len(DONE)))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} bad links removed.'.format(time, REMOVED_COUNT))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+	#Print to log file
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time, len(TODO)))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time, len(DONE)))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time, REMOVED_COUNT))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
 def log(message):
 	'''
@@ -505,7 +504,7 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: TODO first value: {1}'.format(get_time()
 
 def main():
 	#Declare global variables
-	global VERSION, START_TIME, LOG_FILE, ERR_LOG_FILE_NAME
+	global VERSION, START_TIME, START_TIME_LONG, LOG_FILE, ERR_LOG_FILE_NAME
 	global HEADERS, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
 	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
