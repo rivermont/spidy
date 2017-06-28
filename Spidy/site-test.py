@@ -217,8 +217,7 @@ def pause():
             elif command == 'e':
                 prune()       
         except KeyboardInterrupt:
-            save()
-            exit()
+            end()
     print('[LOG]: Resuming crawl')
 
 #called when r key is pressed
