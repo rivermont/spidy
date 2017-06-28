@@ -82,20 +82,16 @@ def check_word(word):
 	else:
 		return False
 
-def check_extension(path):
+def check_extension(extension):
 	'''
 	Returns True if file should be saved as .html.
 	Returns False if file extension is (probably) a valid type.
 	'''
-	if path in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
+	if len(extension) > 5:
 		return True
-	elif len(path) > 5:
+	if extension in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
 		return True
-	elif path[-1] == '/':
-		return True
-	else:
-		return False
-
+	
 def check_path(filePath):
 	'''
 	Checks the path of a given filename to see whether it will cause errors when saving.
@@ -157,13 +153,13 @@ def save_page(url):
 		ext = 'html'
 	else:
 		ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension.
+		if check_extension(ext): #If the extension is invalid, default to .html
+			ext = 'html'
 	for char in '''"/\ ''': #Replace folders with -
 		newUrl = newUrl.replace(char, '-')
 	for char in '''|:?<>*''': #Remove illegal filename characters
 		newUrl = newUrl.replace(char, '')
-	if check_extension(ext): #If the extension is invalid, default to .html
-		ext = 'html'
-	newUrl = newUrl.replace(ext, '') #Remove extension from file name
+	#newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
 	path = '{0}/saved/{1}'.format(CRAWLER_DIR, fileName)
 	del newUrl, fileName, ext
