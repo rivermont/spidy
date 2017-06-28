@@ -217,7 +217,7 @@ def pause():
                 restart()
             elif(command == 'e'):
                 prune()       
-        except KeyboardInterrupt:
+         except KeyboardInterrupt:
             end()
     print('[LOG]: Resuming crawl')
 
