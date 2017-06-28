@@ -1,5 +1,6 @@
 from lxml import html
 import os, sys
+import random
 import msvcrt
 import time
 import shutil
@@ -350,6 +351,7 @@ while len(todo) != 0:
                     todo += list(links)
                     todo = list(set(todo)) #removes duplicates and also disorders the list
                 else:
+                    todo = random.shuffle(todo)
                     todo = todo[500:-1]
                     todo += list(links)
                     todo = list(set(todo)) #removes duplicates and also disorders the list
