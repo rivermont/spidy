@@ -524,10 +524,12 @@ def main():
 				sys.exit()
 			elif COUNTER >= SAVE_COUNT: #If it's time for an autosave
 				try:
-					print('[{0}] [spidy] [INFO]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
-					LOG_FILE.write('\n[{0}] [spidy] [INFO]: Queried {1} links. Saving files...'.format(get_time(), str(COUNTER)))
-					save_files(WORDS)
+					print('[{0}] [spidy] [INFO]: Queried {1} links.'.format(get_time(), str(COUNTER)))
+					LOG_FILE.write('\n[{0}] [spidy] [INFO]: Queried {1} links.'.format(get_time(), str(COUNTER)))
 					info_log()
+					print('[{0}] [spidy] [INFO]: Saving files...'.format(get_time()))
+					LOG_FILE.write('\n[{0}] [spidy] [INFO]: Saving files...'.format(get_time()))
+					save_files(WORDS)
 					if ZIP_FILES:
 						zip(t.time(), 'saved/')
 				finally:
