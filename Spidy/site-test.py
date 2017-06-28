@@ -279,7 +279,7 @@ def textFromHtml(link):
             else:
                 words += 1
                 text.append(word)
-    print("[LOG]: " + str(words) + " words found on site: " + todo[0])
+    print("\r[LOG]: " + str(words) + " words found on site: " + todo[0])
 
 def end():
     save()
