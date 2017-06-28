@@ -256,7 +256,7 @@ def flush():
 def textFromHtml(link):
     words = 0
     flush()
-    print('\r[LOG]: Parsing: ' + todo[0] + ' for text     \n')
+    print('\r[LOG]' + getTimeNoSecs() + ": " + Parsing: ' + todo[0] + ' for text     \n')
     
     info()
     with urlopen(link) as url:
@@ -286,12 +286,14 @@ def textFromHtml(link):
             else:
                 words += 1
                 text.append(word)
-    print("\r[LOG]: " + str(words) + " words found on site: " + todo[0])
+    print("\r[LOG] " + getTimeNoSecs() + ": " + str(words) + " words found on site: " + todo[0])
 
 def getTime():
     times = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M") + ":" + time.strftime("%S")
     return times
-
+def getTimeNoSecs():
+    times = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M")
+    return times
 def end():
     try:
         save()
@@ -347,7 +349,7 @@ while len(todo) != 0:
             #actual web crawling process    
             else:
                 count += 1
-                print('\r[CRAWL] Web Crawler currently at: ' + str(todo[0].encode('utf-8')) + '               ') #prints current website to the console
+                print('\r[CRAWL]'+ getTimeNoSecs() + ": " + Web Crawler currently at: ' + str(todo[0].encode('utf-8')) + '               ') #prints current website to the console
                 info()
                 flush()
                 page = requests.get(todo[0])
