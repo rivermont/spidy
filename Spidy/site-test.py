@@ -286,7 +286,10 @@ def textFromHtml(link):
                 text.append(word)
     print("\r[LOG]: " + str(words) + " words found on site: " + todo[0])
 
-
+def getTime():
+    time.strftime("%D %I %M %S")
+    time = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M") + ":" + time.strftime("%S")
+    return time
 
 def end():
     try:
