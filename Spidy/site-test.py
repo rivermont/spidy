@@ -216,8 +216,12 @@ def pause():
             elif(command == 'r'):
                 restart()
             elif(command == 'e'):
-                prune()       
-         except KeyboardInterrupt:
+                prune()
+            else:
+                None
+        except KeyboardInterrupt:
+            end()
+        except EOFError:
             end()
     print('[LOG]: Resuming crawl')
 
@@ -282,14 +286,18 @@ def textFromHtml(link):
                 text.append(word)
     print("\r[LOG]: " + str(words) + " words found on site: " + todo[0])
 
+
+
 def end():
-    save()
-    shutil.make_archive(textFile, 'zip', 'text')
-    os.remove(textFile)
-    textList = open(textFile, 'w+')
-    textList.close()
-    exit()
-    
+    try:
+        save()
+        shutil.make_archive(time.clock, 'zip', 'text')
+        os.remove(textFile)
+        textList = open(textFile, 'w+')
+        textList.close()
+        exit()
+    except KeyboardInterrupt:
+        end()
 
 ##########
 ## Init ##
