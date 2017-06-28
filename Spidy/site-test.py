@@ -213,9 +213,9 @@ def pause():
                 update()
             elif(command == 's'):
                 status()
-            elif command == 'r':
+            elif(command == 'r'):
                 restart()
-            elif command == 'e':
+            elif(command == 'e'):
                 prune()       
         except KeyboardInterrupt:
             end()
