@@ -125,7 +125,7 @@ def start():
 
 #defines prune function to delete invalid links
 def prune():
-    print('[LOG]: Pruning todo files')
+    print('[LOG] '  + getTimeNoSecs() + ': Pruning todo files')
     counter = 0;
     for link in todo:
         if link in done:
@@ -143,29 +143,29 @@ def prune():
             pass
         else:
             text.append(line)
-    print('Removed ' + str(counter) + ' invalid links')
+    print('\r' + '[LOG] '  + getTimeNoSecs() + ': Removed ' + str(counter) + ' invalid links')
         
 #defines log to log an error into log file
 def log(error):
     log = open(logFile, 'a') #Open the log file
     log.seek(0) #Go to the first line
-    log.write('\n\nSITE: ' + str(todo[0].encode('utf-8')) + '\nTIME: ' + str(time.time()) + 'ERROR: ' + str(e) + '\n\n') #Write the error message
+    log.write('\n\nSITE: ' + str(todo[0].encode('utf-8')) + '\nTIME: ' + getTime() + 'ERROR: ' + str(e) + '\n\n') #Write the error message
     log.close()
 
 #defines save to output info to command line and to update done and todo files
 def save():
     prune()
-    print('[LOG]: Known Errors thrown so far: ' + str(knownErrors))
-    print('[LOG]: Errors thrown so far: ' + str(errors))
-    print('[LOG]: Links already done: ' + str(len(done)))
-    print('[LOG]: Links in todo: ' + str(len(todo)))
-    print('[LOG]: number of words in text: ' + str(len(text)))
+    print('[LOG] '  + getTimeNoSecs() + ': Known Errors thrown so far: ' + str(knownErrors))
+    print('[LOG] ' + getTimeNoSecs() + ': Errors thrown so far: ' + str(errors))
+    print('[LOG] ' + getTimeNoSecs() + ': Links already done: ' + str(len(done)))
+    print('[LOG] ' + getTimeNoSecs() + ': Links in todo: ' + str(len(todo)))
+    print('[LOG] ' + getTimeNoSecs() + ': number of words in text: ' + str(len(text)))
     doneList = open(doneFile, 'a')
     todoList = open(todoFile, 'a')
     textList = open(textFile, 'a')
     todoList.seek(0)
     doneList.seek(0)
-    print('[LOG]: Saving done to done file(crawler_dont.txt by default)')
+    print('[LOG] ' + getTimeNoSecs() + ': Saving done to done file(crawler_done.txt by default)')
     for site in done: #adds all done sites into saved done file
             doneList.write(str(site.encode('utf-8')) + '\n')
     print('[LOG]: Saving todo to todo file(crawler_todo.txt by default)')
