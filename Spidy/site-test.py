@@ -18,7 +18,7 @@ def getTimeNoSecs():
 
 def start():
     #initializing variables
-    print('[INIT]' + getTimeNoSecs() + ": Creating variables...')
+    print('[INIT]' + getTimeNoSecs() + ": Creating variables...")
     count = 0;
     errors = 0
     knownErrors = 0
@@ -82,22 +82,22 @@ def start():
     #open saved files
     if clearText == 'y':
         with open(textFile, 'w') as f:
-            print('[INIT]: Clearing textFile')
+            print('[INIT] ' + getTimeNoSecs() + ': Clearing textFile')
             f.write('')
             text = []
     elif saveText == 'y':
         with open(textFile, 'r+') as f:
-            print('[INIT]: Opening textFile')
+            print('[INIT] ' + getTimeNoSecs() + ': Opening textFile')
             text = f.readlines()
     #open saved todo file
     if clearTodo == 'y':
-        print('[INIT]: Clearing todoFile')
+        print('[INIT] ' + getTimeNoSecs() + ': Clearing todoFile')
         with open(todoFile, 'w') as f:
             f.write('')
             todo = ['https://en.wikipedia.org/wiki/Main_Page']
     else:
         with open(todoFile, 'r+') as f:
-            print('[INIT]: opening todoFile')
+            print('[INIT] ' + getTimeNoSecs() + ': opening todoFile')
             todo = f.readlines()
             todo = [x.strip() for x in todo]
 
@@ -105,21 +105,21 @@ def start():
         #clears doneFile if clear is True
     if clear == 'y':
         with open(doneFile, 'w') as f:
-            print('[INIT]: clearing done file')
+            print('[INIT] '+ getTimeNoSecs() + ': clearing done file')
             f.write('')
             done = []
     else:
         with open(doneFile, 'r+') as f:
-            print('[INIT]: opening doneFile')
+            print('[INIT] ' + getTimeNoSecs() + ': opening doneFile')
             done = f.readlines()
             done = [x.strip() for x in todo]
 
     #displays requested info on command prompt
     display = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed\n')
-    print('[INIT]: Opening saved files')
+    print('[INIT] '+ getTimeNoSecs() + ': Opening saved files')
 
     #initializes todoFile with default start website
-    print('[INIT]: Initializing todoFile with wikipedia main page')
+    print('[INIT] ' + getTimeNoSecs() + ': Initializing todoFile with wikipedia main page')
     todo.append('https://en.wikipedia.org/wiki/Main_Page')
     return todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display
 
