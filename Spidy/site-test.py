@@ -281,6 +281,14 @@ def textFromHtml(link):
                 words += 1
                 text.append(word)
     print("[LOG]: " + str(words) + " words found on site: " + todo[0])
+
+def end():
+    save()
+    shutil.make_archive(textFile, 'zip', 'text')
+    os.remove(textFile)
+    textList = open(textFile, 'w+')
+    textList.close()
+    exit()
     
 
 ##########
@@ -354,12 +362,7 @@ while len(todo) != 0:
 
     #ending the script safely with KeyboardInterrupt        
     except KeyboardInterrupt:
-        save()
-        shutil.make_archive(textFile, 'zip', 'text')
-        os.remove(textFile)
-        textList = open(textFile, 'w+')
-        textList.close()
-        exit()
+        end()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
         if debug:
             save()
