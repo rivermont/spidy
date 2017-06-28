@@ -168,13 +168,13 @@ def save():
     print('[LOG] ' + getTimeNoSecs() + ': Saving done to done file(crawler_done.txt by default)')
     for site in done: #adds all done sites into saved done file
             doneList.write(str(site.encode('utf-8')) + '\n')
-    print('[LOG]: Saving todo to todo file(crawler_todo.txt by default)')
+    print('[LOG] ' + getTimeNoSecs() + ': Saving todo to todo file(crawler_todo.txt by default)')
     for site in todo: #adds all todo sites into saved todo file
             todoList.write(str(site.encode('utf-8')) + '\n')
 
     #saves text if user selected that option
     if saveText == 'y':
-        print('[LOG]: Saving text to text file(crawler_text.txt by default)')
+        print('[LOG] ' + getTimeNoSecs() + ': Saving text to text file(crawler_text.txt by default)')
         #iterates through every entry in text and checks to make sure there are no duplicates before adding it to the text file
         for word in text:
             if word != None:
@@ -189,17 +189,17 @@ def save():
 #called when u key is pressed
 def update():
     count = 0
-    print('updating logs...')
+    print('\r' + '[LOG] ' + getTimeNoSecs() + ': updating logs...')
     save()
 
 #called when s key is pressed
 def status():   #outputs the length of all relevant files
-    print('[LOG]: Total errors encountered: ' + str(errors+knownErrors))
-    print('[LOG]: Unknown errors encountered: ' + str(errors))
-    print('[LOG] Links in done: ' + str(len(done)))
-    print('[LOG] Links in todo: ' + str(len(todo)))
+    print('[LOG] ' + getTimeNoSecs() + ': Total errors encountered: ' + str(errors+knownErrors))
+    print('[LOG] ' + getTimeNoSecs() + ': Unknown errors encountered: ' + str(errors))
+    print('[LOG] ' + getTimeNoSecs() + ': Links in done: ' + str(len(done)))
+    print('[LOG] ' + getTimeNoSecs() + ': Links in todo: ' + str(len(todo)))
     if saveText == 'y':
-        print('[LOG]: Words in text: ' + str(len(text)))
+        print('[LOG] ' + getTimeNoSecs() + ': Words in text: ' + str(len(text)))
 
 #called when p key is pressed
 def pause():
@@ -226,7 +226,7 @@ def pause():
             end()
         except EOFError:
             end()
-    print('[LOG]: Resuming crawl')
+    print('[LOG] ' + getTimeNoSecs() + ': Resuming crawl')
 
 #called when r key is pressed
 def restart():
@@ -259,7 +259,7 @@ def flush():
 def textFromHtml(link):
     words = 0
     flush()
-    print('\r[LOG]' + getTimeNoSecs() + ": " + 'Parsing: ' + todo[0] + ' for text     \n')
+    print('\r[LOG] ' + getTimeNoSecs() + ": " + 'Parsing: ' + todo[0] + ' for text     \n')
     
     info()
     with urlopen(link) as url:
@@ -310,7 +310,7 @@ def end():
 ##########
 words = 0
 todo, done, count, errors, knownErrors, doneFile, todoFile, logFile, text, textFile, debug, saveCount, saveText, display = start()
-print('[INIT]: Starting Crawler...')
+print('[INIT] ' + getTimeNoSecs() + ': Starting Crawler...')
 
 
 #########
@@ -349,7 +349,7 @@ while len(todo) != 0:
             #actual web crawling process    
             else:
                 count += 1
-                print('\r[CRAWL]'+ getTimeNoSecs() + ": " + 'Web Crawler currently at: ' + str(todo[0].encode('utf-8')) + '               ') #prints current website to the console
+                print('\r[CRAWL] '+ getTimeNoSecs() + ": " + 'Web Crawler currently at: ' + str(todo[0].encode('utf-8')) + '               ') #prints current website to the console
                 info()
                 flush()
                 page = requests.get(todo[0])
@@ -383,8 +383,8 @@ while len(todo) != 0:
             save()
             raise
         knownErrors += 1
-        print('\r\n[ERR]: A connection error occured with link: ' + todo[0] + ', the link may be down.')
-        print('[LOG]: Saved error to ' + logFile + '                             ')
+        print('\r\n[ERR] ' + getTimeNoSecs() + ': A connection error occured with link: ' + todo[0] + ', the link may be down.')
+        print('[LOG] ' + getTimeNoSecs() + ': Saved error to ' + logFile + '                             ')
         log(e)
         todo.remove(todo[0])
         
@@ -393,8 +393,8 @@ while len(todo) != 0:
             save()
             raise
         knownErrors += 1
-        print('\r\n[ERR]: An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
-        print('[LOG]: Saved error to ' + logFile + '                                ')
+        print('\r\n[ERR] ' + getTimeNoSecs() + ': An HTTPError occured with link: ' + todo[0] + ', there is probably something wrong with the link.')
+        print('[LOG] ' + getTimeNoSecs() + ': Saved error to ' + logFile + '                                ')
         log(e)
         todo.remove(todo[0])
     
@@ -404,8 +404,8 @@ while len(todo) != 0:
             raise
         knownErrors += 1
         log(e)
-        print('\r\n[ERROR]: Unicode Error with link: ' + str(todo[0].encode('utf-8')) + ', probably a foreign character in the link title.')
-        print('[LOG]: Saved error to ' + logFile + '                                ')
+        print('\r\n[ERROR] ' + getTimeNoSecs() + ': Unicode Error with link: ' + str(todo[0].encode('utf-8')) + ', probably a foreign character in the link title.')
+        print('[LOG] ' + getTimeNoSecs() + ': Saved error to ' + logFile + '                                ')
         todo.remove(todo[0])
         pass        
     except Exception as e: #If any other error is raised
@@ -414,8 +414,8 @@ while len(todo) != 0:
             raise
         log(e)
         errors += 1
-        print('\r\n[ERROR]: An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
-        print('[LOG]: Saved error to ' + logFile)
+        print('\r\n[ERROR] ' + getTimeNoSecs() + ': An error occured with link: ' + todo[0] + ' \nprobably http related, Saved to log file(crawler_log.txt by default)') #Print in cmd that an error happened
+        print('[LOG] ' + getTimeNoSecs() + ': Saved error to ' + logFile)
         todo.remove(todo[0]) #Remove unliked link from todo
         pass #Keep going like nothing happened
     
@@ -423,11 +423,11 @@ while len(todo) != 0:
     if count > int(saveCount):
         count =0;
         logFile = open(logFile, 'a')
-        logFile.write('[AUTOSAVE]: Saved done and todo to crawler_done.txt and crawler_todo.txt by default \n')
-        logFile.write('[AUTOSAVE]: Done length: ' + str(len(done) + '\n'))
-        logFile.write('[AUTOSAVE]: Todo length: ' + str(len(todo) + '\n\n\n'))
+        logFile.write('[AUTOSAVE] ' + getTimeNoSecs() + ': Saved done and todo to crawler_done.txt and crawler_todo.txt by default \n')
+        logFile.write('[AUTOSAVE] ' + getTimeNoSecs() + ': Done length: ' + str(len(done) + '\n'))
+        logFile.write('[AUTOSAVE] ' + getTimeNoSecs() + ': Todo length: ' + str(len(todo) + '\n\n\n'))
         logFile.close()
-        print('[LOG]: Queried 1000 websites, Automatically saving done and todo files')
+        print('[LOG] ' + getTimeNoSecs() + ': Queried 1000 websites, Automatically saving done and todo files')
         save()
         info()
         flush()
