@@ -12,10 +12,13 @@ from bs4 import BeautifulSoup
 ###############
 ## Functions ##
 ###############
+def getTimeNoSecs():
+    times = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M")
+    return times
 
 def start():
     #initializing variables
-    print('[INIT]: Creating variables...')
+    print('[INIT]' + getTimeNoSecs() + ": Creating variables...')
     count = 0;
     errors = 0
     knownErrors = 0
@@ -290,9 +293,6 @@ def textFromHtml(link):
 
 def getTime():
     times = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M") + ":" + time.strftime("%S")
-    return times
-def getTimeNoSecs():
-    times = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M")
     return times
 def end():
     try:
