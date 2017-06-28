@@ -236,17 +236,17 @@ def restart():
 #0-4 for size of done, size of todo, words in text, total errors, unknown errors
 def info():
     if display == '0':
-        sys.stdout.write("\r" + "Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>status")
+        sys.stdout.write("\r" + "[INFO]: Links in done: " + str(len(done)) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '1':
-        sys.stdout.write("\r" + "Links in todo: " + str(len(todo)) + " p>pause, u>update, r>restart, e>prune, or s>status")
+        sys.stdout.write("\r" + "[INFO]: Links in todo: " + str(len(todo)) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '2':
-        sys.stdout.write("\r" + "Words in text: " + str(len(text)) + " p>pause, u>update, r>restart, e>prune, or s>status")
+        sys.stdout.write("\r" + "[INFO]: Words in text: " + str(len(text)) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '3':
-        sys.stdout.write("\r" + "Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>status")
+        sys.stdout.write("\r" + "[INFO]: Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '4':
-        sys.stdout.write("\r" + "Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>status")
+        sys.stdout.write("\r" + "[INFO]: Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>status")
     else:
-        sys.stdout.write("\r" + "Crawled " + str(count) + " webpages crawled since last save")
+        sys.stdout.write("\r" + "[INFO]: Crawled " + str(count) + " webpages crawled since last save")
     flush()
 #flushes the buffer to immediately write the above info to the command prompt
 def flush():
