@@ -211,7 +211,7 @@ def pause():
             #checks to see if any valid command is entered and then executes it
             if(command == 'u'):
                 update()
-            elif command == 's':
+            elif(command == 's'):
                 status()
             elif command == 'r':
                 restart()
