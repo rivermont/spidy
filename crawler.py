@@ -191,21 +191,21 @@ def info_log():
 	'''
 	#Print to console
 	print('[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
-	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time, len(TODO)))
-	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time, len(DONE)))
-	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time, REMOVED_COUNT))
-	print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-	print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-	print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
+	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
+	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time(), REMOVED_COUNT))
+	print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
 	#Print to log file
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time, len(TODO)))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time, len(DONE)))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time, REMOVED_COUNT))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time, NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time, HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time, KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time(), REMOVED_COUNT))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
 def log(message):
 	'''
@@ -583,12 +583,12 @@ def main():
 			
 			#HTTP Errors
 			if str(e) == 'HTTP Error 403: Forbidden':
-				print('[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
+				print('[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden.'.format(get_time()))
 				LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
 				BAD_LINKS.add(link)
 			
 			elif str(e) == 'HTTP Error 429: Too Many Requests':
-				print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests'.format(get_time()))
+				print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests - thanks reddit!'.format(get_time()))
 				LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 				TODO += TODO[0] #Move link to end of TODO list
 			
