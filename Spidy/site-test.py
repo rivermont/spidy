@@ -179,8 +179,9 @@ def save():
                 except:
                     pass
         textList.close()
-        shutil.make_archive(str(textFile), 'zip', 'text')
-        shutil.rmtree(textFile)
+        texts = "text/" + textFile[5:0]
+        shutil.make_archive(texts, 'zip', 'text')
+        shutil.rmtree(texts)
         textList = open(textFile, 'w+')
         textList.close()
     doneList.close()
