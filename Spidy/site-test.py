@@ -254,7 +254,7 @@ def flush():
 def textFromHtml(link):
     words = 0
     flush()
-    print('\r[LOG]: Parsing: ' + todo[0] + ' for text\n')
+    print('\r[LOG]: Parsing: ' + todo[0] + ' for text     \n')
     
     info()
     with urlopen(link) as url:
@@ -284,7 +284,7 @@ def textFromHtml(link):
             else:
                 words += 1
                 text.append(word)
-    print("[LOG]: " + words + " words found on site: " + todo[0])
+    print("[LOG]: " + str(words) + " words found on site: " + todo[0])
     
 
 ##########
