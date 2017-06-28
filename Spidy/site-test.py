@@ -179,11 +179,6 @@ def save():
                 except:
                     pass
         textList.close()
-        shutil.make_archive(textFile, 'zip', 'text')
-        os.remove(textFile)
-        #shutil.rmtree(textFile)
-        textList = open(textFile, 'w+')
-        textList.close()
     doneList.close()
     todoList.close() 
     textList.close()
@@ -360,6 +355,10 @@ while len(todo) != 0:
     #ending the script safely with KeyboardInterrupt        
     except KeyboardInterrupt:
         save()
+        shutil.make_archive(textFile, 'zip', 'text')
+        os.remove(textFile)
+        textList = open(textFile, 'w+')
+        textList.close()
         exit()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
         if debug:
