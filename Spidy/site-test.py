@@ -1,10 +1,10 @@
 from lxml import html
+import os, sys
 import msvcrt
 import time
 import shutil
 from os import makedirs
-import requests
-import sys
+import requests 
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -65,7 +65,7 @@ def start():
         #used default if no input is given
         if textFile == None or textFile == '':
             textFile = 'crawler_text.txt'
-        textFile = 'text\\' + textFile
+        textFile = os.path.join("text", textFile)
         #defines var to clear text
         print('Enter y if you want to clear the previous text file')
         clearText = input()
@@ -179,10 +179,10 @@ def save():
                 except:
                     pass
         textList.close()
-        texts = "text/" + textFile[5:]
-        shutil.make_archive(texts, 'zip', 'text')
-        shutil.rmtree(texts)
-        textList = open(texts, 'w+')
+        shutil.make_archive(textFile, 'zip', 'text')
+        os.remove(textFile)
+        #shutil.rmtree(textFile)
+        textList = open(textFile, 'w+')
         textList.close()
     doneList.close()
     todoList.close() 
