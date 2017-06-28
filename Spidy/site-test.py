@@ -245,6 +245,8 @@ def info():
         sys.stdout.write("\r" + "Total errors: " + str(errors + knownErrors) + " p>pause, u>update, r>restart, e>prune, or s>status")
     if display == '4':
         sys.stdout.write("\r" + "Unknown errors: " + str(errors) + " p>pause, u>update, r>restart, e>prune, or s>status")
+    else:
+        sys.stdout.write("\r" + "Crawled " + str(count) + " webpages crawled since last save")
     flush()
 #flushes the buffer to immediately write the above info to the command prompt
 def flush():
@@ -287,9 +289,8 @@ def textFromHtml(link):
     print("\r[LOG]: " + str(words) + " words found on site: " + todo[0])
 
 def getTime():
-    time.strftime("%D %I %M %S")
-    time = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M") + ":" + time.strftime("%S")
-    return time
+    times = time.strftime("%D") + ": " + time.strftime("%I") + ":" + time.strftime("%M") + ":" + time.strftime("%S")
+    return times
 
 def end():
     try:
