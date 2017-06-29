@@ -329,10 +329,10 @@ try:
 		print('[{0}] [spidy] [INFO]: Using default configuration.'.format(get_time()))
 		LOG_FILE.write('\n[{0}] [spidy] [INFO]: Using default configuration.'.format(get_time()))
 		OVERWRITE = False
-		RAISE_ERRORS = False
+		RAISE_ERRORS = True
 		ZIP_FILES = False
 		SAVE_PAGES = True
-		SAVE_WORDS = True
+		SAVE_WORDS = False
 		TODO_FILE = 'crawler_todo.txt'
 		DONE_FILE = 'crawler_done.txt'
 		WORD_FILE = 'crawler_words.txt'
