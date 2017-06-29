@@ -14,7 +14,7 @@ It does this to infinity[*](#asterisk).
 
 # New Features!
 
-### Config Files - #[empty](#)
+### Config Files - #[32d8f91](https://github.com/rivermont/spidy/commit/32d8f9164f5b4af3d47840f84cb5022f07180276)
 Fine-tune the bahaviour of spidy with new config files!
 
 ### Advanced Logging - #[a95b6d2](https://github.com/rivermont/spidy/commit/a95b6d2f44143c034ac1ef24f87ea5b5a6a3942f)
