@@ -324,29 +324,22 @@ START = [
 yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
 no = ['n', 'no', 'N', 'No', 'False', 'false']
 
-try:
-	if sys.argv[1] == 'Default':
-		print('[{0}] [spidy] [INFO]: Using default configuration.'.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INFO]: Using default configuration.'.format(get_time()))
-		OVERWRITE = False
-		RAISE_ERRORS = True
-		ZIP_FILES = False
-		SAVE_PAGES = True
-		SAVE_WORDS = False
-		TODO_FILE = 'crawler_todo.txt'
-		DONE_FILE = 'crawler_done.txt'
-		WORD_FILE = 'crawler_words.txt'
-		BAD_FILE = 'crawler_bad.txt'
-		SAVE_COUNT = 100
-		
-		GET_ARGS = False
-	else:
-		print('[{0}] [spidy] [ERR]: Invalid argument(s).'.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid argument(s).'.format(get_time()))
-		GET_ARGS = True
-except IndexError:
+if not(bool(sys.argv[1])):
 	GET_ARGS = True
-	
+else:
+	try:
+		path = 'config/' + sys.argv[1] + '.cfg'
+		print('[{0}] [spidy] [INFO]: Using configuration settings from {1}'.format(get_time(), path))
+		LOG_FILE.write('[{0}] [spidy] [INFO]: Using configuration settings from {1}'.format(get_time(), path))
+		with open(path, 'r') as f:
+			for line in f:
+				exec(line)
+		GET_ARGS = False
+	except FileNotFoundError:
+		print('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+		LOG_FILE.write('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+		sys.exit()
+
 if GET_ARGS:
 	print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))

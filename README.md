@@ -7,12 +7,15 @@ It does this to infinity[*](#asterisk).
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 658](https://img.shields.io/badge/lines%20of%20code-658-green.svg)](#)
+[![Lines of Code: 675](https://img.shields.io/badge/lines%20of%20code-675-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
 
 # New Features!
+
+### Config Files - #[empty](#)
+Fine-tune the bahaviour of spidy with new config files!
 
 ### Advanced Logging - #[a95b6d2](https://github.com/rivermont/spidy/commit/a95b6d2f44143c034ac1ef24f87ea5b5a6a3942f)
 Spidy now saves the command line output to a second log file.
@@ -27,6 +30,7 @@ Spidy now zips the webpages it downloads into a `.zip` file for storage.
   - [Table of Contents](#table-of-contents)
   - [How it Works](#how-it-works)
   - [Features](#features)
+    - [Configuration](#configuration)
     - [Error Handling](#error-handling)
     - [Frequent Timestamp Logging](#frequent-timestamp-logging)
     - [Portability](#portability)
@@ -84,6 +88,10 @@ It also saves each page, because datahoarding 😜.
 # Features
 We built a lot of the functionality in spidy by watching the console scroll by and going, "Hey, we should add that!"<br>
 Here are some features we figure are worth noting.
+
+## Configuration
+Spidy comes 'preloaded' with multiple configuration files.<br>
+These set variables for the crawler and tell it how to behave.
 
 ## Error Handling
 We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each.<br>
@@ -152,13 +160,22 @@ Use `cd` to navigate to spidy's directory and run `makefiles.bat`.<br>
 This will create all of the necessary files if they don't already exist.<br>
 Then run `run.bat`.
 
-### Arguments
-On running, spidy will ask for input regarding its various arguments.
+### Config
+On running, spidy may ask for input regarding its various arguments.<br>
+However, you can also use one of the configuration files, or even create your own.
 
-#### Defaults
-To run spidy with the default configuration, launch spidy with:
+To use spidy with a configuration file, use the command:
 
-> python crawler.py Default
+> python crawler.py <fileName>
+
+Where `<fileName>` is the name of the config file - minus the `.cfg` extension.
+
+The config files included with spidy are:
+
+  - `default.cfg`: The default version.
+  - `heavy.cfg`: Run spidy with all of its features enabled.
+  - `light.cfg`: Disable most features; only crawls pages for links.
+  - `rivermont.cfg`: My personal favorite settings.
 
 ## Running
 Spidy logs a lot of information to the command line.<br>
@@ -171,6 +188,7 @@ Some things that spidy may do that look bad but really aren't:
   - Getting stuck pruning links.
     - At startup, the crawler sometimes gets stuck on `[spidy] [INIT]: Pruning invalid links from TODO...`.
 	- It has to process every link in the TODO list, which can be hundreds of thousands of lines long.
+  - Lots of [ERR]: HTTP 429: Too Many Requests
 
 ### Start
 Sample start log.
@@ -258,13 +276,9 @@ Test branch to see how the crawler runs if allowed to crawl links from the link 
 
 # TODO
   - Upload spidy to PyPI
-  - More configuration options
-  - Presets for configuration
   - Multiple HTTP threads
   - Use Chrome/Safari-mimicking headers after being rejected
   - Respect robots.txt
-  - Better logging, both to console and logFile
-  - Add webpage saving functionality to README
   - Talk about hashcat in README
 
 # Acknowledgements
