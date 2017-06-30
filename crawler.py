@@ -25,6 +25,7 @@ CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 #Open log file for logging
 LOG_FILE = open('{0}/logs/spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+')
+LOG_FILE_NAME = 'logs/spidy_log_{0}'.format(START_TIME)
 
 print('[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
@@ -159,7 +160,7 @@ def save_page(url):
 		newUrl = newUrl.replace(char, '-')
 	for char in '''|:?<>*''': #Remove illegal filename characters
 		newUrl = newUrl.replace(char, '')
-	#newUrl = newUrl.replace(ext, '') #Remove extension from file name
+	newUrl = newUrl.replace(ext, '') #Remove extension from file name
 	fileName = newUrl + '.' + ext #Create full file name
 	path = '{0}/saved/{1}'.format(CRAWLER_DIR, fileName)
 	del newUrl, fileName, ext
@@ -191,6 +192,8 @@ def info_log():
 	'''
 	#Print to console
 	print('[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
+	print('[{0}] [spidy] [INFO]: Log location: {1}'.format(get_time(), LOG_FILE_NAME))
+	print('[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
 	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
 	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
 	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time(), REMOVED_COUNT))
@@ -200,6 +203,8 @@ def info_log():
 	
 	#Print to log file
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: Log location: {1}'.format(get_time(), LOG_FILE_NAME))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time(), REMOVED_COUNT))
@@ -282,7 +287,7 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()
 
 #Error log location
 ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
-ERR_LOG_FILE_NAME = 'spidy_error_log_{0}.txt'.format(START_TIME)
+ERR_LOG_FILE_NAME = 'logs/spidy_error_log_{0}.txt'.format(START_TIME)
 
 #User-Agent Header Strings
 HEADERS = {
@@ -560,7 +565,8 @@ else:
 
 def main():
 	#Declare global variables
-	global VERSION, START_TIME, START_TIME_LONG, LOG_FILE, ERR_LOG_FILE_NAME
+	global VERSION, START_TIME, START_TIME_LONG
+	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
 	global HEADER, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
 	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
