@@ -1,27 +1,30 @@
 # spidy Web Crawler
-Spidy (spˈɪdi) is the simple, easy to use command line web crawler.<br>
+Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and [`requests`](http://docs.python-requests.org) libraries to query the webpages.<br>
 Spidy then extracts all links from the DOM of the page and adds them to its list.<br>
 It does this to infinity[*](#asterisk).
 
+Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).
+
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 675](https://img.shields.io/badge/lines%20of%20code-675-green.svg)](#)
+[![Lines of Code: 744](https://img.shields.io/badge/lines%20of%20code-744-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
 
 # New Features!
 
+### Browser Imitation - #[<commit>](#)
+Support for Chrome, Internet Explorer, and Microsoft Edge.<br>
+Also more configuration options.
+
 ### Config Files - #[32d8f91](https://github.com/rivermont/spidy/commit/32d8f9164f5b4af3d47840f84cb5022f07180276)
 Fine-tune the bahaviour of spidy with new config files!
 
 ### Advanced Logging - #[a95b6d2](https://github.com/rivermont/spidy/commit/a95b6d2f44143c034ac1ef24f87ea5b5a6a3942f)
 Spidy now saves the command line output to a second log file.
-
-### File Zipping - #[b624200](https://github.com/rivermont/spidy/commit/b624200085a035acd35333e7ad4f28e2e86f78d2).
-Spidy now zips the webpages it downloads into a `.zip` file for storage.
 
 # Table of Contents
 
@@ -172,6 +175,7 @@ Where `<fileName>` is the name of the config file - minus the `.cfg` extension.
 
 The config files included with spidy are:
 
+  - *`blank.txt`*: Template for creating your own configurations.
   - `default.cfg`: The default version.
   - `heavy.cfg`: Run spidy with all of its features enabled.
   - `light.cfg`: Disable most features; only crawls pages for links.

@@ -1,0 +1,42 @@
+# Whether to overwrite the current save files or not.
+OVERWRITE = <True/False>
+
+# Whether to stop the crawler after hitting an unknown error.
+RAISE_ERRORS = <True/False>
+
+# Whether to save pages after crawling.
+SAVE_PAGES = <True/False>
+
+# Whether to scrape and process words.
+SAVE_WORDS = <True/False>
+
+# Whether to zip saved pages when autosaving.
+ZIP_FILES = <True/False>
+
+# Location of the TODO save file.
+TODO_FILE = ''
+
+# Location of the done save file.
+DONE_FILE = ''
+
+# Location of the word save file.
+WORD_FILE = ''
+
+# Location of the bad link save file.
+BAD_FILE = ''
+
+# Number of queried links after which to autosave.
+SAVE_COUNT = #
+
+# Which browser the crawler should headers for. (spidy, Chrome, IE, Edge)
+HEADER = HEADERS['<Header>']
+# Or if you want to use custom headers:
+HEADER = {'<Header Name>': '<Value>', '<Header2>': '<Value2>'}
+
+# Amount of errors allowed to happen before automatic shutdown.
+MAX_NEW_ERRORS = #
+MAX_KNOWN_ERRORS = #
+MAX_HTTP_ERRORS = #
+
+# Pages to start crawling on in case TODO is empty at start.
+START = ['', '']
