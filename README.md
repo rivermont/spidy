@@ -16,7 +16,7 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 
 # New Features!
 
-### Browser Imitation - #[<commit>](#)
+### Browser Imitation - #[fa106a3](https://github.com/rivermont/spidy/commit/fa106a3d30f383b07dcf57b431448bfeae173830)
 Support for Chrome, Internet Explorer, and Microsoft Edge.<br>
 Also more configuration options.
 
