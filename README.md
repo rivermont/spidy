@@ -74,7 +74,6 @@ Spidy now saves the command line output to a second log file.
     - [master](#master)
     - [GUI-spidy](#gui-spidy)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
-    - [tree-test](#tree-test)
   - [TODO](#todo)
   - [Acknowledgements](#acknowledgements)
   - [Contribute](#contribute)
@@ -272,19 +271,17 @@ We are currently working on a GUI for spidy.<br>
 For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
 
 ## FalconWarriorr-branch
-Falconwarriorr's development branch.
-
-## tree-test
-Test branch to see how the crawler runs if allowed to crawl links from the link it just crawled, as opposed to picking a random one in TODO.
+Falconwarriorr's branch.<br>
+He has developed a bunch of features that we are working on merging into master.
 
 
 # TODO
-  - Upload spidy to PyPI
+  - Upload spidy to PyPI/pip
   - Use HTTP `Content-Type` header to determine extension.
   - Multiple HTTP threads
   - Use Chrome/Safari-mimicking headers after being rejected
   - Respect robots.txt
-  - Talk about hashcat in README
+  - GUI
 
 # Acknowledgements
 I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platform for learning any language.<br>
