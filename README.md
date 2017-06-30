@@ -9,7 +9,7 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 744](https://img.shields.io/badge/lines%20of%20code-744-green.svg)](#)
+[![Lines of Code: 750](https://img.shields.io/badge/lines%20of%20code-750-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
@@ -280,6 +280,7 @@ Test branch to see how the crawler runs if allowed to crawl links from the link 
 
 # TODO
   - Upload spidy to PyPI
+  - Use HTTP `Content-Type` header to determine extension.
   - Multiple HTTP threads
   - Use Chrome/Safari-mimicking headers after being rejected
   - Respect robots.txt
