@@ -325,8 +325,8 @@ HEADERS = {
 
 KILL_LIST = [
 #Pages that cause problems with the crawler in some way
-'http://scores.usaultimate.org/',
-'https://web.archive.org/web/',
+'scores.usaultimate.org/',
+'web.archive.org/web/',
 'psychologytoday.com/rms',
 'www.newsyarena.com'
 #Sites that we have been asked not to crawl:
