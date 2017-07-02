@@ -37,6 +37,7 @@ HEADER = {'<Header Name>': '<Value>', '<Header2>': '<Value2>'}
 MAX_NEW_ERRORS = #
 MAX_KNOWN_ERRORS = #
 MAX_HTTP_ERRORS = #
+MAX_NEW_MIMES = #
 
 # Pages to start crawling on in case TODO is empty at start.
 START = ['', '']

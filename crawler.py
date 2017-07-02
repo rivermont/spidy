@@ -151,7 +151,9 @@ def make_file_path(url, ext):
 	Makes a valid Windows file path for a url.
 	'''
 	url = url.replace(ext, '') #Remove extension from path
-	for char in '''/\ |:?&<>*''': #Remove illegal characters from path
+	for char in '''/\ *''': #Remove illegal characters from path
+		url = url.replace(char, '-')
+	for char in '''|:?&<>''':
 		url = url.replace(char, '')
 	url = url[:255] #Truncate to valid file length
 	return url
@@ -175,7 +177,7 @@ def mime_lookup(value):
 		return '.html'
 	else:
 		print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
-		LOG_FILE.write('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
 		raise HeaderError
 
 def save_page(url, page):
@@ -214,9 +216,9 @@ def info_log():
 	print('[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
 	print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
 	print('[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
-	print('[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time(), REMOVED_COUNT))
 	print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
 	print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	print('[{0}] [spidy] [INFO]: {1}/{2} new MIMEs found.'.format(get_time(), NEW_MIME_COUNT, MAX_NEW_MIMES))
 	print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
 	#Print to log file
@@ -225,9 +227,9 @@ def info_log():
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} bad links removed.'.format(get_time(), REMOVED_COUNT))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new MIMEs found.'.format(get_time(), NEW_MIME_COUNT, MAX_NEW_MIMES))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 	
 def log(message):
@@ -275,15 +277,6 @@ def err_log(url, error1, error2):
 		log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, url, error1, str(error2)))
 		log.write(LOG_END) #Write closing line
 
-def get_avg(state1, state2):
-	'''
-	Takes two values and returns the percentage of state1 that is state2.
-	'''
-	if state1 == 0:
-		return 0
-	else:
-		return (state2 / state1) * 100
-
 def zip(out_fileName, dir):
 	'''
 	Creates a .zip file in the current directory containing all contents of dir, then deletes dir.
@@ -313,6 +306,8 @@ MIME_TYPES = {
 'application/ogg': '.ogx',
 'application/pdf': '.pdf',
 'application/rdf+xml': '.rdf',
+'application/rsd+xml': '.rsd',
+'application/rss+xml': '.xml', #RSS could also be .rss or .rdf
 'application/x-javascript': '.js',
 'application/x-mobipocket-ebook': '.mobi',
 'application/x-shockwave-flash': '.swf',
@@ -321,17 +316,16 @@ MIME_TYPES = {
 'image/gif': '.gif',
 'image/jpeg': '.jpeg',
 'image/png': '.png',
+'image/svg+xml': '.svg',
 'image/vnd.microsoft.icon': '.ico',
 'image/x-icon': '.ico',
+'text/calendar': '.ics',
 'text/css': '.css',
 'text/html': '.html',
 'text/javascript': '.js',
 'text/n3': '.n3',
-'text/xml': '.xml',
-'image/svg+xml': '.svg',
-'application/rss+xml': '.xml', #RSS could also be .rss or .rdf
 'text/plain': '.txt',
-'application/rsd+xml': '.rsd',
+'text/xml': '.xml',
 }
 
 #Error log location
@@ -388,10 +382,10 @@ LOG_END = '\n======END======'
 
 #Counter variables
 COUNTER = 0
-REMOVED_COUNT = 0
 NEW_ERROR_COUNT = 0
 KNOWN_ERROR_COUNT = 0
 HTTP_ERROR_COUNT = 0
+NEW_MIME_COUNT = 0
 
 #Empty set for word scraping
 WORDS = set([])
@@ -557,8 +551,8 @@ if GET_ARGS:
 	else:
 		MAX_KNOWN_ERRORS = int(INPUT)
 	
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 50): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 50): '.format(get_time()))
+	INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
+	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
 	if not bool(INPUT):
 		MAX_HTTP_ERRORS = 50
 	elif not INPUT.isdigit():
@@ -594,16 +588,14 @@ else:
 	before = len(TODO)
 
 	#Remove invalid links from TODO list
-	for link in TODO:
-		if check_link(link):
-			TODO.remove(link)
-
+	TODO = [link for link in TODO if not check_link(link)]
+	
+	after = abs(before - len(TODO))
+	
 	#If TODO list is empty, add default starting pages
 	if len(TODO) == 0:
 		TODO += START
 
-	after = abs(before - len(TODO))
-	REMOVED_COUNT += after
 	print('[{0}] [spidy] [INFO]: {1} invalid links removed from TODO.'.format(get_time(), after))
 	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} invalid links removed from TODO.'.format(get_time(), after))
 	
@@ -615,8 +607,8 @@ def main():
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
 	global HEADER, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
-	global COUNTER, REMOVED_COUNT, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT
-	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
+	global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
+	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
 	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
@@ -633,7 +625,7 @@ def main():
 	
 	while len(TODO) != 0: #While there are links to check
 		try:
-			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS: #If too many errors have occurred
+			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES: #If too many errors have occurred
 				print('[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 				LOG_FILE.write('\n[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
 				save_files(WORDS)
@@ -655,22 +647,15 @@ def main():
 					BAD_LINKS.clear()
 			elif check_link(TODO[0]): #If the link is invalid
 				del TODO[0]
-				continue
 			#Run
 			else:
 				page = requests.get(TODO[0], headers=HEADER) #Get page
 				if SAVE_WORDS:
 					wordList = make_words(page) #Get all words from page
 					WORDS.update(wordList) #Add words to word list
-				links = []
-				for element, attribute, link, pos in html.iterlinks(page.content): #Get all links on the page
-					links.append(link)
+				links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
 				links = (list(set(links))) #Remove duplicates and shuffle links
-				for link in links: #Check for invalid links
-					if check_link(link):
-						links.remove(link)
-						REMOVED_COUNT += 1
-					link = link.encode('utf-8', 'ignore') #Encode each link to UTF-8 to minimize errors
+				links = [link for link in links if not check_link(link)]
 				TODO += links #Add scraped links to the TODO list
 				DONE.append(TODO[0]) #Add crawled link to done list
 				if SAVE_PAGES:
@@ -689,7 +674,7 @@ def main():
 			handle_KeyboardInterrupt()
 		
 		except HeaderError:
-			raise
+			NEW_MIME_COUNT += 1
 		
 		except Exception as e:
 			link = TODO[0].encode('utf-8', 'ignore')
@@ -781,8 +766,8 @@ def main():
 			except KeyboardInterrupt:
 				handle_KeyboardInterrupt()
 	
-	print('[{0}] [spidy] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [GOD]: How the hell did this happen? I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
+	print('[{0}] [spidy] [INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
+	LOG_FILE.write('\n[{0}] [spidy] [INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
 	save_files(WORDS)
 	LOG_FILE.close()
 
