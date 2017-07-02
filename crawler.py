@@ -296,6 +296,7 @@ print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 
 # Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
+# Added by hand after being found by the crawler to reduce lookup times.
 MIME_TYPES = {
 'application/atom+xml': '.atom',
 'application/epub+zip': '.epub',
@@ -314,6 +315,7 @@ MIME_TYPES = {
 'application/x-shockwave-flash': '.swf',
 'application/xml': '.xml',
 'application/zip': '.zip',
+'audio/mpeg': '.mp3',
 'image/gif': '.gif',
 'image/jpeg': '.jpeg',
 'image/png': '.png',
