@@ -36,10 +36,22 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Importing required libraries...'.format(
 #Import required libraries
 import requests
 import sys
-import urllib.request
-import shutil
 from lxml import html, etree
 from os import makedirs
+
+
+#############
+## CLASSES ##
+#############
+
+print('[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
+LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
+
+class HeaderError(Exception):
+	'''
+	Raised when there's a problem deciphering returned HTTP headers.
+	'''
+	pass
 
 
 ###############
@@ -83,16 +95,6 @@ def check_word(word):
 	else:
 		return False
 
-def check_extension(extension):
-	'''
-	Returns True if file should be saved as .html.
-	Returns False if file extension is (probably) a valid type.
-	'''
-	if len(extension) > 5:
-		return True
-	if extension in ['com', 'com/', 'org', 'org/', 'net', 'net/']:
-		return True
-	
 def check_path(filePath):
 	'''
 	Checks the path of a given filename to see whether it will cause errors when saving.
@@ -143,41 +145,51 @@ def save_files(wordList):
 	if SAVE_WORDS:
 		update_file(WORD_FILE, wordList, 'words')
 	update_file(BAD_FILE, BAD_LINKS, 'bad links')
-	
-	with open('crawler_types.txt', 'a+') as f:
-		for item in TYPES:
-			f.write(item)
-	print('[{0}] [spidy] [LOG]: Saved types to crawler_types.txt.'.format(get_time()))
-	LOG_FILE.write('[{0}] [spidy] [LOG]: Saved types to crawler_types.txt.'.format(get_time()))
 
-def save_page(url):
+def make_file_path(url, ext):
+	'''
+	Makes a valid Windows file path for a url.
+	'''
+	url = url.replace(ext, '') #Remove extension from path
+	for char in '''/\ |:?&<>*''': #Remove illegal characters from path
+		url = url.replace(char, '')
+	url = url[:255] #Truncate to valid file length
+	return url
+
+def get_mime_type(page):
+	'''
+	Extracts the Content-Type header from the headers returned by page.
+	'''
+	try:
+		docType = str(page.headers['content-type'])
+		return docType
+	except KeyError: #If no Content-Type was returned, return blank
+		return ''
+
+def mime_lookup(value):
+	value = value.lower() #Reduce to lowercase
+	value = value.split(';')[0] #Remove possible encoding
+	if value in MIME_TYPES:
+		return MIME_TYPES[value]
+	elif value == '':
+		return '.html'
+	else:
+		print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+		LOG_FILE.write('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+		raise HeaderError
+
+def save_page(url, page):
 	'''
 	Download content of url and save to the save folder.
 	'''
-	url = str(url) #Sanitize input
-	newUrl = url
-	if newUrl[-1] == '.':
-		ext = 'html'
-	else:
-		ext = newUrl.split('.')[-1] #Get all characters from the end of the url to the last period - the file extension.
-		if check_extension(ext): #If the extension is invalid, default to .html
-			ext = 'html'
-	for char in '''"/\ ''': #Replace folders with -
-		newUrl = newUrl.replace(char, '-')
-	for char in '''|:?<>*''': #Remove illegal filename characters
-		newUrl = newUrl.replace(char, '')
-	newUrl = newUrl.replace(ext, '') #Remove extension from file name
-	fileName = newUrl + '.' + ext #Create full file name
-	path = '{0}/saved/{1}'.format(CRAWLER_DIR, fileName)
-	del newUrl, fileName, ext
-	if check_path(path):
-		with urllib.request.urlopen(url) as response, open(path, 'wb+') as saveFile:
-			shutil.copyfileobj(response, saveFile)
-	else:
-		log('\nLINK: {0}\nLOG: Filename too long.'.format(url))
-		print('[{0}] [spidy] [ERR]: Filename too long, page will not be saved.'.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Filename too long, page will not be saved.'.format(get_time()))
-		err_saved_message()
+	# Make file path
+	ext = mime_lookup(get_mime_type(page))
+	croppedUrl = make_file_path(url, ext)
+	path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, croppedUrl, ext)
+	
+	# Save file
+	with open(path, 'wb+') as file:
+		file.write(page.content)
 
 def update_file(file, content, type):
 	with open(file, 'r+') as f: #Open save file for reading and writing
@@ -248,8 +260,8 @@ def err_saved_message():
 	'''
 	Announce that error was successfully saved to log.
 	'''
-	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), ERR_LOG_FILE_NAME))
-	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), ERR_LOG_FILE_NAME))
+	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
+	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
 
 def err_log(url, error1, error2):
 	'''
@@ -282,12 +294,6 @@ def zip(out_fileName, dir):
 	print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 
-def get_doc_type(page):
-	try:
-		docType = str(page.headers['content-type'])
-		return docType + '\n'
-	except KeyError:
-		return ''
 
 ##########
 ## INIT ##
@@ -296,7 +302,37 @@ def get_doc_type(page):
 print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 
-#Initialize required variables
+# Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
+MIME_TYPES = {
+'application/atom+xml': '.atom',
+'application/epub+zip': '.epub',
+'application/javascript': '.js',
+'application/json': '.json',
+'application/n-triples': '.nt',
+'application/octet-stream': '.exe', #Sometimes .bin
+'application/ogg': '.ogx',
+'application/pdf': '.pdf',
+'application/rdf+xml': '.rdf',
+'application/x-javascript': '.js',
+'application/x-mobipocket-ebook': '.mobi',
+'application/x-shockwave-flash': '.swf',
+'application/xml': '.xml',
+'application/zip': '.zip',
+'image/gif': '.gif',
+'image/jpeg': '.jpeg',
+'image/png': '.png',
+'image/vnd.microsoft.icon': '.ico',
+'image/x-icon': '.ico',
+'text/css': '.css',
+'text/html': '.html',
+'text/javascript': '.js',
+'text/n3': '.n3',
+'text/xml': '.xml',
+'image/svg+xml': '.svg',
+'application/rss+xml': '.xml', #RSS could also be .rss or .rdf
+'text/plain': '.txt',
+'application/rsd+xml': '.rsd',
+}
 
 #Error log location
 ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
@@ -317,7 +353,7 @@ HEADERS = {
 	'Connection': 'keep-alive'
 	},
 # 'Firefox': {
-	
+	# 'User-Agent': '?'
 	# 'Accept-Language': 'en_US, en-US, en',
 	# 'Accept-Encoding': 'gzip',
 	# 'Connection': 'keep-alive'
@@ -342,14 +378,10 @@ KILL_LIST = [
 'web.archive.org/web/',
 'psychologytoday.com/rms',
 'www.newsyarena.com'
-#Sites that we have been asked not to crawl:
-
 ]
 
 #Empty set for error-causing links
 BAD_LINKS = set([])
-
-TYPES = []
 
 #Line to print at the end of each logFile log
 LOG_END = '\n======END======'
@@ -587,7 +619,7 @@ def main():
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
 	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
-	global WORDS, TODO, DONE, TYPES
+	global WORDS, TODO, DONE
 	
 	print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
 	log('LOG: Successfully started crawler.')
@@ -621,14 +653,12 @@ def main():
 					COUNTER = 0
 					WORDS.clear()
 					BAD_LINKS.clear()
-					TYPES = []
 			elif check_link(TODO[0]): #If the link is invalid
 				del TODO[0]
 				continue
 			#Run
 			else:
 				page = requests.get(TODO[0], headers=HEADER) #Get page
-				TYPES += get_doc_type(page)
 				if SAVE_WORDS:
 					wordList = make_words(page) #Get all words from page
 					WORDS.update(wordList) #Add words to word list
@@ -644,7 +674,7 @@ def main():
 				TODO += links #Add scraped links to the TODO list
 				DONE.append(TODO[0]) #Add crawled link to done list
 				if SAVE_PAGES:
-					save_page(TODO[0])
+					save_page(TODO[0], page)
 				if SAVE_WORDS:
 					print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
 					LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0]))
@@ -657,6 +687,10 @@ def main():
 		#ERROR HANDLING
 		except KeyboardInterrupt: #If the user does ^C
 			handle_KeyboardInterrupt()
+		
+		except HeaderError:
+			raise
+		
 		except Exception as e:
 			link = TODO[0].encode('utf-8', 'ignore')
 			err_print(link)
@@ -676,13 +710,6 @@ def main():
 					print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 					LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 				TODO += TODO[0] #Move link to end of TODO list
-			
-			elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
-				HTTP_ERROR_COUNT += 1
-				print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
-				err_log(link, 'Bad Response', e)
-				BAD_LINKS.add(link)
 			
 			#Other errors
 			elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
@@ -706,8 +733,8 @@ def main():
 			
 			elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
 				KNOWN_ERROR_COUNT += 1
-				print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
+				print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
+				LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
 				err_log(link, 'ConnectionError', e)
 			
 			elif requests.exceptions.TooManyRedirects in errMRO: #Exceeded 30 redirects.

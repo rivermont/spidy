@@ -9,22 +9,23 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 750](https://img.shields.io/badge/lines%20of%20code-750-green.svg)](#)
+[![Lines of Code: 794](https://img.shields.io/badge/lines%20of%20code-794-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 
 --------------------
 
 # New Features!
 
+### Better File Saving - #[commit](#)
+Now uses the `Content-Type` header to determine how to save files.<br>
+Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
+
 ### Browser Imitation - #[fa106a3](https://github.com/rivermont/spidy/commit/fa106a3d30f383b07dcf57b431448bfeae173830)
 Support for Chrome, Internet Explorer, and Microsoft Edge.<br>
-Also more configuration options.
+Also more configuration options. Yay.
 
 ### Config Files - #[32d8f91](https://github.com/rivermont/spidy/commit/32d8f9164f5b4af3d47840f84cb5022f07180276)
 Fine-tune the bahaviour of spidy with new config files!
-
-### Advanced Logging - #[a95b6d2](https://github.com/rivermont/spidy/commit/a95b6d2f44143c034ac1ef24f87ea5b5a6a3942f)
-Spidy now saves the command line output to a second log file.
 
 # Table of Contents
 

@@ -1,2 +1,2 @@
-python -m cProfile -o profile.txt crawler.py Default
+python profiler.py crawler.py default
 pause
