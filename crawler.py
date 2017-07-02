@@ -36,10 +36,22 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Importing required libraries...'.format(
 #Import required libraries
 import requests
 import sys
-import urllib.request
-import shutil
 from lxml import html, etree
 from os import makedirs
+
+
+#############
+## CLASSES ##
+#############
+
+print('[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
+LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
+
+class HeaderError(Exception):
+	'''
+	Raised when there's a problem deciphering returned HTTP headers.
+	'''
+	pass
 
 
 ###############
@@ -162,8 +174,9 @@ def mime_lookup(value):
 	elif value == '':
 		return '.html'
 	else:
+		print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
 		LOG_FILE.write('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
-		raise TypeError('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+		raise HeaderError
 
 def save_page(url, page):
 	'''
@@ -247,8 +260,8 @@ def err_saved_message():
 	'''
 	Announce that error was successfully saved to log.
 	'''
-	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), ERR_LOG_FILE_NAME))
-	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to {1}'.format(get_time(), ERR_LOG_FILE_NAME))
+	print('[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
+	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
 
 def err_log(url, error1, error2):
 	'''
@@ -674,6 +687,10 @@ def main():
 		#ERROR HANDLING
 		except KeyboardInterrupt: #If the user does ^C
 			handle_KeyboardInterrupt()
+		
+		except HeaderError:
+			raise
+		
 		except Exception as e:
 			link = TODO[0].encode('utf-8', 'ignore')
 			err_print(link)
@@ -693,13 +710,6 @@ def main():
 					print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 					LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 				TODO += TODO[0] #Move link to end of TODO list
-			
-			elif urllib.error.HTTPError in errMRO: #Bad HTTP Response
-				HTTP_ERROR_COUNT += 1
-				print('[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Bad HTTP response.'.format(get_time()))
-				err_log(link, 'Bad Response', e)
-				BAD_LINKS.add(link)
 			
 			#Other errors
 			elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
@@ -723,8 +733,8 @@ def main():
 			
 			elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
 				KNOWN_ERROR_COUNT += 1
-				print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ConnectionError occurred. There is something wrong with somebody\'s network.'.format(get_time()))
+				print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
+				LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
 				err_log(link, 'ConnectionError', e)
 			
 			elif requests.exceptions.TooManyRedirects in errMRO: #Exceeded 30 redirects.
