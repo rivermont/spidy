@@ -139,16 +139,19 @@ def make_file_path(url, ext):
 	Makes a valid Windows file path for a url.
 	'''
 	url = url.replace(ext, '') #Remove extension from path
-	for char in '''/\ |:?<>*''': #Remove illegal characters from path
+	for char in '''/\ |:?&<>*''': #Remove illegal characters from path
 		url = url.replace(char, '')
 	url = url[:255] #Truncate to valid file length
 	return url
 
 def get_mime_type(page):
+	'''
+	Extracts the Content-Type header from the headers returned by page.
+	'''
 	try:
 		docType = str(page.headers['content-type'])
 		return docType
-	except KeyError:
+	except KeyError: #If no Content-Type was returned, return blank
 		return ''
 
 def mime_lookup(value):
@@ -156,6 +159,8 @@ def mime_lookup(value):
 	value = value.split(';')[0] #Remove possible encoding
 	if value in MIME_TYPES:
 		return MIME_TYPES[value]
+	elif value == '':
+		return '.html'
 	else:
 		LOG_FILE.write('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
 		raise TypeError('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
