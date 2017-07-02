@@ -143,6 +143,12 @@ def save_files(wordList):
 	if SAVE_WORDS:
 		update_file(WORD_FILE, wordList, 'words')
 	update_file(BAD_FILE, BAD_LINKS, 'bad links')
+	
+	with open('crawler_types.txt', 'a+') as f:
+		for item in TYPES:
+			f.write(item)
+	print('[{0}] [spidy] [LOG]: Saved types to crawler_types.txt.'.format(get_time()))
+	LOG_FILE.write('[{0}] [spidy] [LOG]: Saved types to crawler_types.txt.'.format(get_time()))
 
 def save_page(url):
 	'''
@@ -276,6 +282,13 @@ def zip(out_fileName, dir):
 	print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 	LOG_FILE.write('\n[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
 
+def get_doc_type(page):
+	try:
+		docType = str(page.headers['content-type'])
+		return docType + '\n'
+	except KeyError:
+		return ''
+
 ##########
 ## INIT ##
 ##########
@@ -335,6 +348,8 @@ KILL_LIST = [
 
 #Empty set for error-causing links
 BAD_LINKS = set([])
+
+TYPES = []
 
 #Line to print at the end of each logFile log
 LOG_END = '\n======END======'
@@ -572,7 +587,7 @@ def main():
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS
 	global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
-	global WORDS, TODO, DONE
+	global WORDS, TODO, DONE, TYPES
 	
 	print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
 	log('LOG: Successfully started crawler.')
@@ -606,12 +621,14 @@ def main():
 					COUNTER = 0
 					WORDS.clear()
 					BAD_LINKS.clear()
+					TYPES = []
 			elif check_link(TODO[0]): #If the link is invalid
 				del TODO[0]
 				continue
 			#Run
 			else:
 				page = requests.get(TODO[0], headers=HEADER) #Get page
+				TYPES += get_doc_type(page)
 				if SAVE_WORDS:
 					wordList = make_words(page) #Get all words from page
 					WORDS.update(wordList) #Add words to word list
