@@ -300,6 +300,7 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()
 MIME_TYPES = {
 'application/atom+xml': '.atom',
 'application/epub+zip': '.epub',
+'application/font-woff2': '.woff2',
 'application/java-archive': '.jar',
 'application/javascript': '.js',
 'application/json': '.json',
@@ -310,8 +311,11 @@ MIME_TYPES = {
 'application/rdf+xml': '.rdf',
 'application/rsd+xml': '.rsd',
 'application/rss+xml': '.xml', #RSS could also be .rss or .rdf
+'application/vnd.ms-fontobject': '.eot',
+'application/x-gzip': '.gz',
 'application/x-javascript': '.js',
 'application/x-mobipocket-ebook': '.mobi',
+'application/x-msi': '.msi',
 'application/x-shockwave-flash': '.swf',
 'application/xml': '.xml',
 'application/zip': '.zip',
@@ -321,6 +325,7 @@ MIME_TYPES = {
 'image/png': '.png',
 'image/svg+xml': '.svg',
 'image/vnd.microsoft.icon': '.ico',
+'image/webp': '.webp',
 'image/x-icon': '.ico',
 'text/calendar': '.ics',
 'text/css': '.css',
@@ -328,6 +333,7 @@ MIME_TYPES = {
 'text/javascript': '.js',
 'text/n3': '.n3',
 'text/plain': '.txt',
+'text/x-c': '.c',
 'text/xml': '.xml',
 }
 

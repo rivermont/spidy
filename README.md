@@ -32,6 +32,7 @@ Fine-tune the bahaviour of spidy with new config files!
   - [spidy](#spidy)
   - [New Features!](#new-features)
   - [Table of Contents](#table-of-contents)
+  - [Documentation](#documentation)
   - [How it Works](#how-it-works)
   - [Features](#features)
     - [Configuration](#configuration)
@@ -79,6 +80,10 @@ Fine-tune the bahaviour of spidy with new config files!
   - [Contribute](#contribute)
   - [License](#license)
 
+
+# [Documentaion](#)
+
+
 # How it Works
 Spidy has two working lists, `TODO` and `done`.<br>
 TODO is the list of URLs it hasn't yet visited.<br>
@@ -120,8 +125,7 @@ Both the console and log file messages are simple and easy to interpret, but pac
 
 ## Webpage saving
 Spidy downloads each page that it runs into, regardless of file type.<br>
-The crawler attempts to save to the correct file type, but it defaults to `.html`, so some 'pages' may appear corrupted.<br>
-Renaming the file extension will fix this.
+The crawler uses the HTTP `Content-Type` header returned with most files to determine the file type.
 
 ## File Zipping
 When autosaving, spidy can archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
