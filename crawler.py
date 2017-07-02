@@ -296,7 +296,32 @@ def get_doc_type(page):
 print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 
-#Initialize required variables
+# Taken from https://www.iana.org/assignments/media-types/media-types.xhtml
+MIME_TYPES = {
+'application/atom+xml': '.atom',
+'application/epub+zip': '.epub',
+'application/javascript': '.js',
+'application/json': '.json',
+'application/octet-stream': '.exe', #Sometimes .bin
+'application/ogg': '.ogx',
+'application/pdf': '.pdf',
+'application/rdf+xml': '.rdf',
+'application/x-javascript': '.js',
+'application/x-mobipocket-ebook': '.mobi',
+'application/x-shockwave-flash': '.swf',
+'application/xml': '.xml',
+'application/zip': '.zip',
+'image/gif': '.gif',
+'image/jpeg': '.jpeg',
+'image/png': '.png',
+'image/vnd.microsoft.icon': '.ico',
+'image/x-icon': '.ico',
+'text/css': '.css',
+'text/html': '.html',
+'text/javascript': '.js',
+'text/n3': '.n3',
+'text/xml': '.xml',
+}
 
 #Error log location
 ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
@@ -342,8 +367,6 @@ KILL_LIST = [
 'web.archive.org/web/',
 'psychologytoday.com/rms',
 'www.newsyarena.com'
-#Sites that we have been asked not to crawl:
-
 ]
 
 #Empty set for error-causing links
