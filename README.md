@@ -16,7 +16,7 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 
 # New Features!
 
-### Better File Saving - #[commit](#)
+### Better File Saving - #[8c0dcd4](https://github.com/rivermont/spidy/commit/8c0dcd4d637eadde4326065cbed74eafcb381dbe)
 Now uses the `Content-Type` header to determine how to save files.<br>
 Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
 
