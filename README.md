@@ -73,10 +73,9 @@ Fine-tune the bahaviour of spidy with new config files!
       - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
-    - [GUI-spidy](#gui-spidy)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
+    - [GUI-spidy](#gui-spidy)
   - [TODO](#todo)
-  - [Acknowledgements](#acknowledgements)
   - [Contribute](#contribute)
   - [License](#license)
 
@@ -267,26 +266,20 @@ A Windows batch file to run the program.<br>
 ## master
 The stable, up-to-date branch.
 
-## GUI-spidy
-We are currently working on a GUI for spidy.<br>
-For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
-
 ## FalconWarriorr-branch
 Falconwarriorr's branch.<br>
 He has developed a bunch of features that we are working on merging into master.
 
+## GUI-spidy
+We are currently working on a GUI for spidy.<br>
+For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
+
 
 # TODO
-  - Upload spidy to PyPI/pip
-  - Use HTTP `Content-Type` header to determine extension.
-  - Multiple HTTP threads
-  - Use Chrome/Safari-mimicking headers after being rejected
-  - Respect robots.txt
   - GUI
-
-# Acknowledgements
-I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platform for learning any language.<br>
-Specifically the [Python Fundamentals](https://www.pluralsight.com/courses/python-fundamentals/) course by Austin Bingham and Robert Smallshire.
+  - Upload spidy to PyPI/pip
+  - Multiple HTTP threads
+  - Respect robots.txt
 
 
 # Contribute
