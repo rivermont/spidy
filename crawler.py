@@ -299,6 +299,7 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()
 MIME_TYPES = {
 'application/atom+xml': '.atom',
 'application/epub+zip': '.epub',
+'application/java-archive': '.jar',
 'application/javascript': '.js',
 'application/json': '.json',
 'application/n-triples': '.nt',
@@ -541,8 +542,8 @@ if GET_ARGS:
 	else:
 		MAX_NEW_ERRORS = 1
 	
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 20): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 20): '.format(get_time()))
+	INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
+	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
 	if not bool(INPUT):
 		MAX_KNOWN_ERRORS = 20
 	elif not INPUT.isdigit():
@@ -560,6 +561,16 @@ if GET_ARGS:
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
 	else:
 		MAX_HTTP_ERRORS = int(INPUT)
+	
+	INPUT = input('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
+	LOG_FILE.write('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
+	if not bool(INPUT):
+		MAX_NEW_MIMES = 10
+	elif not INPUT.isdigit():
+		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+	else:
+		MAX_NEW_MIMES = int(INPUT)
 	
 	#Remove INPUT variable from memory
 	del INPUT
