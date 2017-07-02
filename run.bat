@@ -1,2 +1,2 @@
-python .\crawler.py Default
+python crawler.py default
 pause

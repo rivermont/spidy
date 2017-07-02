@@ -18,4 +18,4 @@ cProfile.run('crawler.main()', 'profile.txt')
 
 profile = pstats.Stats('profile.txt')
 
-p.strip_dirs().sort_stats('cumulative').print_stats()
+profile.strip_dirs().sort_stats('cumulative').print_stats()
