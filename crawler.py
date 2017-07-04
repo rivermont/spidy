@@ -321,7 +321,9 @@ MIME_TYPES = {
 'application/xhtml+xml': '.xhtml',
 'application/x-font-woff': '.woff',
 'application/vnd.php.serialized': '.php',
+'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
 'application/x-javascript': '.js',
+'application/x-bibtex': '.bib', #I think
 'application/x-rss+xml': '.rss',
 'application/x-mobipocket-ebook': '.mobi',
 'application/x-msi': '.msi',
@@ -329,7 +331,7 @@ MIME_TYPES = {
 'application/xml': '.xml',
 'application/zip': '.zip',
 'audio/mpeg': '.mp3',
-'font/woff2': '.woff2',
+'font/woff': '.woff','font/woff2': '.woff2',
 'image/gif': '.gif',
 'image/jpeg': '.jpeg',
 'image/jpg': '.jpg',
