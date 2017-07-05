@@ -169,6 +169,11 @@ def get_mime_type(page):
 		return ''
 
 def mime_lookup(value):
+	'''
+	Finds the correct file extension for a MIME type using the MIME_TYPES dictionary.
+	If the MIME type is blank it defaults to .html,
+	and if the MIME type is not in the dictionary it raises a HeaderError.
+	'''
 	value = value.lower() #Reduce to lowercase
 	value = value.split(';')[0] #Remove possible encoding
 	if value in MIME_TYPES:
@@ -330,7 +335,7 @@ MIME_TYPES = {
 'application/zip': '.zip',
 'audio/mpeg': '.mp3',
 'font/woff': '.woff','font/woff2': '.woff2',
-'html': '.html',
+'html': '.html', #Incorrect
 'image/gif': '.gif',
 'image/jpeg': '.jpeg',
 'image/jpg': '.jpg',
@@ -350,9 +355,9 @@ MIME_TYPES = {
 'text/turtle': '.ttl',
 'text/vtt': '.vtt',
 'text/x-c': '.c',
-'text/xml': '.xml',
+'text/xml': '.xml', #Incorrect
 'video/webm': '.webp',
-'vnd.ms-fontobject': '.eot',
+'vnd.ms-fontobject': '.eot', #Incorrect
 }
 
 #Error log location

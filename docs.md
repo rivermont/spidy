@@ -10,12 +10,21 @@ If you're looking for the plain English, check out the [README](https://github.c
 
   - [spidy](#spidy-web-crawler)
   - [Table of Contents](#table-of-contents)
-  - [Global Variables](#global-variables)
   - [Functions](#functions)
+    - [mime_lookup](#mime_lookup--source]
+  - [Global Variables](#global-variables)
+    - [MIME_TYPES](#mime_types--source)
+
+
+# Functions
+This section lists the functions in `crawler.py` that are used throughout the code.
+
+## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L171))
+This find the correct file extension for a MIME type using the [`MIME_TYPES`](#mime_types--source) dictionary.
 
 
 # Global Variables
-This section lists the variables in `crawler.py` that are used throughout the code.
+This section lists the variables in [`crawler.py`](#https://github.om/rivermont/spidy/blob/master/crawler.py) that are used throughout the code.
 
 ## `MIME_TYPES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L298))
 A dictionary of [MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) encountered by the crawler.<br>
@@ -34,11 +43,4 @@ To use the dictionary, use:
 
 Where `value` is the MIME type.<br>
 This will return the extension associated with the MIME type if it exists, however this will throw an [`IndexError`](https://docs.python.org/2/library/exceptions.html#exceptions.IndexError) if the MIME type is not in the dictionary.<br>
-Because of this, it is recommended to use the [`mime_lookup`](#) function.
-
-
-# Functions
-This section lists the functions in `crawler.py` that are used throughout the code.
-
-## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L171))
-This find the correct file extension for a MIME type using the [`MIME_TYPES`]() dictionary.
+Because of this, it is recommended to use the [`mime_lookup`](#mime_lookup--source) function.

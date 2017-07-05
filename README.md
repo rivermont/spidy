@@ -4,7 +4,8 @@ Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html
 Spidy then extracts all links from the DOM of the page and adds them to its list.<br>
 It does this to infinity[*](#asterisk).
 
-Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).
+Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
+Looking for technical documentation? Check out [docs.md](#https://github.com/rivermont/spidy/blob/master/docs.md)
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
