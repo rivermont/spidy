@@ -9,8 +9,10 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 819](https://img.shields.io/badge/lines%20of%20code-819-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
+<br>
+[![Lines of Code: 819](https://img.shields.io/badge/lines%20of%20code-819-green.svg)](#)
+[![Lines of Docs: 318](https://img.shields.io/badge/lines%20of%20docs-318-orange.svg)](#)
 
 --------------------
 
@@ -29,7 +31,7 @@ Fine-tune the bahaviour of spidy with new config files!
 
 # Table of Contents
 
-  - [spidy](#spidy)
+  - [spidy](#spidy-web-crawler)
   - [New Features!](#new-features)
   - [Table of Contents](#table-of-contents)
   - [Documentation](#documentation)
