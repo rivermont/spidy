@@ -176,8 +176,6 @@ def mime_lookup(value):
 	elif value == '':
 		return '.html'
 	else:
-		print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
-		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
 		raise HeaderError
 
 def save_page(url, page):
@@ -300,8 +298,8 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()
 MIME_TYPES = {
 'application/atom+xml': '.atom',
 'application/epub+zip': '.epub',
-'application/font-woff2': '.woff2',
 'application/font-woff': '.woff',
+'application/font-woff2': '.woff2',
 'application/java-archive': '.jar',
 'application/javascript': '.js',
 'application/json': '.json',
@@ -314,24 +312,25 @@ MIME_TYPES = {
 'application/rdf+xml': '.rdf',
 'application/rsd+xml': '.rsd',
 'application/rss+xml': '.rss',
-'application/vnd.ms-fontobject': '.eot',
 'application/vnd.ms-cab-compressed': '.cab',
-'application/x-research-info-systems': '.ris',
-'application/x-gzip': '.gz',
-'application/xhtml+xml': '.xhtml',
-'application/x-font-woff': '.woff',
-'application/vnd.php.serialized': '.php',
+'application/vnd.ms-fontobject': '.eot',
 'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
-'application/x-javascript': '.js',
+'application/vnd.php.serialized': '.php',
 'application/x-bibtex': '.bib', #I think
-'application/x-rss+xml': '.rss',
+'application/x-font-woff': '.woff',
+'application/x-gzip': '.gz',
+'application/x-javascript': '.js',
 'application/x-mobipocket-ebook': '.mobi',
 'application/x-msi': '.msi',
+'application/x-research-info-systems': '.ris',
+'application/x-rss+xml': '.rss',
 'application/x-shockwave-flash': '.swf',
+'application/xhtml+xml': '.xhtml',
 'application/xml': '.xml',
 'application/zip': '.zip',
 'audio/mpeg': '.mp3',
 'font/woff': '.woff','font/woff2': '.woff2',
+'html': '.html',
 'image/gif': '.gif',
 'image/jpeg': '.jpeg',
 'image/jpg': '.jpg',
@@ -345,11 +344,11 @@ MIME_TYPES = {
 'text/calendar': '.ics',
 'text/css': '.css',
 'text/html': '.html',
-'text/turtle': '.ttl',
-'text/vtt': '.vtt',
 'text/javascript': '.js',
 'text/n3': '.n3',
 'text/plain': '.txt',
+'text/turtle': '.ttl',
+'text/vtt': '.vtt',
 'text/x-c': '.c',
 'text/xml': '.xml',
 'video/webm': '.webp',
@@ -712,7 +711,10 @@ def main():
 			handle_KeyboardInterrupt()
 		
 		except HeaderError:
+			err_print(link)
 			NEW_MIME_COUNT += 1
+			print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+			LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
 		
 		except Exception as e:
 			link = TODO[0].encode('utf-8', 'ignore')
