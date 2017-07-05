@@ -5,15 +5,15 @@ Spidy then extracts all links from the DOM of the page and adds them to its list
 It does this to infinity[*](#asterisk).
 
 Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
-Looking for technical documentation? Check out [docs.md](#https://github.com/rivermont/spidy/blob/master/docs.md)
+Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
-<br>
-[![Lines of Code: 819](https://img.shields.io/badge/lines%20of%20code-819-green.svg)](#)
-[![Lines of Docs: 318](https://img.shields.io/badge/lines%20of%20docs-318-orange.svg)](#)
+<br><br>
+[![Lines of Code: 824](https://img.shields.io/badge/lines%20of%20code-824-green.svg)](#)
+[![Lines of Docs: 378](https://img.shields.io/badge/lines%20of%20docs-378-orange.svg)](#)
 
 --------------------
 
