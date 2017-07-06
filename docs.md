@@ -23,7 +23,7 @@ If you're looking for the plain English, check out the [README](https://github.c
 This section lists the custom Erorrs and Exceptions in `crawler.py` that may be raised throughout the code.
 
 ## HeaderError - [Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
-Can be raised when there is a problem deciphering HTTP headers returned from a website.
+Raised when there is a problem deciphering HTTP headers returned from a website.
 
 
 # Functions
@@ -60,6 +60,10 @@ To use the dictionary, use:
 Where `value` is the MIME type.<br>
 This will return the extension associated with the MIME type if it exists, however this will throw an [`IndexError`](https://docs.python.org/2/library/exceptions.html#exceptions.IndexError) if the MIME type is not in the dictionary.<br>
 Because of this, it is recommended to use the [`mime_lookup`](#mime_lookup--source) function.
+
+## START_TIME - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L15))
+The time that `crawler.py` was started, in seconds from the epoch.<br>
+More information can be found on the page for the Python [time](https://docs.python.org/3/library/time.html) library.
 
 ## VERSION - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L5))
 The current version of the crawler.

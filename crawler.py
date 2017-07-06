@@ -181,7 +181,7 @@ def mime_lookup(value):
 	elif value == '':
 		return '.html'
 	else:
-		raise HeaderError
+		raise HeaderError('Unknown MIME type')
 
 def save_page(url, page):
 	'''
@@ -715,12 +715,6 @@ def main():
 		except KeyboardInterrupt: #If the user does ^C
 			handle_KeyboardInterrupt()
 		
-		except HeaderError:
-			err_print(link)
-			NEW_MIME_COUNT += 1
-			print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
-			LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
-		
 		except Exception as e:
 			link = TODO[0].encode('utf-8', 'ignore')
 			err_print(link)
@@ -786,6 +780,12 @@ def main():
 				LOG_FILE.write('\n[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
 				err_log(link, 'OSError', e)
 				BAD_LINKS.add(link)
+			
+			elif str(e) == 'Unknown MIME type':
+				NEW_MIME_COUNT += 1
+				print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+				err_log(link, 'Unknown MIME', e)
 			
 			else: #Any other error
 				NEW_ERROR_COUNT += 1

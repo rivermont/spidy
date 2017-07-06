@@ -11,7 +11,7 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
-<br><br>
+<br>
 [![Lines of Code: 824](https://img.shields.io/badge/lines%20of%20code-824-green.svg)](#)
 [![Lines of Docs: 378](https://img.shields.io/badge/lines%20of%20docs-378-orange.svg)](#)
 
@@ -35,7 +35,6 @@ Fine-tune the bahaviour of spidy with new config files!
   - [spidy](#spidy-web-crawler)
   - [New Features!](#new-features)
   - [Table of Contents](#table-of-contents)
-  - [Documentation](#documentation)
   - [How it Works](#how-it-works)
   - [Features](#features)
     - [Configuration](#configuration)
@@ -82,9 +81,6 @@ Fine-tune the bahaviour of spidy with new config files!
   - [TODO](#todo)
   - [Contribute](#contribute)
   - [License](#license)
-
-
-# [Documentaion](#)
 
 
 # How it Works
