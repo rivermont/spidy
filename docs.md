@@ -15,19 +15,43 @@ If you're looking for the plain English, check out the [README](https://github.c
   - [Functions](#functions)
     - [mime_lookup](#mime_lookup--source]
   - [Global Variables](#global-variables)
+    - [CRAWLER_DIR](#crawler_dir--source)
+	- [LOG_FILE](#log_file--source)
+	- [LOG_FILE_NAME](#log_file_name--source)
     - [MIME_TYPES](#mime_types--source)
+	- [START_TIME](#start_time--source)
+	- [START_TIME_LONG](#start_time_long--source)
 	- [VERSION](#version--source)
 
 
 # Errors
-This section lists the custom Erorrs and Exceptions in `crawler.py` that may be raised throughout the code.
+This section lists the custom Errors and Exceptions in `crawler.py` that may be raised throughout the code.
 
-## HeaderError - [Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
+## `HeaderError` - [Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
 Raised when there is a problem deciphering HTTP headers returned from a website.
 
 
 # Functions
 This section lists the functions in `crawler.py` that are used throughout the code.
+
+## `info_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L209))
+Logs important information to the console and log file.<br>
+Example log:
+
+> [23:17:06] [spidy] [INFO]: Queried 100 links.
+> [23:17:06] [spidy] [INFO]: Started at 23:15:33.
+> [23:17:06] [spidy] [INFO]: Log location: logs/spidy_log_1499483733
+> [23:17:06] [spidy] [INFO]: Error log location: logs/spidy_error_log_1499483733.txt
+> [23:17:06] [spidy] [INFO]: 1901 links in TODO.
+> [23:17:06] [spidy] [INFO]: 110446 links in done.
+> [23:17:06] [spidy] [INFO]: 0/5 new errors caught.
+> [23:17:06] [spidy] [INFO]: 0/20 HTTP errors encountered.
+> [23:17:06] [spidy] [INFO]: 1/10 new MIMEs found.
+> [23:17:06] [spidy] [INFO]: 3/20 known errors caught.
+> [23:17:06] [spidy] [INFO]: Saving files...
+> [23:17:06] [spidy] [LOG]: Saved TODO list to crawler_todo.txt
+> [23:17:06] [spidy] [LOG]: Saved done list to crawler_done.txt
+> [23:17:06] [spidy] [LOG]: Saved 90 bad links to crawler_bad.txt
 
 ## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L171))
 This finds the correct file extension for a MIME type using the [`MIME_TYPES`](#mime_types--source) dictionary.<br>
@@ -41,6 +65,17 @@ Where `value` is the MIME type.
 
 # Global Variables
 This section lists the variables in [`crawler.py`](#https://github.om/rivermont/spidy/blob/master/crawler.py) that are used throughout the code.
+
+## `CRAWLER_DIR` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L24))
+The directory that `crawler.py` is located in.
+
+## `LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L27))
+The file that the command line logs are written to.<br>
+Kept open until the crawler stops for whatever reason so that it can be written to.
+
+## `LOG_FILE_NAME`  - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L28))
+The actual file name of `LOG_FILE`.<br>
+Used in `info_log`.
 
 ## `MIME_TYPES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L298))
 A dictionary of [MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) encountered by the crawler.<br>
@@ -61,9 +96,13 @@ Where `value` is the MIME type.<br>
 This will return the extension associated with the MIME type if it exists, however this will throw an [`IndexError`](https://docs.python.org/2/library/exceptions.html#exceptions.IndexError) if the MIME type is not in the dictionary.<br>
 Because of this, it is recommended to use the [`mime_lookup`](#mime_lookup--source) function.
 
-## START_TIME - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L15))
+## `START_TIME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L15))
 The time that `crawler.py` was started, in seconds from the epoch.<br>
 More information can be found on the page for the Python [time](https://docs.python.org/3/library/time.html) library.
 
-## VERSION - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L5))
+## `START_TIME_LONG` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L18))
+The time that `crawler.py` was started, in the format `HH:MM:SS, Date Month Year`.<br>
+Used in `info_log`.
+
+## `VERSION` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L5))
 The current version of the crawler.

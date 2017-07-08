@@ -19,8 +19,8 @@ START_TIME_LONG = get_time()
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
 
-from os import path
 #Get current working directory of spidy
+from os import path
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 #Open log file for logging
@@ -68,7 +68,7 @@ def check_link(item):
 	'''
 	#Shortest possible url being 'http://a.b', and
 	#Links longer than 255 characters are usually useless or full of foreign characters, and will also cause problems when saving.
-	if 10 < len(item) < 255:
+	if len(item) < 10 or len(item) > 255:
 		return True
 	#Must be an http(s) link
 	elif item[0:4] != 'http':
@@ -178,7 +178,7 @@ def mime_lookup(value):
 	elif value == '':
 		return '.html'
 	else:
-		raise HeaderError('Unknown MIME type')
+		raise HeaderError('Unknown MIME type: {0}'.format(value))
 
 def save_page(url, page):
 	'''
@@ -310,6 +310,7 @@ MIME_TYPES = {
 'application/n-triples': '.nt',
 'application/octet-stream': '.exe', #Sometimes .bin
 'application/ogg': '.ogx',
+'application/opensearchdescription+xml': '.osdx',
 'application/pdf': '.pdf',
 'application/rdf+xml': '.rdf',
 'application/rsd+xml': '.rsd',
@@ -779,10 +780,10 @@ def main():
 				err_log(link, 'OSError', e)
 				BAD_LINKS.add(link)
 			
-			elif str(e) == 'Unknown MIME type':
+			elif 'Unknown MIME type' in str(e):
 				NEW_MIME_COUNT += 1
-				print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
-				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), value))
+				print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), str(e)[18:]))
+				LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), str(e)[18:]))
 				err_log(link, 'Unknown MIME', e)
 			
 			else: #Any other error
