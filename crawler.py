@@ -66,16 +66,13 @@ def check_link(item):
 	Returns True if item is not a valid url.
 	Returns False if item passes all inspections (is valid url).
 	'''
-	#Shortest possible url being 'http://a.b'
-	if len(item) < 10:
-		return True
-	#Links longer than 255 characters usually are useless or full of foreign characters, and will also cause problems when saving
-	elif len(item) > 255:
+	#Shortest possible url being 'http://a.b', and
+	#Links longer than 255 characters are usually useless or full of foreign characters, and will also cause problems when saving.
+	if 10 < len(item) < 255:
 		return True
 	#Must be an http(s) link
 	elif item[0:4] != 'http':
 		return True
-	#Can't have visited already
 	elif item in DONE:
 		return True
 	else:
@@ -342,6 +339,7 @@ MIME_TYPES = {
 'image/png': '.png',
 'image/svg+xml': '.svg',
 'image/tiff': '.tif',
+'image/vnd.djvu': '.djvu',
 'image/vnd.microsoft.icon': '.ico',
 'image/webp': '.webp',
 'image/x-icon': '.ico',
