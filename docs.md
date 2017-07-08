@@ -13,9 +13,12 @@ If you're looking for the plain English, check out the [README](https://github.c
   - [Errors](#errors)
     - [HeaderError](#headererror--source)
   - [Functions](#functions)
+    - [check_link](#check_link--source)
+	- [info_log](#info_log--source)
     - [mime_lookup](#mime_lookup--source]
   - [Global Variables](#global-variables)
     - [CRAWLER_DIR](#crawler_dir--source)
+	- [KILL_LIST](#kill_list--source)
 	- [LOG_FILE](#log_file--source)
 	- [LOG_FILE_NAME](#log_file_name--source)
     - [MIME_TYPES](#mime_types--source)
@@ -33,6 +36,16 @@ Raised when there is a problem deciphering HTTP headers returned from a website.
 
 # Functions
 This section lists the functions in `crawler.py` that are used throughout the code.
+
+## `check_link` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L64))
+Important to not breaking the crawler.<br>
+Determines whether links should be crawled.<br>
+Types of links that will be pruned:
+
+  - Links that are too long or short.
+  - Links that don't start with `http(s)`.
+  - Links that have already been crawled.
+  - Links in [`KILL_LIST`](#kill_list--source).
 
 ## `info_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L209))
 Logs important information to the console and log file.<br>
@@ -69,13 +82,18 @@ This section lists the variables in [`crawler.py`](#https://github.om/rivermont/
 ## `CRAWLER_DIR` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L24))
 The directory that `crawler.py` is located in.
 
+## `KILL_LIST` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L403))
+A list of pages that are known to cause problems with the crawler.
+
+  - `scores.usaultimate.org/` - 
+
 ## `LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L27))
 The file that the command line logs are written to.<br>
 Kept open until the crawler stops for whatever reason so that it can be written to.
 
 ## `LOG_FILE_NAME`  - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L28))
-The actual file name of `LOG_FILE`.<br>
-Used in `info_log`.
+The actual file name of [`LOG_FILE`](#log_file--source).<br>
+Used in [`info_log`](#info_log--source).
 
 ## `MIME_TYPES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L298))
 A dictionary of [MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) encountered by the crawler.<br>

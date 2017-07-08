@@ -12,8 +12,8 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 <br>
-[![Lines of Code: 823](https://img.shields.io/badge/lines%20of%20code-823-green.svg)](#)
-[![Lines of Docs: 417](https://img.shields.io/badge/lines%20of%20docs-417-orange.svg)](#)
+[![Lines of Code: 825](https://img.shields.io/badge/lines%20of%20code-825-green.svg)](#)
+[![Lines of Docs: 435](https://img.shields.io/badge/lines%20of%20docs-435-orange.svg)](#)
 
 --------------------
 
