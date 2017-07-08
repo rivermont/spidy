@@ -317,7 +317,10 @@ MIME_TYPES = {
 'application/rss+xml': '.rss',
 'application/vnd.ms-cab-compressed': '.cab',
 'application/vnd.ms-fontobject': '.eot',
+'application/vnd.ms-excel': '.',
 'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+'application/vnd.oasis.opendocument.text': '.odt',
+'text/html,application/xhtml+xml,application/xml': '.html', #Misunderstood 'Accept' header?
 'application/vnd.php.serialized': '.php',
 'application/x-bibtex': '.bib', #I think
 'application/x-font-woff': '.woff',
@@ -399,10 +402,11 @@ HEADERS = {
 
 KILL_LIST = [
 #Pages that cause problems with the crawler in some way
-'scores.usaultimate.org/',
-'web.archive.org/web/',
+'newsyarena.com'
 'psychologytoday.com/rms',
-'www.newsyarena.com'
+'scores.usaultimate.org/',
+'w3.org',
+'web.archive.org/web/',
 ]
 
 #Empty set for error-causing links
