@@ -108,7 +108,7 @@ def make_words(site):
 	Returns list of all valid words in page.
 	'''
 	page = str(site.content) #Get page content
-	wordList = page.split() #Split content into lits of words, as separated by spaces
+	wordList = page.split() #Split content into lists of words, as separated by spaces
 	del page
 	wordList = list(set(wordList)) #Remove duplicates
 	for word in wordList:
@@ -141,6 +141,7 @@ def save_files(wordList):
 	
 	if SAVE_WORDS:
 		update_file(WORD_FILE, wordList, 'words')
+	
 	update_file(BAD_FILE, BAD_LINKS, 'bad links')
 
 def make_file_path(url, ext):

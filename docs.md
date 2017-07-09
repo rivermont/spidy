@@ -14,8 +14,12 @@ If you're looking for the plain English, check out the [README](https://github.c
     - [HeaderError](#headererror--source)
   - [Functions](#functions)
     - [check_link](#check_link--source)
+	- [check_path](#check_path--source)
+	- [check_word](#check_word--source)
 	- [info_log](#info_log--source)
+	- [make_words](#make_words--source)
     - [mime_lookup](#mime_lookup--source]
+	- [save_files](#save_files--source)
   - [Global Variables](#global-variables)
     - [CRAWLER_DIR](#crawler_dir--source)
 	- [KILL_LIST](#kill_list--source)
@@ -38,7 +42,6 @@ Raised when there is a problem deciphering HTTP headers returned from a website.
 This section lists the functions in `crawler.py` that are used throughout the code.
 
 ## `check_link` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L64))
-Important to not breaking the crawler.<br>
 Determines whether links should be crawled.<br>
 Types of links that will be pruned:
 
@@ -46,6 +49,15 @@ Types of links that will be pruned:
   - Links that don't start with `http(s)`.
   - Links that have already been crawled.
   - Links in [`KILL_LIST`](#kill_list--source).
+
+## `check_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L95))
+Checks whether a file path will cause errors when saving.<br>
+Paths longer than 256 characters cannot be saved (Windows).
+
+## `check_word` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L84))
+Checks whether a word is valid.<br>
+The word-saving feature was originally added to be used for password cracking with hashcat, which is why `check_word` checks for length of less than 16 characters.<br>
+The average password length is around 8 characters.
 
 ## `info_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L209))
 Logs important information to the console and log file.<br>
@@ -66,6 +78,9 @@ Example log:
 > [23:17:06] [spidy] [LOG]: Saved done list to crawler_done.txt
 > [23:17:06] [spidy] [LOG]: Saved 90 bad links to crawler_bad.txt
 
+## `make_words` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L106))
+Returns a list of all the valid words (determined using [`check_word`](#check_word--source)) on a given page.
+
 ## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L171))
 This finds the correct file extension for a MIME type using the [`MIME_TYPES`](#mime_types--source) dictionary.<br>
 If the MIME type is blank it defaults to `.html`, and if the MIME type is not in the dictionary a [`HeaderError`](#headererror--source) is raised.<br>
@@ -74,6 +89,10 @@ Usage:
 > mime_lookup(value)
 
 Where `value` is the MIME type.
+
+## `save_files` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L119))
+Saves the TODO, DONE, word, and bad lists to their respective files.<br>
+The word and bad link lists use the same function to save space.
 
 
 # Global Variables
