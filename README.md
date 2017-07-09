@@ -13,7 +13,7 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 <br>
 [![Lines of Code: 826](https://img.shields.io/badge/lines%20of%20code-825-green.svg)](#)
-[![Lines of Docs: 455](https://img.shields.io/badge/lines%20of%20docs-455-orange.svg)](#)
+[![Lines of Docs: 524](https://img.shields.io/badge/lines%20of%20docs-524-orange.svg)](#)
 
 --------------------
 
@@ -54,7 +54,7 @@ Fine-tune the bahaviour of spidy with new config files!
       - [Arguments](#arguments)
         - [Defaults](#defaults)
     - [Running](#running)
-      - [Expected Behaviour](#expected-bahaviour)
+      - [Expected Behaviour](#expected-behaviour)
       - [Start](#start)
       - [Autosave](#autosave)
       - [Force Quit](#force-quit)

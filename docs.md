@@ -59,6 +59,21 @@ Checks whether a word is valid.<br>
 The word-saving feature was originally added to be used for password cracking with hashcat, which is why `check_word` checks for length of less than 16 characters.<br>
 The average password length is around 8 characters.
 
+## `err_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L269))
+TODO
+
+## `err_print` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L255))
+TODO
+
+## `err_saved_message` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L262))
+TODO
+
+## `get_mime_type` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L159))
+TODO
+
+## `handle_KeyboardInterrupt` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L247))
+TODO
+
 ## `info_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L209))
 Logs important information to the console and log file.<br>
 Example log:
@@ -78,6 +93,12 @@ Example log:
 > [23:17:06] [spidy] [LOG]: Saved done list to crawler_done.txt
 > [23:17:06] [spidy] [LOG]: Saved 90 bad links to crawler_bad.txt
 
+## `log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L236))
+TODO
+
+## `make_file_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L147))
+TODO
+
 ## `make_words` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L106))
 Returns a list of all the valid words (determined using [`check_word`](#check_word--source)) on a given page.
 
@@ -94,17 +115,56 @@ Where `value` is the MIME type.
 Saves the TODO, DONE, word, and bad lists to their respective files.<br>
 The word and bad link lists use the same function to save space.
 
+## `save_page` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L184))
+TODO
+
+## `update_file` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L197))
+TODO
+
+## `zip` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L281))
+TODO
+
 
 # Global Variables
 This section lists the variables in [`crawler.py`](#https://github.om/rivermont/spidy/blob/master/crawler.py) that are used throughout the code.
 
+## `BAD_LINKS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L412))
+TODO
+
+## `COUNTER` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L418))
+Incremented each time a link is crawled.<br>
+TODO
+
 ## `CRAWLER_DIR` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L24))
 The directory that `crawler.py` is located in.
+
+## `ERR_LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L367))
+TODO
+
+## `ERR_LOG_FILE_NAME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L368))
+TODO
+
+## `GET_ARGS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L432))
+TODO
+
+## `HEADERS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L371))
+TODO
+
+## `HTTP_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L421))
+TODO
 
 ## `KILL_LIST` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L403))
 A list of pages that are known to cause problems with the crawler.
 
-  - `scores.usaultimate.org/` - 
+  - `scores.usaultimate.org/`: Never responds.
+  - `w3.org`: I have never been able to access W3, although it never says it's down. If someone knows of this problem, please let me know.
+  - `web.archive.org/web/`: While there is some good content, there are sometimes thousands of copies of the same exact page. Not good for web crawling.
+
+## `KNOWN_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L420))
+TODO
+
+## `LOG_END` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L415))
+TODO
 
 ## `LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L27))
 The file that the command line logs are written to.<br>
@@ -133,6 +193,12 @@ Where `value` is the MIME type.<br>
 This will return the extension associated with the MIME type if it exists, however this will throw an [`IndexError`](https://docs.python.org/2/library/exceptions.html#exceptions.IndexError) if the MIME type is not in the dictionary.<br>
 Because of this, it is recommended to use the [`mime_lookup`](#mime_lookup--source) function.
 
+## `NEW_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L419))
+TODO
+
+## `NEW_MIME_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L422))
+TODO
+
 ## `START_TIME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L15))
 The time that `crawler.py` was started, in seconds from the epoch.<br>
 More information can be found on the page for the Python [time](https://docs.python.org/3/library/time.html) library.
@@ -143,3 +209,6 @@ Used in `info_log`.
 
 ## `VERSION` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L5))
 The current version of the crawler.
+
+## `WORDS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L425))
+TODO
