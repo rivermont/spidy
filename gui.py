@@ -4,7 +4,6 @@ Built by rivermont and FalconWarriorr
 '''
 
 '''
-TODO:
  - Window with configuration options for various spidy arguments.
  - Start/Pause/Stop button that runs the crawler with given args
  - Console window
@@ -12,7 +11,10 @@ TODO:
 '''
 
 import tkinter
-import crawler.py as spidy
+from threading import Thread
+from crawler import main
 
-def run_spidy():
-	spidy.main()
+crawlerThread = Thread(target = main)
+
+def runCrawler():
+    crawlerThread.start()
