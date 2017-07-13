@@ -55,3 +55,7 @@ controlBox = ttk.Frame(rightBar, padding='2')
 controlBox.grid(column=?, row=0, sticky=(N, E, W))
 controlBox.columnconfigure(?, weight=1)
 controlBox.rowconfigure(0, weight=1)
+
+statusBox = ttk.Frame(rightBar, padding='2')
+statusBox.grid(column=0, row=1, sticky=(E, W))
+
