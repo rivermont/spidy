@@ -18,7 +18,7 @@ If you're looking for the plain English, check out the [README](https://github.c
 	- [check_word](#check_word--source)
 	- [info_log](#info_log--source)
 	- [make_words](#make_words--source)
-    - [mime_lookup](#mime_lookup--source]
+    - [mime_lookup](#mime_lookup--source)
 	- [save_files](#save_files--source)
   - [Global Variables](#global-variables)
     - [CRAWLER_DIR](#crawler_dir--source)
