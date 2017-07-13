@@ -23,7 +23,7 @@ def runCrawler():
 window = Tk()
 window.title('spidy Web Crawler - by rivermont')
 
-mainFrame = ttk.Frame(window, padding='2 2 5 5')
+mainFrame = ttk.Frame(window, padding='2')
 mainFrame.grid(column=0, row=0, sticky=(N, W, E, S))
 mainFrame.columnconfigure(0, weight=1)
 mainFrame.rowcomfigure(0, weight=1)
@@ -40,3 +40,18 @@ BadFile = StringVar()
 WordFile = StringVar()
 SaveCount = IntVar()
 MaxNewError = IntVar()
+
+settingBox = ttk.Frame(mainFrame, padding='2', borderwidth=1)
+settingBox.grid(column=0, row=0, sticky=(N, S, W))
+settingBox.columnconfigure(0, weight=1)
+settingBox.rowconfigure(0, weight=1)
+
+rightBar = ttk.Frame(mainFrame, padding='2', borderwidth=1)
+rightBar.grid(column=1, row=0, sticky=(N, S, E))
+rightBar.columnconfigure(2, weight=1)
+rightBar.rowconfigure(0, weight=1)
+
+controlBox = ttk.Frame(rightBar, padding='2')
+controlBox.grid(column=?, row=0, sticky=(N, E, W))
+controlBox.columnconfigure(?, weight=1)
+controlBox.rowconfigure(0, weight=1)
