@@ -66,4 +66,12 @@ consoleBox.grid(column=0, row=2)
 consoleBox.columnconfigure(0, weight=1)
 consoleBox.rowcomfigure(2, weight=1)
 
+pauseButton = ttk.Button(controlBox, padding='2')
+pauseButton.grid(column=0, row=0, sticky=(N, S, W))
+pauseButton.columnconfigure(0, weight=1)
+pauseButton.rowconfigure(0, weight=1)
 
+goButton = ttk.Button(controlBox, padding='2')
+goButton.grid(column=1, row=0, sticky=(N, S))
+goButton.columnconfigure(1, weight=1)
+goButton.rowconfigure(0, weight=1)
