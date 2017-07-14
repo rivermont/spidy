@@ -20,14 +20,17 @@ crawlerThread = Thread(target = main)
 def runCrawler():
     crawlerThread.start()
 
+#Main window
 window = Tk()
 window.title('spidy Web Crawler - by rivermont')
 
+#Frame to fill main window
 mainFrame = ttk.Frame(window, padding='2')
 mainFrame.grid(column=0, row=0, sticky=(N, W, E, S))
 mainFrame.columnconfigure(0, weight=1)
 mainFrame.rowcomfigure(0, weight=1)
 
+#Variables
 Overwrite = BooleanVar()
 RaiseErrors = BooleanVar()
 SavePages = BooleanVar()
@@ -41,21 +44,25 @@ WordFile = StringVar()
 SaveCount = IntVar()
 MaxNewError = IntVar()
 
+#Frame to hold variable settings
 settingBox = ttk.Frame(mainFrame, padding='2', borderwidth=1)
 settingBox.grid(column=0, row=0, sticky=(N, S, W))
 settingBox.columnconfigure(0, weight=1)
 settingBox.rowconfigure(0, weight=1)
 
+#Container for things on the right side of the main window
 rightBar = ttk.Frame(mainFrame, padding='2', borderwidth=1)
 rightBar.grid(column=1, row=0, sticky=(N, S, E))
 rightBar.columnconfigure(2, weight=1)
 rightBar.rowconfigure(0, weight=1)
 
+#Container for controlling the crawler
 controlBox = ttk.Frame(rightBar, padding='2')
 controlBox.grid(column=?, row=0, sticky=(N, E, W))
 controlBox.columnconfigure(?, weight=1)
 controlBox.rowconfigure(0, weight=1)
 
+#Container for the status elements
 statusBox = ttk.Frame(rightBar, padding='2')
 statusBox.grid(column=0, row=1, sticky=(E, W))
 statusBox.columnconfigure(0, weight=1)
