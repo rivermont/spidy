@@ -51,18 +51,18 @@ rightBar.columnconfigure(2, weight=1)
 rightBar.rowconfigure(0, weight=1)
 
 #Container for controlling the crawler
-controlBox = ttk.Frame(rightBar, padding='2')
+controlBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
 controlBox.grid(column=?, row=0, sticky=(N, E, W))
 controlBox.columnconfigure(?, weight=1)
 controlBox.rowconfigure(0, weight=1)
 
 #Container for the status elements
-statusBox = ttk.Frame(rightBar, padding='2')
+statusBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
 statusBox.grid(column=0, row=1, sticky=(E, W))
 statusBox.columnconfigure(0, weight=1)
 statusBox.rowconfigure(1, weight=1)
 
-consoleBox = ttk.Frame(rightBar, padding='2')
+consoleBox = ttk.Frame(rightBar, padding='2', borderwidth
 consoleBox.grid(column=0, row=2)
 consoleBox.columnconfigure(0, weight=1)
 consoleBox.rowcomfigure(2, weight=1)
