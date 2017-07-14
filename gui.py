@@ -62,22 +62,22 @@ statusBox.grid(column=0, row=1, sticky=(E, W))
 statusBox.columnconfigure(0, weight=1)
 statusBox.rowconfigure(1, weight=1)
 
-consoleBox = ttk.Frame(rightBar, padding='2', borderwidth
+consoleBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
 consoleBox.grid(column=0, row=2)
 consoleBox.columnconfigure(0, weight=1)
 consoleBox.rowcomfigure(2, weight=1)
 
-pauseButton = ttk.Button(controlBox, padding='2')
+pauseButton = ttk.Button(controlBox, padding='2', borderwidth=1)
 pauseButton.grid(column=0, row=0, sticky=(N, S, W))
 pauseButton.columnconfigure(0, weight=1)
 pauseButton.rowconfigure(0, weight=1)
 
-goButton = ttk.Button(controlBox, padding='2')
+goButton = ttk.Button(controlBox, padding='2', borderwidth=1)
 goButton.grid(column=1, row=0, sticky=(N, S))
 goButton.columnconfigure(1, weight=1)
 goButton.rowconfigure(0, weight=1)
 
-stopButton = ttk.Button(controlBox, padding='2')
+stopButton = ttk.Button(controlBox, padding='2', borderwidth=1)
 stopButton.grid(column=0, row=2, sticky=(N, S, E))
 stopButton.columnconfigure(0, weight=1)
 stopButton.rowconfigure(2, weight=1)
