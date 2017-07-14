@@ -3,12 +3,6 @@ GUI for spidy Web Crawler
 Built by rivermont and FalconWarriorr
 '''
 
-'''
- - Window with configuration options for various spidy arguments.
- - Start/Pause/Stop button that runs the crawler with given args
- - Console window
- - Bar with active task (link being crawled, etc.)
-'''
 
 from tkinter import *
 from tkinter import ttk
@@ -87,3 +81,5 @@ stopButton = ttk.Button(controlBox, padding='2')
 stopButton.grid(column=0, row=2, sticky=(N, S, E))
 stopButton.columnconfigure(0, weight=1)
 stopButton.rowconfigure(2, weight=1)
+
+
