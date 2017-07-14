@@ -698,7 +698,7 @@ def main():
 					wordList = make_words(page) #Get all words from page
 					WORDS.update(wordList) #Add words to word list
 				links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
-				links = (list(set(links))) #Remove duplicates and shuffle links
+				links = list(set(links)) #Remove duplicates and shuffle links
 				links = [link for link in links if not check_link(link)]
 				TODO += links #Add scraped links to the TODO list
 				DONE.append(TODO[0]) #Add crawled link to done list
@@ -737,7 +737,6 @@ def main():
 					LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
 				TODO += TODO[0] #Move link to end of TODO list
 			
-			#Other errors
 			elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
 				KNOWN_ERROR_COUNT += 1
 				print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
