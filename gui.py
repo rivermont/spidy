@@ -75,3 +75,8 @@ goButton = ttk.Button(controlBox, padding='2')
 goButton.grid(column=1, row=0, sticky=(N, S))
 goButton.columnconfigure(1, weight=1)
 goButton.rowconfigure(0, weight=1)
+
+stopButton = ttk.Button(controlBox, padding='2')
+stopButton.grid(column=0, row=2, sticky=(N, S, E))
+stopButton.columnconfigure(0, weight=1)
+stopButton.rowconfigure(2, weight=1)
