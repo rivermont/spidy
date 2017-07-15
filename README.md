@@ -1,88 +1,103 @@
 # spidy Web Crawler
-Spidy (spˈɪdi) is the simple, easy to use command line web crawler.<br>
+Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and [`requests`](http://docs.python-requests.org) libraries to query the webpages.<br>
 Spidy then extracts all links from the DOM of the page and adds them to its list.<br>
 It does this to infinity[*](#asterisk).
 
+Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
+Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
+
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Lines of Code: 669](https://img.shields.io/badge/lines%20of%20code-669-green.svg)](#)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
+<br>
+[![Lines of Code: 826](https://img.shields.io/badge/lines%20of%20code-825-green.svg)](#)
+[![Lines of Docs: 524](https://img.shields.io/badge/lines%20of%20docs-524-orange.svg)](#)
 
 --------------------
 
 # New Features!
 
-### Advanced Logging - #[a95b6d2](https://github.com/rivermont/spidy/commit/a95b6d2f44143c034ac1ef24f87ea5b5a6a3942f)
-Spidy now saves the command line output to a second log file.
+### Better File Saving - #[8c0dcd4](https://github.com/rivermont/spidy/commit/8c0dcd4d637eadde4326065cbed74eafcb381dbe)
+Now uses the `Content-Type` header to determine how to save files.<br>
+Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
 
-### File Zipping - #[b624200](https://github.com/rivermont/spidy/commit/b624200085a035acd35333e7ad4f28e2e86f78d2).
-Spidy now zips the webpages it downloads into a `.zip` file for storage.
+### Browser Imitation - #[fa106a3](https://github.com/rivermont/spidy/commit/fa106a3d30f383b07dcf57b431448bfeae173830)
+Support for Chrome, Internet Explorer, and Microsoft Edge.<br>
+Also more configuration options. Yay.
+
+### Config Files - #[32d8f91](https://github.com/rivermont/spidy/commit/32d8f9164f5b4af3d47840f84cb5022f07180276)
+Fine-tune the bahaviour of spidy with new config files!
 
 # Table of Contents
 
-  - [spidy](#spidy)
+  - [spidy](#spidy-web-crawler)
   - [New Features!](#new-features)
   - [Table of Contents](#table-of-contents)
   - [How it Works](#how-it-works)
   - [Features](#features)
+    - [Configuration](#configuration)
     - [Error Handling](#error-handling)
     - [Frequent Timestamp Logging](#frequent-timestamp-logging)
-	- [Portability](#portability)
+    - [Portability](#portability)
     - [User-Friendly Logs](#user-friendly-logs)
-	- [Webpage Saving](#webpage-saving)
-	- [File Zipping](#file-zipping)
+    - [Webpage Saving](#webpage-saving)
+    - [File Zipping](#file-zipping)
   - [Tutorial](#tutorial)
     - [Python Installation](#python-installation)
       - [Anaconda](#anaconda)
       - [Python Base](#python-base)
     - [Launching](#launching)
-      - [Arguments](#arguments)
-	    - [Defaults](#defaults)
       - [Windows (Command Line)](#windows-command-line)
       - [Windows (batch file)](#windows-batch-file)
+      - [Arguments](#arguments)
+        - [Defaults](#defaults)
     - [Running](#running)
-	  - [Start](#start)
-	  - [Autosave](#autosave)
-	  - [Force Quit](#force-quit)
-	  - [End](#end)
+      - [Expected Behaviour](#expected-behaviour)
+      - [Start](#start)
+      - [Autosave](#autosave)
+      - [Force Quit](#force-quit)
+      - [End](#end)
   - [Files](#files)
       - [README.md](#readmemd)
-	  - [media/](#media)
+      - [media/](#media)
     - [Save Files](#save-files)
-	  - [crawler_todo.txt](#crawler-todotxt)
-	  - [crawler_done.txt](#crawler-donetxt)
-	  - [crawler_log.txt](#crawler-logtxt)
-	  - [crawler_words.txt](#crawler-wordstxt)
-	  - [crawler_bad.txt](#crawler-badtxt)
-	- [Run Files](#run-files)
-	  - [clear.bat](#clearbat)
+      - [crawler_todo.txt](#crawler-todotxt)
+      - [crawler_done.txt](#crawler-donetxt)
+      - [crawler_log.txt](#crawler-logtxt)
+      - [crawler_words.txt](#crawler-wordstxt)
+      - [crawler_bad.txt](#crawler-badtxt)
+    - [Run Files](#run-files)
+      - [clear.bat](#clearbat)
       - [crawler.py](#crawlerpy)
       - [post-process.py](#post-processpy)
-	  - [profile.py](#profilepy)
+      - [profile.py](#profilepy)
       - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
-    - [GUI-spidy](#gui-spidy)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
-    - [tree-test](#tree-test)
+    - [GUI-spidy](#gui-spidy)
   - [TODO](#todo)
-  - [Acknowledgements](#acknowledgements)
   - [Contribute](#contribute)
   - [License](#license)
 
+
 # How it Works
-Spidy has to working lists, `TODO` and `done`.<br>
+Spidy has two working lists, `TODO` and `done`.<br>
 TODO is the list of URLs it hasn't yet visited.<br>
 Done is the list of URLs it has already been to.<br>
-The crawler visits each page in TODO, scrapes the HTML content for links, and adds those back into TODO.<br>
-It also saves all of the content of the page into a file for processing.
+The crawler visits each page in TODO, scrapes the DOM of the page for links, and adds those back into TODO.<br>
+It also saves each page, because datahoarding 😜.
 
 
 # Features
 We built a lot of the functionality in spidy by watching the console scroll by and going, "Hey, we should add that!"<br>
 Here are some features we figure are worth noting.
+
+## Configuration
+Spidy comes 'preloaded' with multiple configuration files.<br>
+These set variables for the crawler and tell it how to behave.
 
 ## Error Handling
 We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each.<br>
@@ -99,38 +114,36 @@ Currently spidy has built-in support for:
   - XMLSyntaxError, ParserError
 
 ## Frequent Timestamp Logging
-Spidy logs almost every action it takes to both the command console and the logFile.
+Spidy logs almost every action it takes to both the console and one of two log files.
 
 ## Portability
-Move spidy's folder and it's contents somewhere else and it will run right where it left off.
+Move spidy's folder and its contents somewhere else and it will run right where it left off.
 
 ## User-Friendly Logs
-Both the console and logFile messages are simple and easy to interpret, but packed with information.
+Both the console and log file messages are simple and easy to interpret, but packed with information.
 
 ## Webpage saving
 Spidy downloads each page that it runs into, regardless of file type.<br>
-The crawler attempts to save to the correct file type, but it defaults to `.html`, so some 'pages' may appear corrupted.<br>
-Renaming the file extension will fix this.
+The crawler uses the HTTP `Content-Type` header returned with most files to determine the file type.
 
 ## File Zipping
-When autosaving, spidy will archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.<br>
-The name of each zip file will be unique, as it is generated from the current time.
+When autosaving, spidy can archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
 
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.<br>
-Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the .bat file.
+Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the `.bat` file.
 
 ## Python Installation
-There are many different versions of [Python](https://www.python.org/about/), and probably hundreds of different installations of each them.<br>
-Spidy is developed in Python v3.6.1, but should run without errors in other versions of Python 3.
+There are many different versions of [Python](https://www.python.org/about/), and hundreds of different installations for each them.<br>
+Spidy is developed for Python v3.6.1, but should run without errors in other versions of Python 3.
 
 ### Anaconda
 We recommend the [Anaconda distribution](https://www.continuum.io/downloads).<br>
-It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python distro.
+It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python package.
 
 ### Python Base
-If you do choose to go with the [default Python](https://www.python.org/downloads/) distribution, you will need to install the `lxml` library for spidy to work.<br>
+You can also just install [default Python](https://www.python.org/downloads/), and install `lxml` separately.<br>
 This can be done with `pip`:
 
 > pip install lxml
@@ -139,16 +152,8 @@ This can be done with `pip`:
 
 ![](/media/run.gif?raw=true)
 
-### Arguments
-On running, spidy will ask for input regarding its various arguments.
-
-#### Defaults
-To run spidy with all of its defaults, use:
-
-> python crawler.py Default
-
 ### Windows (Command Line)
-Use `cd` to navigate to the directory spidy's located in, then run `makefiles.bat`.<br>
+Use `cd` to navigate to the directory spidy's located in, then run `clear.bat`.<br>
 This will create all of the necessary files if they don't already exist.
 
 > python crawler.py
@@ -160,11 +165,36 @@ Use `cd` to navigate to spidy's directory and run `makefiles.bat`.<br>
 This will create all of the necessary files if they don't already exist.<br>
 Then run `run.bat`.
 
+### Config
+On running, spidy may ask for input regarding its various arguments.<br>
+However, you can also use one of the configuration files, or even create your own.
+
+To use spidy with a configuration file, use the command:
+
+> python crawler.py <fileName>
+
+Where `<fileName>` is the name of the config file - minus the `.cfg` extension.
+
+The config files included with spidy are:
+
+  - *`blank.txt`*: Template for creating your own configurations.
+  - `default.cfg`: The default version.
+  - `heavy.cfg`: Run spidy with all of its features enabled.
+  - `light.cfg`: Disable most features; only crawls pages for links.
+  - `rivermont.cfg`: My personal favorite settings.
+
 ## Running
 Spidy logs a lot of information to the command line.<br>
 Once started, a bunch of `[INIT]` lines will print.<br>
 These announce where spidy is in its initialization process.<br>
-If it takes a long time on `[INIT]: Pruning invalid links from TODO...`, that's fine - it has to process every link in the TODO list, which can be hundreds of thousands of lines long.
+
+### Expected Behaviour
+Some things that spidy may do that look bad but really aren't:
+
+  - Getting stuck pruning links.
+    - At startup, the crawler sometimes gets stuck on `[spidy] [INIT]: Pruning invalid links from TODO...`.
+	- It has to process every link in the TODO list, which can be hundreds of thousands of lines long.
+  - Lots of [ERR]: HTTP 429: Too Many Requests
 
 ### Start
 Sample start log.
@@ -239,29 +269,21 @@ A Windows batch file to run the program.<br>
 ## master
 The stable, up-to-date branch.
 
+## FalconWarriorr-branch
+Falconwarriorr's branch.<br>
+He has developed a bunch of features that we are working on merging into master.
+
 ## GUI-spidy
 We are currently working on a GUI for spidy.<br>
 For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
 
-## FalconWarriorr-branch
-Falconwarriorr's development branch.
-
-## tree-test
-Test branch to see how the crawler runs if allowed to crawl links from the link it just crawled, as opposed to picking a random one in TODO.
-
 
 # TODO
-  - Upload spidy to PyPI
+  - Moar docs
+  - GUI
+  - Upload spidy to PyPI/pip
   - Multiple HTTP threads
-  - Use Chrome/Safari-mimicking headers after being rejected
   - Respect robots.txt
-  - Better logging, both to console and logFile
-  - Add webpage saving functionality to README
-  - Talk about hashcat in README
-
-# Acknowledgements
-I'd like to thank [Pluralsight](https://www.pluralsight.com/) for providing an amazing platform for learning any language.<br>
-Specifically the [Python Fundamentals](https://www.pluralsight.com/courses/python-fundamentals/) course by Austin Bingham and Robert Smallshire.
 
 
 # Contribute
