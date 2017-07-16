@@ -7,12 +7,12 @@ Built by rivermont and FalconWarriorr
 from tkinter import *
 from tkinter import ttk
 from threading import Thread
-from crawler import main
+#from crawler import main
 
-crawlerThread = Thread(target = main)
+#crawlerThread = Thread(target = main)
 
-def runCrawler():
-    crawlerThread.start()
+#def runCrawler():
+#    crawlerThread.start()
 
 #Main window
 window = Tk()
@@ -22,7 +22,7 @@ window.title('spidy Web Crawler - by rivermont')
 mainFrame = ttk.Frame(window, padding='2')
 mainFrame.grid(column=0, row=0, sticky=(N, W, E, S))
 mainFrame.columnconfigure(0, weight=1)
-mainFrame.rowcomfigure(0, weight=1)
+mainFrame.rowconfigure(0, weight=1)
 
 #Variables
 Overwrite = BooleanVar()
@@ -52,8 +52,8 @@ rightBar.rowconfigure(0, weight=1)
 
 #Container for controlling the crawler
 controlBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
-controlBox.grid(column=?, row=0, sticky=(N, E, W))
-controlBox.columnconfigure(?, weight=1)
+controlBox.grid(column=1, row=0, sticky=(N, E, W))
+controlBox.columnconfigure(1, weight=1)
 controlBox.rowconfigure(0, weight=1)
 
 #Container for the status elements
@@ -65,21 +65,21 @@ statusBox.rowconfigure(1, weight=1)
 consoleBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
 consoleBox.grid(column=0, row=2)
 consoleBox.columnconfigure(0, weight=1)
-consoleBox.rowcomfigure(2, weight=1)
+consoleBox.rowconfigure(2, weight=1)
 
-pauseButton = ttk.Button(controlBox, padding='2', borderwidth=1)
+pauseButton = ttk.Button(controlBox, padding='2')
 pauseButton.grid(column=0, row=0, sticky=(N, S, W))
 pauseButton.columnconfigure(0, weight=1)
 pauseButton.rowconfigure(0, weight=1)
 
-goButton = ttk.Button(controlBox, padding='2', borderwidth=1)
+goButton = ttk.Button(controlBox, padding='2')
 goButton.grid(column=1, row=0, sticky=(N, S))
 goButton.columnconfigure(1, weight=1)
 goButton.rowconfigure(0, weight=1)
 
-stopButton = ttk.Button(controlBox, padding='2', borderwidth=1)
+stopButton = ttk.Button(controlBox, padding='2')
 stopButton.grid(column=0, row=2, sticky=(N, S, E))
 stopButton.columnconfigure(0, weight=1)
 stopButton.rowconfigure(2, weight=1)
 
-
+window.mainloop()
