@@ -38,7 +38,7 @@ WordFile = StringVar()
 SaveCount = IntVar()
 MaxNewError = IntVar()
 
-#Frame to hold variable settings
+#Container to hold variable settings
 settingBox = ttk.Frame(mainFrame, padding='2', borderwidth=1)
 settingBox.grid(column=0, row=0, sticky=(N, S, W))
 settingBox.columnconfigure(0, weight=1)
@@ -62,24 +62,54 @@ statusBox.grid(column=0, row=1, sticky=(E, W))
 statusBox.columnconfigure(0, weight=1)
 statusBox.rowconfigure(1, weight=1)
 
+#Container for the console log
 consoleBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
 consoleBox.grid(column=0, row=2)
 consoleBox.columnconfigure(0, weight=1)
 consoleBox.rowconfigure(2, weight=1)
 
-pauseButton = ttk.Button(controlBox, padding='2')
+#Button to pause the crawler
+pauseButton = ttk.Button(controlBox, padding='2', text='Pause')
 pauseButton.grid(column=0, row=0, sticky=(N, S, W))
 pauseButton.columnconfigure(0, weight=1)
 pauseButton.rowconfigure(0, weight=1)
 
-goButton = ttk.Button(controlBox, padding='2')
+#Button to start the crawler
+goButton = ttk.Button(controlBox, padding='2', text='Go')
 goButton.grid(column=1, row=0, sticky=(N, S))
 goButton.columnconfigure(1, weight=1)
 goButton.rowconfigure(0, weight=1)
 
-stopButton = ttk.Button(controlBox, padding='2')
-stopButton.grid(column=0, row=2, sticky=(N, S, E))
-stopButton.columnconfigure(0, weight=1)
-stopButton.rowconfigure(2, weight=1)
+#Button to stop the crawler
+stopButton = ttk.Button(controlBox, padding='2', text='Stop')
+stopButton.grid(column=2, row=0, sticky=(N, S, E))
+stopButton.columnconfigure(2, weight=1)
+stopButton.rowconfigure(0, weight=1)
+
+
+overwriteCheck = ttk.Checkbutton(settingBox, text='Overwrite', variable=Overwrite)
+overwriteCheck.grid(column=0, row=1, sticky=(W))
+overwriteCheck.columnconfigure(0, weight=1)
+overwriteCheck.rowconfigure(1, weight=1)
+
+raiseErrorsCheck = ttk.Checkbutton(settingBox, text='Raise Errors', variable=RaiseErrors)
+raiseErrorsCheck.grid(column=0, row=2, sticky=(W))
+raiseErrorsCheck.columnconfigure(0, weight=1)
+raiseErrorsCheck.rowconfigure(2, weight=1)
+
+savePagesCheck = ttk.Checkbutton(settingBox, text='Save Pages', variable=SavePages)
+savePagesCheck.grid(column=0, row=3, sticky=(W))
+savePagesCheck.columnconfigure(0, weight=1)
+savePagesCheck.rowconfigure(3, weight=1)
+
+zipFilesCheck = ttk.Checkbutton(settingBox, text='Zip Files', variable=ZipFiles)
+zipFilesCheck.grid(column=0, row=4, sticky=(W))
+zipFilesCheck.columnconfigure(0, weight=1)
+zipFilesCheck.rowconfigure(4, weight=1)
+
+saveWordsCheck = ttk.Checkbutton(settingBox, text='Save Words', variable=SaveWords)
+saveWordsCheck.grid(column=0, row=5, sticky=(W))
+saveWordsCheck.columnconfigure(0, weight=1)
+saveWordsCheck.rowconfigure(5, weight=1)
 
 window.mainloop()
