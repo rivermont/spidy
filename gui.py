@@ -42,34 +42,37 @@ DoneFile = StringVar()
 BadFile = StringVar()
 WordFile = StringVar()
 SaveCount = IntVar()
-MaxNewError = IntVar()
+MaxNewErrors = IntVar()
+MaxHTTPErrors = IntVar()
+MaxKnownErrors = IntVar()
+MaxNewMIMEs = IntVar()
 
 #Container to hold variable settings
-settingBox = ttk.Frame(mainFrame, padding='2', borderwidth=1)
+settingBox = ttk.Frame(mainFrame, padding='2', borderwidth=1, relief='solid')
 settingBox.grid(column=0, row=0, sticky=(N, S, W))
 settingBox.columnconfigure(0, weight=1)
 settingBox.rowconfigure(0, weight=1)
 
 #Container for things on the right side of the main window
-rightBar = ttk.Frame(mainFrame, padding='2', borderwidth=1)
+rightBar = ttk.Frame(mainFrame, padding='2', borderwidth=1, relief='solid')
 rightBar.grid(column=1, row=0, sticky=(N, S, E))
 rightBar.columnconfigure(2, weight=1)
 rightBar.rowconfigure(0, weight=1)
 
 #Container for controlling the crawler
-controlBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
+controlBox = ttk.Frame(rightBar, padding='2', borderwidth=1, relief='solid')
 controlBox.grid(column=1, row=0, sticky=(N, E, W))
 controlBox.columnconfigure(1, weight=1)
 controlBox.rowconfigure(0, weight=1)
 
 #Container for the status elements
-statusBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
+statusBox = ttk.Frame(rightBar, padding='2', borderwidth=1, relief='solid')
 statusBox.grid(column=0, row=1, sticky=(E, W))
 statusBox.columnconfigure(0, weight=1)
 statusBox.rowconfigure(1, weight=1)
 
 #Container for the console log
-consoleBox = ttk.Frame(rightBar, padding='2', borderwidth=1)
+consoleBox = ttk.Frame(rightBar, padding='2', borderwidth=1, relief='solid')
 consoleBox.grid(column=0, row=2)
 consoleBox.columnconfigure(0, weight=1)
 consoleBox.rowconfigure(2, weight=1)
@@ -92,45 +95,94 @@ stopButton.grid(column=2, row=0, sticky=(N, S, E))
 stopButton.columnconfigure(2, weight=1)
 stopButton.rowconfigure(0, weight=1)
 
-ttk.Label(settingBox, text='Crawler Settings').grid(column=0, row=0, columnspan=3)
+#Title for crawler setting area
+ttk.Label(settingBox, text='Crawler Settings').grid(column=0, row=0, columnspan=3, sticky=(N ,S))
 
+#Option to set Overwrite
 overwriteCheck = ttk.Checkbutton(settingBox, text='Overwrite', variable=Overwrite)
-overwriteCheck.grid(column=0, row=1, sticky=(W))
+overwriteCheck.grid(column=0, row=1, columnspan=2, sticky=(W))
 overwriteCheck.columnconfigure(0, weight=1)
 overwriteCheck.rowconfigure(1, weight=1)
 
+#Option to set RaiseErrors
 raiseErrorsCheck = ttk.Checkbutton(settingBox, text='Raise Errors', variable=RaiseErrors)
-raiseErrorsCheck.grid(column=0, row=2, sticky=(W))
+raiseErrorsCheck.grid(column=0, row=2, columnspan=2, sticky=(W))
 raiseErrorsCheck.columnconfigure(0, weight=1)
 raiseErrorsCheck.rowconfigure(2, weight=1)
 
+#Option to set SavePages
 savePagesCheck = ttk.Checkbutton(settingBox, text='Save Pages', variable=SavePages)
-savePagesCheck.grid(column=0, row=3, sticky=(W))
+savePagesCheck.grid(column=0, row=3, columnspan=2, sticky=(W))
 savePagesCheck.columnconfigure(0, weight=1)
 savePagesCheck.rowconfigure(3, weight=1)
 
+#Option to set ZipFiles
 zipFilesCheck = ttk.Checkbutton(settingBox, text='Zip Files', variable=ZipFiles)
-zipFilesCheck.grid(column=0, row=4, sticky=(W))
+zipFilesCheck.grid(column=0, row=4, columnspan=2, sticky=(W))
 zipFilesCheck.columnconfigure(0, weight=1)
 zipFilesCheck.rowconfigure(4, weight=1)
 
+#Option to set SaveWords
 saveWordsCheck = ttk.Checkbutton(settingBox, text='Save Words', variable=SaveWords)
-saveWordsCheck.grid(column=0, row=5, sticky=(W))
+saveWordsCheck.grid(column=0, row=5, columnspan=2, sticky=(W))
 saveWordsCheck.columnconfigure(0, weight=1)
 saveWordsCheck.rowconfigure(5, weight=1)
 
+#Field to enter number for SaveCount
 saveCountEntry = ttk.Entry(settingBox, width=5, textvariable=SaveCount)
-saveCountEntry.grid(column=0, row=6, sticky=(W))
+saveCountEntry.grid(column=0, row=6, sticky=(E, W))
 saveCountEntry.columnconfigure(0, weight=1)
 saveCountEntry.rowconfigure(6, weight=1)
 
+#Text for Save Count field
+ttk.Label(settingBox, text='Save Count').grid(column=1, row=6, sticky=(W))
+
+#Button to select todo file
 getTodoFileButton = ttk.Button(settingBox, text='...', command=get_file)
-getTodoFileButton.grid(column=1, row=1, sticky=())
+getTodoFileButton.grid(column=2, row=1, sticky=(W))
 getTodoFileButton.columnconfigure(1, weight=1)
-getTodoFileButton.rowconfigure(1, weight=1)
+getTodoFileButton.rowconfigure(2, weight=1)
 
-ttk.Label(settingBox, text='TODO File').grid(column=2, row=1)
+ttk.Label(settingBox, text='TODO File').grid(column=3, row=1, sticky=(W))
 
+#Button to select done file
 getDoneFileButton = ttk.Button(settingBox, text='...', command=get_file)
+getDoneFileButton.grid(column=2, row=2, sticky=(W))
+getDoneFileButton.columnconfigure(2, weight=1)
+getDoneFileButton.rowconfigure(2, weight=1)
+
+ttk.Label(settingBox, text='Done File').grid(column=3, row=2, sticky=(W))
+
+#Button to select bad link file
+getBadFileButton = ttk.Button(settingBox, text='...', command=get_file)
+getBadFileButton.grid(column=2, row=3, sticky=(W))
+getBadFileButton.columnconfigure(2, weight=1)
+getBadFileButton.rowconfigure(3, weight=1)
+
+ttk.Label(settingBox, text='Bad Link File').grid(column=3, row=3, sticky=(W))
+
+#Button to select word file
+getWordFileButton = ttk.Button(settingBox, text='...', command=get_file)
+getWordFileButton.grid(column=2, row=4, sticky=(W))
+getWordFileButton.columnconfigure(2, weight=1)
+getWordFileButton.rowconfigure(4, weight=1)
+
+ttk.Label(settingBox, text='Word File').grid(column=3, row=4, sticky=(W))
+
+#Field to set MaxNewErrors
+maxNewErrorEntry = ttk.Entry(settingBox, width=5, textvariable=MaxNewErrors)
+maxNewErrorEntry.grid(column=2, row=5, sticky=(E, W))
+maxNewErrorEntry.columnconfigure(2, weight=1)
+maxNewErrorEntry.rowconfigure(5, weight=1)
+
+ttk.Label(settingBox, text='Max New Errors').grid(column=3, row=5, sticky=(W))
+
+#Field to set MaxHTTPErrors
+maxHTTPErrorEntry = ttk.Entry(settingBox, width=5, textvariable=MaxHTTPErrors)
+maxHTTPErrorEntry.grid(column=2, row=6, sticky=(E, W))
+maxHTTPErrorEntry.columnconfigure(2, weight=1)
+maxHTTPErrorEntry.rowconfigure(6, weight=1)
+
+ttk.Label(settingBox, text='Max HTTP Errors').grid(column=3, row=5, sticky=(W))
 
 window.mainloop()
