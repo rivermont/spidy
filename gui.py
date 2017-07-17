@@ -11,6 +11,8 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from threading import Thread
+from os import  path
+DIR = path.dirname(path.realpath(__file__))
 #from crawler import main
 
 #crawlerThread = Thread(target = main)
@@ -27,6 +29,7 @@ def get_text(field):
 #Main window
 window = Tk()
 window.title('spidy Web Crawler - by rivermont')
+window.iconbitmap('{0}\\media\\favicon.ico'.format(DIR))
 
 #Frame to fill main window
 mainFrame = ttk.Frame(window, padding='2')

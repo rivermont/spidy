@@ -306,8 +306,10 @@ MIME_TYPES = {
 'application/java-archive': '.jar',
 'application/javascript': '.js',
 'application/json': '.json',
+'application/js': '.js', #Should be application/javascript
 'application/marcxml+xml': '.mrcx',
 'application/msword': '.doc',
+'application/gzip': '.gz',
 'application/n-triples': '.nt',
 'application/octet-stream': '.exe', #Sometimes .bin
 'application/ogg': '.ogx',
@@ -332,6 +334,7 @@ MIME_TYPES = {
 'application/x-research-info-systems': '.ris',
 'application/x-rss+xml': '.rss',
 'application/x-shockwave-flash': '.swf',
+'application/x-tar': '.tar.gz', #Tarballs aren't official IANA types
 'application/xhtml+xml': '.xhtml',
 'application/xml': '.xml',
 'application/zip': '.zip',
