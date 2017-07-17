@@ -3,9 +3,13 @@ GUI for spidy Web Crawler
 Built by rivermont and FalconWarriorr
 '''
 
+############
+## IMPORT ##
+############
 
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
 from threading import Thread
 #from crawler import main
 
@@ -13,6 +17,9 @@ from threading import Thread
 
 #def runCrawler():
 #    crawlerThread.start()
+
+def get_file():
+	return filedialog.askopenfilename()
 
 #Main window
 window = Tk()
@@ -32,7 +39,6 @@ ZipFiles = BooleanVar()
 SaveWords = BooleanVar()
 TodoFile = StringVar()
 DoneFile = StringVar()
-LogFile = StringVar()
 BadFile = StringVar()
 WordFile = StringVar()
 SaveCount = IntVar()
@@ -86,6 +92,7 @@ stopButton.grid(column=2, row=0, sticky=(N, S, E))
 stopButton.columnconfigure(2, weight=1)
 stopButton.rowconfigure(0, weight=1)
 
+ttk.Label(settingBox, text='Crawler Settings').grid(column=0, row=0, columnspan=3)
 
 overwriteCheck = ttk.Checkbutton(settingBox, text='Overwrite', variable=Overwrite)
 overwriteCheck.grid(column=0, row=1, sticky=(W))
@@ -111,5 +118,19 @@ saveWordsCheck = ttk.Checkbutton(settingBox, text='Save Words', variable=SaveWor
 saveWordsCheck.grid(column=0, row=5, sticky=(W))
 saveWordsCheck.columnconfigure(0, weight=1)
 saveWordsCheck.rowconfigure(5, weight=1)
+
+saveCountEntry = ttk.Entry(settingBox, width=5, textvariable=SaveCount)
+saveCountEntry.grid(column=0, row=6, sticky=(W))
+saveCountEntry.columnconfigure(0, weight=1)
+saveCountEntry.rowconfigure(6, weight=1)
+
+getTodoFileButton = ttk.Button(settingBox, text='...', command=get_file)
+getTodoFileButton.grid(column=1, row=1, sticky=())
+getTodoFileButton.columnconfigure(1, weight=1)
+getTodoFileButton.rowconfigure(1, weight=1)
+
+ttk.Label(settingBox, text='TODO File').grid(column=2, row=1)
+
+getDoneFileButton = ttk.Button(settingBox, text='...', command=get_file)
 
 window.mainloop()
