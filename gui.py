@@ -21,6 +21,9 @@ from threading import Thread
 def get_file():
 	return filedialog.askopenfilename()
 
+def get_text(field):
+	return field.get('1.0', 'end')
+
 #Main window
 window = Tk()
 window.title('spidy Web Crawler - by rivermont')
@@ -46,6 +49,7 @@ MaxNewErrors = IntVar()
 MaxHTTPErrors = IntVar()
 MaxKnownErrors = IntVar()
 MaxNewMIMEs = IntVar()
+CustomHeaders = StringVar()
 
 #Container to hold variable settings
 settingBox = ttk.Frame(mainFrame, padding='2', borderwidth=1, relief='solid')
@@ -96,7 +100,7 @@ stopButton.columnconfigure(2, weight=1)
 stopButton.rowconfigure(0, weight=1)
 
 #Title for crawler setting area
-ttk.Label(settingBox, text='Crawler Settings').grid(column=0, row=0, columnspan=3, sticky=(N ,S))
+ttk.Label(settingBox, text='Crawler Settings').grid(column=0, row=0, columnspan=4, sticky=(N ,S))
 
 #Option to set Overwrite
 overwriteCheck = ttk.Checkbutton(settingBox, text='Overwrite', variable=Overwrite)
@@ -129,13 +133,28 @@ saveWordsCheck.columnconfigure(0, weight=1)
 saveWordsCheck.rowconfigure(5, weight=1)
 
 #Field to enter number for SaveCount
-saveCountEntry = ttk.Entry(settingBox, width=5, textvariable=SaveCount)
-saveCountEntry.grid(column=0, row=6, sticky=(E, W))
-saveCountEntry.columnconfigure(0, weight=1)
-saveCountEntry.rowconfigure(6, weight=1)
+ttk.Label(settingBox, text='Save Count').grid(column=0, row=6, columnspan=2, sticky=(W))
 
-#Text for Save Count field
-ttk.Label(settingBox, text='Save Count').grid(column=1, row=6, sticky=(W))
+saveCountEntry = ttk.Entry(settingBox, width=5, textvariable=SaveCount)
+saveCountEntry.grid(column=0, row=7, sticky=(E, W))
+saveCountEntry.columnconfigure(0, weight=1)
+saveCountEntry.rowconfigure(7, weight=1)
+
+#Field to enter custom headers
+ttk.Label(settingBox, text='Custom Headers').grid(column=0, row=8, columnspan=2, sticky=(W))
+
+customHeadersEntry = Text(settingBox, height=3, width=16)
+customHeadersEntry.grid(column=0, row=9, columnspan=2, sticky=(W))
+customHeadersEntry.columnconfigure(0, weight=1)
+customHeadersEntry.rowconfigure(9, weight=1)
+
+#Field to enter custom starting links
+ttk.Label(settingBox, text='Start Links').grid(column=0, row=10, columnspan=2, sticky=(W))
+
+customStartLinks = Text(settingBox, height=2, width=16)
+customStartLinks.grid(column=0, row=11, columnspan=2, sticky=(W))
+customStartLinks.columnconfigure(0, weight=1)
+customStartLinks.rowconfigure(11, weight=1)
 
 #Button to select todo file
 getTodoFileButton = ttk.Button(settingBox, text='...', command=get_file)
@@ -170,7 +189,7 @@ getWordFileButton.rowconfigure(4, weight=1)
 ttk.Label(settingBox, text='Word File').grid(column=3, row=4, sticky=(W))
 
 #Field to set MaxNewErrors
-maxNewErrorEntry = ttk.Entry(settingBox, width=5, textvariable=MaxNewErrors)
+maxNewErrorEntry = ttk.Entry(settingBox, width=4, textvariable=MaxNewErrors)
 maxNewErrorEntry.grid(column=2, row=5, sticky=(E, W))
 maxNewErrorEntry.columnconfigure(2, weight=1)
 maxNewErrorEntry.rowconfigure(5, weight=1)
@@ -178,11 +197,27 @@ maxNewErrorEntry.rowconfigure(5, weight=1)
 ttk.Label(settingBox, text='Max New Errors').grid(column=3, row=5, sticky=(W))
 
 #Field to set MaxHTTPErrors
-maxHTTPErrorEntry = ttk.Entry(settingBox, width=5, textvariable=MaxHTTPErrors)
+maxHTTPErrorEntry = ttk.Entry(settingBox, width=4, textvariable=MaxHTTPErrors)
 maxHTTPErrorEntry.grid(column=2, row=6, sticky=(E, W))
 maxHTTPErrorEntry.columnconfigure(2, weight=1)
 maxHTTPErrorEntry.rowconfigure(6, weight=1)
 
-ttk.Label(settingBox, text='Max HTTP Errors').grid(column=3, row=5, sticky=(W))
+ttk.Label(settingBox, text='Max HTTP Errors').grid(column=3, row=6, sticky=(W))
+
+#Field to set MaxKnownErrors
+maxKnownErrorsEntry = ttk.Entry(settingBox, width=4, textvariable=MaxKnownErrors)
+maxKnownErrorsEntry.grid(column=2, row=7, sticky=(E, W))
+maxKnownErrorsEntry.columnconfigure(2, weight=1)
+maxKnownErrorsEntry.rowconfigure(7, weight=1)
+
+ttk.Label(settingBox, text='Max Known Errors').grid(column=3, row=7, sticky=(W))
+
+#Field to set MaxNewMIMEs
+maxNewMIMEsEntry = ttk.Entry(settingBox, width=4, textvariable=MaxNewMIMEs)
+maxNewMIMEsEntry.grid(column=2, row=8, sticky=(E, W))
+maxNewMIMEsEntry.columnconfigure(2, weight=1)
+maxNewMIMEsEntry.rowconfigure(8, weight=1)
+
+ttk.Label(settingBox, text='Max New MIMEs').grid(column=3, row=8, sticky=(W))
 
 window.mainloop()

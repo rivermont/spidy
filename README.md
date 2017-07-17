@@ -12,8 +12,8 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 <br>
-[![Lines of Code: 826](https://img.shields.io/badge/lines%20of%20code-825-green.svg)](#)
-[![Lines of Docs: 524](https://img.shields.io/badge/lines%20of%20docs-524-orange.svg)](#)
+[![Lines of Code: 1048](https://img.shields.io/badge/lines%20of%20code-1048-green.svg)](#)
+[![Lines of Docs: 523](https://img.shields.io/badge/lines%20of%20docs-523-orange.svg)](#)
 
 --------------------
 
@@ -71,6 +71,7 @@ Fine-tune the bahaviour of spidy with new config files!
     - [Run Files](#run-files)
       - [clear.bat](#clearbat)
       - [crawler.py](#crawlerpy)
+	  - [gui.py](#guipy)
       - [post-process.py](#post-processpy)
       - [profile.py](#profilepy)
       - [run.bat](#runbat)
@@ -252,6 +253,9 @@ Clears all save files by deleting them and creating empty ones.
 The important code. This is what you will run to crawl links and save information.<br>
 Because the internet is so big, this will practically never end.
 
+### gui.py
+The development file for a GUI.
+
 ### post-process.py
 This removes all the lines in `crawler_words.txt` longer than 16 characters.<br>
 Run this after running crawler.py for a while.
@@ -273,14 +277,9 @@ The stable, up-to-date branch.
 Falconwarriorr's branch.<br>
 He has developed a bunch of features that we are working on merging into master.
 
-## GUI-spidy
-We are currently working on a GUI for spidy.<br>
-For those who like clicky buttons the command line can be confusing and hard to navigate, so we figured a window option would be a nice edition.
-
 
 # TODO
   - Moar docs
-  - GUI
   - Upload spidy to PyPI/pip
   - Multiple HTTP threads
   - Respect robots.txt
