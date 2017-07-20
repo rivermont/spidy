@@ -10,6 +10,7 @@ If you're looking for the plain English, check out the [README](https://github.c
 
   - [spidy](#spidy-web-crawler)
   - [Table of Contents](#table-of-contents)
+  - [Info](#info)
   - [Errors](#errors)
     - [HeaderError](#headererror--source)
   - [Functions](#functions)
@@ -31,10 +32,17 @@ If you're looking for the plain English, check out the [README](https://github.c
 	- [VERSION](#version--source)
 
 
+# Info
+General information and thoughts about spidy.
+
+A good read about web crawlers and some theory that goes with them is Michael Nielson's [How to crawl a quarter billion webpages in 40 hours](http://www.michaelnielsen.org/ddi/how-to-crawl-a-quarter-billion-webpages-in-40-hours/).<br>
+It helped me understand how a web crawler should run, and is just a good article in general.
+
+
 # Errors
 This section lists the custom Errors and Exceptions in `crawler.py` that may be raised throughout the code.
 
-## `HeaderError` - [Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
+## `HeaderError` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
 Raised when there is a problem deciphering HTTP headers returned from a website.
 
 
