@@ -628,26 +628,10 @@ else:
 		contents = f.readlines()
 	DONE = [x.strip() for x in contents]
 	del contents
-
-	print('[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INIT]: Pruning invalid links from TODO...'.format(get_time()))
-
-	before = len(TODO)
-
-	#Remove invalid links from TODO list
-	TODO = [link for link in TODO if not check_link(link)]
-	
-	after = abs(before - len(TODO))
 	
 	#If TODO list is empty, add default starting pages
 	if len(TODO) == 0:
 		TODO += START
-
-	print('[{0}] [spidy] [INFO]: {1} invalid links removed from TODO.'.format(get_time(), after))
-	LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} invalid links removed from TODO.'.format(get_time(), after))
-	
-	del before
-	del after
 
 def main():
 	#Declare global variables
@@ -700,7 +684,10 @@ def main():
 				if SAVE_WORDS:
 					wordList = make_words(page) #Get all words from page
 					WORDS.update(wordList) #Add words to word list
-				links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
+				try:
+					links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
+				except (etree.XMLSyntaxError, etree.ParserError):
+					pass
 				links = list(set(links)) #Remove duplicates and shuffle links
 				links = [link for link in links if not check_link(link)]
 				TODO += links #Add scraped links to the TODO list
