@@ -8,12 +8,12 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Python: 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)](https://docs.python.org/3/)
+[![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 <br>
-[![Lines of Code: 1048](https://img.shields.io/badge/lines%20of%20code-1048-green.svg)](#)
-[![Lines of Docs: 523](https://img.shields.io/badge/lines%20of%20docs-523-orange.svg)](#)
+[![Lines of Code: 1041](https://img.shields.io/badge/lines%20of%20code-1041-green.svg)](#)
+[![Lines of Docs: 526](https://img.shields.io/badge/lines%20of%20docs-526-orange.svg)](#)
 
 --------------------
 
