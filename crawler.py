@@ -360,6 +360,7 @@ MIME_TYPES = {
 'text/plain': '.txt',
 'text/turtle': '.ttl',
 'text/vtt': '.vtt',
+'text/vnd.wap.wml': '.xml' #or .wml
 'text/x-c': '.c',
 'text/xml': '.xml', #Incorrect
 'video/webm': '.webp',
