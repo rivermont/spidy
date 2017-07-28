@@ -360,7 +360,7 @@ MIME_TYPES = {
 'text/plain': '.txt',
 'text/turtle': '.ttl',
 'text/vtt': '.vtt',
-'text/vnd.wap.wml': '.xml' #or .wml
+'text/vnd.wap.wml': '.xml', #or .wml
 'text/x-c': '.c',
 'text/xml': '.xml', #Incorrect
 'video/webm': '.webp',
@@ -374,7 +374,7 @@ ERR_LOG_FILE_NAME = 'logs/spidy_error_log_{0}.txt'.format(START_TIME)
 #User-Agent Header Strings
 HEADERS = {
 'spidy': {
-	'User-Agent': 'Mozilla/5.0 (compatible; spidy Web Crawler (bot, +https://github.com/rivermont/spidy))',
+	'User-Agent': 'spidy Web Crawler (Mozilla/5.0; bot; +https://github.com/rivermont/spidy/)',
 	'Accept-Language': 'en_US, en-US, en',
 	'Accept-Encoding': 'gzip',
 	'Connection': 'keep-alive'
@@ -406,7 +406,7 @@ HEADERS = {
 }
 
 KILL_LIST = [
-#Pages that cause problems with the crawler in some way
+#Pages that are known to cause problems with the crawler in some way
 'scores.usaultimate.org/',
 'w3.org',
 'web.archive.org/web/'
@@ -547,7 +547,7 @@ if GET_ARGS:
 		else:
 			WORD_FILE = INPUT
 	else:
-		WORD_FILE = ''
+		WORD_FILE = 'None'
 	
 	INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
 	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))

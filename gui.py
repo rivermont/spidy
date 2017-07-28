@@ -11,7 +11,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 #from threading import Thread
-from os import  path
+from os import path
 DIR = path.dirname(path.realpath(__file__))
 #from crawler import main
 
