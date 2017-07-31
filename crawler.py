@@ -363,6 +363,7 @@ MIME_TYPES = {
 'text/vnd.wap.wml': '.xml', #or .wml
 'text/x-c': '.c',
 'text/xml': '.xml', #Incorrect
+'video/mp4': '.mp4',
 'video/webm': '.webp',
 'vnd.ms-fontobject': '.eot', #Incorrect
 }
