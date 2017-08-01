@@ -4,23 +4,31 @@ Built by rivermont and FalconWarriorr
 '''
 VERSION = '1.0'
 
-
-############
-## IMPORT ##
-############
+##########
+# IMPORT #
+##########
 
 # Time statements.
 # This is done before anything else to enable timestamp logging at every step
 import time as t
+
 START_TIME = int(t.time())
+
+
 def get_time():
     return t.strftime('%H:%M:%S')
+
+
 START_TIME_LONG = get_time()
+
+
 def get_full_time():
     return t.strftime('%H:%M:%S, %A %b %Y')
 
+
 # Get current working directory of spidy
 from os import path
+
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 # Open log file for logging
@@ -39,13 +47,13 @@ import sys
 from lxml import html, etree
 from os import makedirs
 
-
-#############
-## CLASSES ##
-#############
+###########
+# CLASSES #
+###########
 
 print('[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
+
 
 class HeaderError(Exception):
     '''
@@ -54,69 +62,75 @@ class HeaderError(Exception):
     pass
 
 
-###############
-## FUNCTIONS ##
-###############
+#############
+# FUNCTIONS #
+#############
 
 print('[{0}] [spidy] [INIT]: Creating functions...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating functions...'.format(get_time()))
+
 
 def check_link(item):
     '''
     Returns True if item is not a valid url.
     Returns False if item passes all inspections (is valid url).
     '''
-    #Shortest possible url being 'http://a.b', and
-    #Links longer than 255 characters are usually useless or full of foreign characters, and will also cause problems when saving.
+    # Shortest possible url being 'http://a.b', and
+    # Links longer than 255 characters are usually useless or full of foreign characters,
+    # and will also cause problems when saving.
     if len(item) < 10 or len(item) > 255:
         return True
-    #Must be an http(s) link
+    # Must be an http(s) link
     elif item[0:4] != 'http':
         return True
     elif item in DONE:
         return True
     else:
-        for badLink in KILL_LIST:
-            if badLink in item:
+        for bad_link in KILL_LIST:
+            if bad_link in item:
                 return True
     return False
+
 
 def check_word(word):
     '''
     Returns True if word is not valid.
     Returns False if word passes all inspections (is valid).
     '''
-    #If word is longer than 16 characters (avg password length is ~8)
+    # If word is longer than 16 characters (avg password length is ~8)
     if len(word) > 16:
         return True
     else:
         return False
 
-def check_path(filePath):
+
+def check_path(file_path):
     '''
     Checks the path of a given filename to see whether it will cause errors when saving.
     Returns True if path is valid.
     Returns False if path is invalid.
     '''
-    if len(filePath) > 256:
+    if len(file_path) > 256:
         return False
     else:
         return True
+
 
 def make_words(site):
     '''
     Returns list of all valid words in page.
     '''
-    page = str(site.content) #Get page content
-    wordList = page.split() #Split content into lists of words, as separated by spaces
+    page = str(site.content)  # Get page content
+    word_list = page.split()  # Split content into lists of words, as separated by spaces
     del page
-    wordList = list(set(wordList)) #Remove duplicates
-    for word in wordList:
-        if check_word(word): #If word is invalid
-            wordList.remove(word) #Remove invalid word from list
-    return wordList
+    word_list = list(set(word_list))  # Remove duplicates
+    for word in word_list:
+        if check_word(word):  # If word is invalid
+            word_list.remove(word)  # Remove invalid word from list
+    return word_list
 
-def save_files(wordList):
+
+def save_files(word_list):
     '''
     Saves the TODO, done, word, and bad lists into their respective files.
     Also logs the action to the console.
@@ -124,47 +138,50 @@ def save_files(wordList):
     with open(TODO_FILE, 'w') as todoList:
         for site in TODO:
             try:
-                todoList.write(site + '\n') #Save TODO list
+                todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
                 continue
     print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), TODO_FILE))
     LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), TODO_FILE))
-    
-    with open(DONE_FILE, 'w') as doneList:
+
+    with open(DONE_FILE, 'w') as done_list:
         for site in DONE:
             try:
-                doneList.write(site + '\n') #Save done list
+                done_list.write(site + '\n')  # Save done list
             except UnicodeError:
                 continue
     print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
     LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
-    
+
     if SAVE_WORDS:
-        update_file(WORD_FILE, wordList, 'words')
-    
+        update_file(WORD_FILE, word_list, 'words')
+
     update_file(BAD_FILE, BAD_LINKS, 'bad links')
+
 
 def make_file_path(url, ext):
     '''
     Makes a valid Windows file path for a url.
     '''
-    url = url.replace(ext, '') #Remove extension from path
-    for char in '''/\ *''': #Remove illegal characters from path
+    url = url.replace(ext, '')  # Remove extension from path
+    for char in '''/\ *''':  # Remove illegal characters from path
         url = url.replace(char, '-')
     for char in '''|:?&<>''':
         url = url.replace(char, '')
-    url = url[:255] #Truncate to valid file length
+    url = url[:255]  # Truncate to valid file length
     return url
+
 
 def get_mime_type(page):
     '''
     Extracts the Content-Type header from the headers returned by page.
     '''
     try:
-        docType = str(page.headers['content-type'])
-        return docType
-    except KeyError: #If no Content-Type was returned, return blank
+        doc_type = str(page.headers['content-type'])
+        return doc_type
+    except KeyError:  # If no Content-Type was returned, return blank
         return ''
+
 
 def mime_lookup(value):
     '''
@@ -172,8 +189,8 @@ def mime_lookup(value):
     If the MIME type is blank it defaults to .html,
     and if the MIME type is not in the dictionary it raises a HeaderError.
     '''
-    value = value.lower() #Reduce to lowercase
-    value = value.split(';')[0] #Remove possible encoding
+    value = value.lower()  # Reduce to lowercase
+    value = value.split(';')[0]  # Remove possible encoding
     if value in MIME_TYPES:
         return MIME_TYPES[value]
     elif value == '':
@@ -181,37 +198,40 @@ def mime_lookup(value):
     else:
         raise HeaderError('Unknown MIME type: {0}'.format(value))
 
+
 def save_page(url, page):
     '''
     Download content of url and save to the save folder.
     '''
     # Make file path
     ext = mime_lookup(get_mime_type(page))
-    croppedUrl = make_file_path(url, ext)
-    path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, croppedUrl, ext)
-    
+    cropped_url = make_file_path(url, ext)
+    path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
+
     # Save file
     with open(path, 'wb+') as file:
         file.write(page.content)
 
-def update_file(file, content, type):
-    with open(file, 'r+') as f: #Open save file for reading and writing
-        fileContent = f.readlines() #Make list of all lines in file
-        fileContent = [x.strip() for x in fileContent]
-        for item in fileContent:
-            content.update(item) #Otherwise add item to content (set)
-        del fileContent
+
+def update_file(file, content, filetype):
+    with open(file, 'r+') as f:  # Open save file for reading and writing
+        file_content = f.readlines()  # Make list of all lines in file
+        file_content = [x.strip() for x in file_content]
+        for item in file_content:
+            content.update(item)  # Otherwise add item to content (set)
+        del file_content
         for item in content:
-            f.write('\n' + str(item)) #Write all words to file
-        f.truncate() #Delete everything in file beyond what has been written (old stuff)
-    print('[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), type, file))
+            f.write('\n' + str(item))  # Write all words to file
+        f.truncate()  # Delete everything in file beyond what has been written (old stuff)
+    print('[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), filetype, file))
+    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), filetype, file))
+
 
 def info_log():
     '''
     Logs important information to the console and log file.
     '''
-    #Print to console
+    # Print to console
     print('[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
     print('[{0}] [spidy] [INFO]: Log location: {1}'.format(get_time(), LOG_FILE_NAME))
     print('[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
@@ -221,36 +241,40 @@ def info_log():
     print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
     print('[{0}] [spidy] [INFO]: {1}/{2} new MIMEs found.'.format(get_time(), NEW_MIME_COUNT, MAX_NEW_MIMES))
     print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
-    
-    #Print to log file
+
+    # Print to log file
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: Log location: {1}'.format(get_time(), LOG_FILE_NAME))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT,
+                                                                                     MAX_HTTP_ERRORS))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new MIMEs found.'.format(get_time(), NEW_MIME_COUNT, MAX_NEW_MIMES))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
-    
+
+
 def log(message):
     '''
     Logs a single message to the logFile.
     Prints message verbatim, so message must be formatted correctly outside of the function call.
     '''
     with open(ERR_LOG_FILE, 'a') as log:
-        log.write('\n\n======LOG======') #Write opening line
-        log.write('\nTIME: {0}'.format(get_full_time())) #Write current time
-        log.write(message) #Write message
-        log.write(LOG_END) #Write closing line
+        log.write('\n\n======LOG======')  # Write opening line
+        log.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
+        log.write(message)  # Write message
+        log.write(LOG_END)  # Write closing line
 
-def handle_KeyboardInterrupt():
+
+def handle_keyboard_interrupt():
     print('[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
     log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
     save_files(WORDS)
     LOG_FILE.close()
     sys.exit()
+
 
 def err_print(item):
     '''
@@ -259,6 +283,7 @@ def err_print(item):
     print('[{0}] [spidy] [INFO]: An error was raised trying to process {1}'.format(get_time(), item))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: An error was raised trying to process {1}'.format(get_time(), item))
 
+
 def err_saved_message():
     '''
     Announce that error was successfully saved to log.
@@ -266,32 +291,34 @@ def err_saved_message():
     print('[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
 
+
 def err_log(url, error1, error2):
     '''
     Saves the triggering error to the log file.
     error1 is the trimmed error source.
     error2 is the extended text of the error.
     '''
-    time = t.strftime('%H:%M:%S, %A %b %Y') #Get the current time
-    with open(ERR_LOG_FILE, 'a') as log:
-        log.write('\n\n=====ERROR=====') #Write opening line
-        log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, url, error1, str(error2)))
-        log.write(LOG_END) #Write closing line
+    time = t.strftime('%H:%M:%S, %A %b %Y')  # Get the current time
+    with open(ERR_LOG_FILE, 'a') as work_log:
+        work_log.write('\n\n=====ERROR=====')  # Write opening line
+        work_log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, url, error1, str(error2)))
+        work_log.write(LOG_END)  # Write closing line
 
-def zip(out_fileName, dir):
+
+def zip_files(out_file_name, dir):
     '''
     Creates a .zip file in the current directory containing all contents of dir, then deletes dir.
     '''
-    shutil.make_archive(str(out_fileName), 'zip', dir) #Zips files
-    shutil.rmtree(dir) #Deletes folder
-    makedirs(dir[:-1]) #Creates empty folder of same name (minus the '/')
-    print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_fileName))
+    shutil.make_archive(str(out_file_name), 'zip', dir)  # Zips files
+    shutil.rmtree(dir)  # Deletes folder
+    makedirs(dir[:-1])  # Creates empty folder of same name (minus the '/')
+    print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_file_name))
+    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_file_name))
 
 
-##########
-## INIT ##
-##########
+########
+# INIT #
+########
 
 print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
 LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
@@ -299,137 +326,137 @@ LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()
 # Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
 # Added by hand after being found by the crawler to reduce lookup times.
 MIME_TYPES = {
-'application/atom+xml': '.atom',
-'application/epub+zip': '.epub',
-'application/font-woff': '.woff',
-'application/font-woff2': '.woff2',
-'application/java-archive': '.jar',
-'application/javascript': '.js',
-'application/json': '.json',
-'application/js': '.js', #Should be application/javascript
-'application/marcxml+xml': '.mrcx',
-'application/msword': '.doc',
-'application/gzip': '.gz',
-'application/n-triples': '.nt',
-'application/octet-stream': '.exe', #Sometimes .bin
-'application/ogg': '.ogx',
-'application/opensearchdescription+xml': '.osdx',
-'application/pdf': '.pdf',
-'application/rdf+xml': '.rdf',
-'application/rsd+xml': '.rsd',
-'application/rss+xml': '.rss',
-'application/vnd.ms-cab-compressed': '.cab',
-'application/vnd.ms-fontobject': '.eot',
-'application/vnd.ms-excel': '.',
-'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
-'application/vnd.oasis.opendocument.text': '.odt',
-'text/html,application/xhtml+xml,application/xml': '.html', #Misunderstood 'Accept' header?
-'application/vnd.php.serialized': '.php',
-'application/x-bibtex': '.bib', #I think
-'application/x-font-woff': '.woff',
-'application/x-gzip': '.gz',
-'application/x-javascript': '.js',
-'application/x-mobipocket-ebook': '.mobi',
-'application/x-msi': '.msi',
-'application/x-research-info-systems': '.ris',
-'application/x-rss+xml': '.rss',
-'application/x-shockwave-flash': '.swf',
-'application/x-tar': '.tar.gz', #Tarballs aren't official IANA types
-'application/xhtml+xml': '.xhtml',
-'application/xml': '.xml',
-'application/zip': '.zip',
-'audio/mpeg': '.mp3',
-'font/woff': '.woff','font/woff2': '.woff2',
-'html': '.html', #Incorrect
-'image/gif': '.gif',
-'image/jpeg': '.jpeg',
-'image/jpg': '.jpg',
-'image/png': '.png',
-'image/svg+xml': '.svg',
-'image/tiff': '.tif',
-'image/vnd.djvu': '.djvu',
-'image/vnd.microsoft.icon': '.ico',
-'image/webp': '.webp',
-'image/x-icon': '.ico',
-'image/x-ms-bmp': '.bmp',
-'text/calendar': '.ics',
-'text/css': '.css',
-'text/html': '.html',
-'text/javascript': '.js',
-'text/n3': '.n3',
-'text/plain': '.txt',
-'text/turtle': '.ttl',
-'text/vtt': '.vtt',
-'text/vnd.wap.wml': '.xml', #or .wml
-'text/x-c': '.c',
-'text/xml': '.xml', #Incorrect
-'video/mp4': '.mp4',
-'video/webm': '.webp',
-'vnd.ms-fontobject': '.eot', #Incorrect
+    'application/atom+xml': '.atom',
+    'application/epub+zip': '.epub',
+    'application/font-woff': '.woff',
+    'application/font-woff2': '.woff2',
+    'application/java-archive': '.jar',
+    'application/javascript': '.js',
+    'application/json': '.json',
+    'application/js': '.js',  # Should be application/javascript
+    'application/marcxml+xml': '.mrcx',
+    'application/msword': '.doc',
+    'application/gzip': '.gz',
+    'application/n-triples': '.nt',
+    'application/octet-stream': '.exe',  # Sometimes .bin
+    'application/ogg': '.ogx',
+    'application/opensearchdescription+xml': '.osdx',
+    'application/pdf': '.pdf',
+    'application/rdf+xml': '.rdf',
+    'application/rsd+xml': '.rsd',
+    'application/rss+xml': '.rss',
+    'application/vnd.ms-cab-compressed': '.cab',
+    'application/vnd.ms-fontobject': '.eot',
+    'application/vnd.ms-excel': '.',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+    'application/vnd.oasis.opendocument.text': '.odt',
+    'text/html,application/xhtml+xml,application/xml': '.html',  # Misunderstood 'Accept' header?
+    'application/vnd.php.serialized': '.php',
+    'application/x-bibtex': '.bib',  # I think
+    'application/x-font-woff': '.woff',
+    'application/x-gzip': '.gz',
+    'application/x-javascript': '.js',
+    'application/x-mobipocket-ebook': '.mobi',
+    'application/x-msi': '.msi',
+    'application/x-research-info-systems': '.ris',
+    'application/x-rss+xml': '.rss',
+    'application/x-shockwave-flash': '.swf',
+    'application/x-tar': '.tar.gz',  # Tarballs aren't official IANA types
+    'application/xhtml+xml': '.xhtml',
+    'application/xml': '.xml',
+    'application/zip': '.zip',
+    'audio/mpeg': '.mp3',
+    'font/woff': '.woff', 'font/woff2': '.woff2',
+    'html': '.html',  # Incorrect
+    'image/gif': '.gif',
+    'image/jpeg': '.jpeg',
+    'image/jpg': '.jpg',
+    'image/png': '.png',
+    'image/svg+xml': '.svg',
+    'image/tiff': '.tif',
+    'image/vnd.djvu': '.djvu',
+    'image/vnd.microsoft.icon': '.ico',
+    'image/webp': '.webp',
+    'image/x-icon': '.ico',
+    'image/x-ms-bmp': '.bmp',
+    'text/calendar': '.ics',
+    'text/css': '.css',
+    'text/html': '.html',
+    'text/javascript': '.js',
+    'text/n3': '.n3',
+    'text/plain': '.txt',
+    'text/turtle': '.ttl',
+    'text/vtt': '.vtt',
+    'text/vnd.wap.wml': '.xml',  # or .wml
+    'text/x-c': '.c',
+    'text/xml': '.xml',  # Incorrect
+    'video/mp4': '.mp4',
+    'video/webm': '.webp',
+    'vnd.ms-fontobject': '.eot',  # Incorrect
 }
 
-#Error log location
+# Error log location
 ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
 ERR_LOG_FILE_NAME = 'logs/spidy_error_log_{0}.txt'.format(START_TIME)
 
-#User-Agent Header Strings
+# User-Agent Header Strings
 HEADERS = {
-'spidy': {
-    'User-Agent': 'spidy Web Crawler (Mozilla/5.0; bot; +https://github.com/rivermont/spidy/)',
-    'Accept-Language': 'en_US, en-US, en',
-    'Accept-Encoding': 'gzip',
-    'Connection': 'keep-alive'
+    'spidy': {
+        'User-Agent': 'spidy Web Crawler (Mozilla/5.0; bot; +https://github.com/rivermont/spidy/)',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
     },
-'Chrome': {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
-    'Accept-Language': 'en_US, en-US, en',
-    'Accept-Encoding': 'gzip',
-    'Connection': 'keep-alive'
+    'Chrome': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
     },
-# 'Firefox': {
+    # 'Firefox': {
     # 'User-Agent': '?'
     # 'Accept-Language': 'en_US, en-US, en',
     # 'Accept-Encoding': 'gzip',
     # 'Connection': 'keep-alive'
     # }
-'IE': {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
-    'Accept-Language': 'en_US, en-US, en',
-    'Accept-Encoding': 'gzip',
-    'Connection': 'keep-alive'
+    'IE': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
     },
-'Edge': {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-    'Accept-Language': 'en_US, en-US, en',
-    'Accept-Encoding': 'gzip',
-    'Connection': 'keep-alive'
+    'Edge': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
     }
 }
 
 KILL_LIST = [
-#Pages that are known to cause problems with the crawler in some way
-'scores.usaultimate.org/',
-'w3.org',
-'web.archive.org/web/'
+    # Pages that are known to cause problems with the crawler in some way
+    'scores.usaultimate.org/',
+    'w3.org',
+    'web.archive.org/web/'
 ]
 
-#Empty set for error-causing links
+# Empty set for error-causing links
 BAD_LINKS = set([])
 
-#Line to print at the end of each logFile log
+# Line to print at the end of each logFile log
 LOG_END = '\n======END======'
 
-#Counter variables
+# Counter variables
 COUNTER = 0
 NEW_ERROR_COUNT = 0
 KNOWN_ERROR_COUNT = 0
 HTTP_ERROR_COUNT = 0
 NEW_MIME_COUNT = 0
 
-#Empty set for word scraping
+# Empty set for word scraping
 WORDS = set([])
 
-#Getting arguments
+# Getting arguments
 
 yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
 no = ['n', 'no', 'N', 'No', 'False', 'false']
@@ -444,26 +471,26 @@ try:
     GET_ARGS = False
 except FileNotFoundError:
     LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
-    raise FileNotFoundError ('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+    raise FileNotFoundError('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
 except IndexError:
     GET_ARGS = True
 
 if GET_ARGS:
     print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
-    if not bool(INPUT): #Use default value
+    if not bool(INPUT):  # Use default value
         OVERWRITE = False
-    elif INPUT in yes: #Yes
+    elif INPUT in yes:  # Yes
         OVERWRITE = False
-    elif INPUT in no: #No
+    elif INPUT in no:  # No
         OVERWRITE = True
-    else: #Invalid input
+    else:  # Invalid input
         LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
     if not bool(INPUT):
@@ -475,7 +502,7 @@ if GET_ARGS:
     else:
         LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
     if not bool(INPUT):
@@ -487,7 +514,7 @@ if GET_ARGS:
     else:
         LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
+
     if SAVE_PAGES:
         INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
         LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
@@ -502,7 +529,7 @@ if GET_ARGS:
             raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
     else:
         ZIP_FILES = False
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
     if not bool(INPUT):
@@ -514,7 +541,7 @@ if GET_ARGS:
     else:
         LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
     if not bool(INPUT):
@@ -524,22 +551,22 @@ if GET_ARGS:
             HEADER = HEADERS[INPUT]
         except KeyError:
             LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
-            raise KeyError ('[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
-    
+            raise KeyError('[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
+
     INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
     if not bool(INPUT):
         TODO_FILE = 'crawler_todo.txt'
     else:
         TODO_FILE = INPUT
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
     if not bool(INPUT):
         DONE_FILE = 'crawler_done.txt'
     else:
         DONE_FILE = INPUT
-    
+
     if SAVE_WORDS:
         INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
         LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
@@ -549,14 +576,14 @@ if GET_ARGS:
             WORD_FILE = INPUT
     else:
         WORD_FILE = 'None'
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
     if not bool(INPUT):
         BAD_FILE = 'crawler_bad.txt'
     else:
         BAD_FILE = INPUT
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
     if not bool(INPUT):
@@ -566,7 +593,7 @@ if GET_ARGS:
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
     else:
         SAVE_COUNT = int(INPUT)
-    
+
     if not RAISE_ERRORS:
         INPUT = input('[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
         LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
@@ -579,7 +606,7 @@ if GET_ARGS:
             MAX_NEW_ERRORS = int(INPUT)
     else:
         MAX_NEW_ERRORS = 1
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
     if not bool(INPUT):
@@ -589,7 +616,7 @@ if GET_ARGS:
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
     else:
         MAX_KNOWN_ERRORS = int(INPUT)
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
     if not bool(INPUT):
@@ -599,7 +626,7 @@ if GET_ARGS:
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
     else:
         MAX_HTTP_ERRORS = int(INPUT)
-    
+
     INPUT = input('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
     LOG_FILE.write('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
     if not bool(INPUT):
@@ -609,11 +636,11 @@ if GET_ARGS:
         raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
     else:
         MAX_NEW_MIMES = int(INPUT)
-    
-    #Remove INPUT variable from memory
+
+    # Remove INPUT variable from memory
     del INPUT
 
-#Import saved TODO file data
+# Import saved TODO file data
 if OVERWRITE:
     print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
@@ -625,18 +652,19 @@ else:
     with open(TODO_FILE, 'r') as f:
         contents = f.readlines()
     TODO = [x.strip() for x in contents]
-    #Import saved done file data
+    # Import saved done file data
     with open(DONE_FILE, 'r') as f:
         contents = f.readlines()
     DONE = [x.strip() for x in contents]
     del contents
-    
-    #If TODO list is empty, add default starting pages
+
+    # If TODO list is empty, add default starting pages
     if len(TODO) == 0:
         TODO += START
 
+
 def main():
-    #Declare global variables
+    # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
     global HEADER, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
@@ -645,25 +673,25 @@ def main():
     global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
     global WORDS, TODO, DONE
-    
+
     print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
     log('LOG: Successfully started crawler.')
     LOG_FILE.write('\n[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
-    
+
     print('[{0}] [spidy] [INFO]: TODO first value: {1}'.format(get_time(), TODO[0]))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: TODO first value: {1}'.format(get_time(), TODO[0]))
-    
+
     print('[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADER))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADER))
-    
-    while len(TODO) != 0: #While there are links to check
+
+    while len(TODO) != 0:  # While there are links to check
         try:
-            if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES: #If too many errors have occurred
+            if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
                 print('[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
                 save_files(WORDS)
                 sys.exit()
-            elif COUNTER >= SAVE_COUNT: #If it's time for an autosave
+            elif COUNTER >= SAVE_COUNT:  # If it's time for an autosave
                 try:
                     print('[{0}] [spidy] [INFO]: Queried {1} links.'.format(get_time(), str(COUNTER)))
                     LOG_FILE.write('\n[{0}] [spidy] [INFO]: Queried {1} links.'.format(get_time(), str(COUNTER)))
@@ -672,54 +700,55 @@ def main():
                     LOG_FILE.write('\n[{0}] [spidy] [INFO]: Saving files...'.format(get_time()))
                     save_files(WORDS)
                     if ZIP_FILES:
-                        zip(t.time(), 'saved/')
+                        zip_files(t.time(), 'saved/')
                 finally:
-                    #Reset variables
+                    # Reset variables
                     COUNTER = 0
                     WORDS.clear()
                     BAD_LINKS.clear()
-            elif check_link(TODO[0]): #If the link is invalid
+            elif check_link(TODO[0]):  # If the link is invalid
                 del TODO[0]
-            #Run
+            # Run
             else:
-                page = requests.get(TODO[0], headers=HEADER) #Get page
+                page = requests.get(TODO[0], headers=HEADER)  # Get page
                 if SAVE_WORDS:
-                    wordList = make_words(page) #Get all words from page
-                    WORDS.update(wordList) #Add words to word list
+                    word_list = make_words(page)  # Get all words from page
+                    WORDS.update(word_list)  # Add words to word list
                 try:
                     links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
                 except (etree.XMLSyntaxError, etree.ParserError):
                     pass
-                links = list(set(links)) #Remove duplicates and shuffle links
+                links = list(set(links))  # Remove duplicates and shuffle links
                 links = [link for link in links if not check_link(link)]
-                TODO += links #Add scraped links to the TODO list
-                DONE.append(TODO[0]) #Add crawled link to done list
+                TODO += links  # Add scraped links to the TODO list
+                DONE.append(TODO[0])  # Add crawled link to done list
                 if SAVE_PAGES:
                     save_page(TODO[0], page)
                 if SAVE_WORDS:
-                    print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0])) #Announce which link was crawled
-                    LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(wordList), len(links), TODO[0]))
+                    print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(word_list), len(links), TODO[0]))  # Announce which link was crawled
+                    LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(),len(word_list),len(links),TODO[0]))
                 else:
-                    print('[{0}] [spidy] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), TODO[0])) #Announce which link was crawled
+                    print('[{0}] [spidy] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), TODO[
+                        0]))  # Announce which link was crawled
                     LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), TODO[0]))
-                del TODO[0]#Remove crawled link from TODO list
+                del TODO[0]  # Remove crawled link from TODO list
                 COUNTER += 1
-        
-        #ERROR HANDLING
-        except KeyboardInterrupt: #If the user does ^C
-            handle_KeyboardInterrupt()
-        
+
+        # ERROR HANDLING
+        except KeyboardInterrupt:  # If the user does ^C
+            handle_keyboard_interrupt()
+
         except Exception as e:
             link = TODO[0].encode('utf-8', 'ignore')
             err_print(link)
             errMRO = type(e).mro()
-            
-            #HTTP Errors
+
+            # HTTP Errors
             if str(e) == 'HTTP Error 403: Forbidden':
                 print('[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
                 BAD_LINKS.add(link)
-            
+
             elif str(e) == 'HTTP Error 429: Too Many Requests':
                 if 'reddit.com' in TODO[0]:
                     print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests - thanks reddit!'.format(get_time()))
@@ -727,60 +756,60 @@ def main():
                 else:
                     print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
                     LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
-                TODO += TODO[0] #Move link to end of TODO list
-            
-            elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO: #Error processing html/xml
+                TODO += TODO[0]  # Move link to end of TODO list
+
+            elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO:  # Error processing html/xml
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+                print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(                    get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
                 err_log(link, 'XMLSyntaxError', e)
-            
-            elif UnicodeError in errMRO: #Error trying to convert foreign characters to Unicode
+
+            elif UnicodeError in errMRO:  # Error trying to convert foreign characters to Unicode
                 KNOWN_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
                 err_log(link, 'UnicodeError', e)
-            
-            elif requests.exceptions.SSLError in errMRO: #Invalid SSL certificate
+
+            elif requests.exceptions.SSLError in errMRO:  # Invalid SSL certificate
                 KNOWN_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
                 err_log(link, 'SSLError', e)
                 BAD_LINKS.add(link)
-            
-            elif requests.exceptions.ConnectionError in errMRO: #Error connecting to page
+
+            elif requests.exceptions.ConnectionError in errMRO:  # Error connecting to page
                 KNOWN_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
                 err_log(link, 'ConnectionError', e)
-            
-            elif requests.exceptions.TooManyRedirects in errMRO: #Exceeded 30 redirects.
+
+            elif requests.exceptions.TooManyRedirects in errMRO:  # Exceeded 30 redirects.
                 KNOWN_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
                 err_log(link, 'TooManyRedirects', e)
                 BAD_LINKS.add(link)
-            
-            elif requests.exceptions.ContentDecodingError in errMRO: #Received response with content-encoding: gzip, but failed to decode it.
+
+            elif requests.exceptions.ContentDecodingError in errMRO:  # Received response with content-encoding: gzip, but failed to decode it.
                 KNOWN_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
                 err_log(link, 'ContentDecodingError', e)
-            
+
             elif OSError in errMRO:
                 KNOWN_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
                 err_log(link, 'OSError', e)
                 BAD_LINKS.add(link)
-            
+
             elif 'Unknown MIME type' in str(e):
                 NEW_MIME_COUNT += 1
                 print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), str(e)[18:]))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), str(e)[18:]))
                 err_log(link, 'Unknown MIME', e)
-            
-            else: #Any other error
+
+            else:  # Any other error
                 NEW_ERROR_COUNT += 1
                 print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
                 LOG_FILE.write('\n[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
@@ -791,23 +820,24 @@ def main():
                     raise e
                 else:
                     continue
-            
+
             err_saved_message()
             del TODO[0]
             COUNTER += 1
         finally:
             try:
-                TODO = list(set(TODO)) #Removes duplicates and shuffles links so trees don't form.
-                #For debugging purposes; to check one link and then stop:
+                TODO = list(set(TODO))  # Removes duplicates and shuffles links so trees don't form.
+                # For debugging purposes; to check one link and then stop:
                 # save_files(WORDS)
                 # sys.exit()
             except KeyboardInterrupt:
-                handle_KeyboardInterrupt()
-    
+                handle_keyboard_interrupt()
+
     print('[{0}] [spidy] [INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
     save_files(WORDS)
     LOG_FILE.close()
+
 
 if __name__ == '__main__':
     main()
