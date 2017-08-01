@@ -321,10 +321,7 @@ def pause():
 
 #called when r key is pressed
 def restart():
-    save_files()
-    print('\r[RESTART]\n[RESTART]\n[RESTART]: Restarting crawl . . .\n[RESTART]\n[RESTART]\n[RESTART]')
-    #calls start to completely start over
-    start()
+    
 
 #used to draw keyboard commmands to the bottom of the command prompt
 #0-4 for size of done, size of todo, words in text, total errors, unknown errors
