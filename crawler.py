@@ -519,35 +519,8 @@ def init():
             path = 'config/' + input() + '.cfg'
     
     if GET_ARGS:
-	write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
-
-	write_log('[INIT]: Should spidy use all of the default values? (y/n)')
-	INPUT = input()  # INPUT will be reused for each option and deleted after
-	if not bool(INPUT):  # Use default values
-		OVERWRITE = False
-		RAISE_ERRORS = False
-		SAVE_PAGES = True
-		ZIP_FILES = False
-		SAVE_WORDS = True
-		HEADER = HEADERS['spidy']
-		TODO_FILE = 'crawler_todo.txt'
-		DONE_FILE = 'crawler_done.txt'
-		WORD_FILE = 'crawler_words.txt'
-		BAD_FILE = 'crawler_bad.txt'
-		SAVE_COUNT = 100
-		MAX_NEW_ERRORS = 5
-		MAX_KNOWN_ERRORS = 20
-		MAX_HTTP_ERRORS = 50
-		MAX_NEW_MIMES = 10
-	elif INPUT in yes:
-		# Set default values
-		pass
-	elif INPUT in no:
-		pass
-	else:
-		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-
+        write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
+    
         INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
         LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
         if not bool(INPUT):  # Use default value
@@ -741,6 +714,19 @@ def main():
     write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
     while len(TODO) != 0:  # While there are links to check
+        #tests for key press
+        if msvcrt.kbhit():
+            key = msvcrt.getch()
+    
+            #updates log if u is pressed
+            if key == b'u':
+                update()
+            elif key == b's':
+                info_log()
+            elif key == b'p':
+                pause()
+            elif key == b'r':
+                restart()
         try:
             if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
                 write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
