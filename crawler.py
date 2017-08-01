@@ -17,8 +17,6 @@ START_TIME = int(t.time())
 
 def get_time():
     return t.strftime('%H:%M:%S')
-
-
 START_TIME_LONG = get_time()
 
 
@@ -35,14 +33,22 @@ CRAWLER_DIR = path.dirname(path.realpath(__file__))
 LOG_FILE = open('{0}/logs/spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+')
 LOG_FILE_NAME = 'logs/spidy_log_{0}'.format(START_TIME)
 
-print('[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
-LOG_FILE.write('\n[{0}] [spidy] [INIT]: Starting spidy Web Crawler version {1}'.format(get_time(), VERSION))
 
-print('[{0}] [spidy] [INIT]: Importing required libraries...'.format(get_time()))
-LOG_FILE.write('\n[{0}] [spidy] [INIT]: Importing required libraries...'.format(get_time()))
+def write_log(message):
+    '''
+    Writes message to both the console and the log file.
+    NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
+    '''
+    message = '[{0}] [spidy] '.format(get_time()) + message
+    print(message)
+    LOG_FILE.write('\n' + message)
+
+write_log('[INIT]: Starting spidy Web Crawler version {0}'.format(VERSION))
+write_log('[INIT]: Importing required libraries...')
 
 # Import required libraries
 import requests
+import shutil
 import sys
 from lxml import html, etree
 from os import makedirs
@@ -51,8 +57,7 @@ from os import makedirs
 # CLASSES #
 ###########
 
-print('[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
-LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating classes...'.format(get_time()))
+write_log('[INIT]: Creating classes...')
 
 
 class HeaderError(Exception):
@@ -66,8 +71,7 @@ class HeaderError(Exception):
 # FUNCTIONS #
 #############
 
-print('[{0}] [spidy] [INIT]: Creating functions...'.format(get_time()))
-LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating functions...'.format(get_time()))
+write_log('[INIT]: Creating functions...')
 
 
 def check_link(item):
@@ -141,8 +145,7 @@ def save_files(word_list):
                 todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
                 continue
-    print('[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), TODO_FILE))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved TODO list to {1}'.format(get_time(), TODO_FILE))
+    write_log('[LOG]: Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w') as done_list:
         for site in DONE:
@@ -150,8 +153,7 @@ def save_files(word_list):
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
                 continue
-    print('[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved done list to {1}'.format(get_time(), DONE_FILE))
+    write_log('[LOG]: Saved done list to {0}'.format(DONE_FILE))
 
     if SAVE_WORDS:
         update_file(WORD_FILE, word_list, 'words')
@@ -223,8 +225,7 @@ def update_file(file, content, filetype):
         for item in content:
             f.write('\n' + str(item))  # Write all words to file
         f.truncate()  # Delete everything in file beyond what has been written (old stuff)
-    print('[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), filetype, file))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved {1} {2} to {3}'.format(get_time(), len(content), filetype, file))
+    write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), filetype, file))
 
 
 def info_log():
@@ -232,33 +233,21 @@ def info_log():
     Logs important information to the console and log file.
     '''
     # Print to console
-    print('[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
-    print('[{0}] [spidy] [INFO]: Log location: {1}'.format(get_time(), LOG_FILE_NAME))
-    print('[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
-    print('[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
-    print('[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
-    print('[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-    print('[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-    print('[{0}] [spidy] [INFO]: {1}/{2} new MIMEs found.'.format(get_time(), NEW_MIME_COUNT, MAX_NEW_MIMES))
-    print('[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
-
-    # Print to log file
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Started at {1}.'.format(get_time(), START_TIME_LONG))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Log location: {1}'.format(get_time(), LOG_FILE_NAME))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Error log location: {1}'.format(get_time(), ERR_LOG_FILE_NAME))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in TODO.'.format(get_time(), len(TODO)))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1} links in done.'.format(get_time(), len(DONE)))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new errors caught.'.format(get_time(), NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} HTTP errors encountered.'.format(get_time(), HTTP_ERROR_COUNT,
-                                                                                     MAX_HTTP_ERRORS))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} new MIMEs found.'.format(get_time(), NEW_MIME_COUNT, MAX_NEW_MIMES))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: {1}/{2} known errors caught.'.format(get_time(), KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+    write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
+    write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
+    write_log('[INFO]: Error log location: {0}'.format(ERR_LOG_FILE_NAME))
+    write_log('[INFO]: {0} links in TODO.'.format(len(TODO)))
+    write_log('[INFO]: {0} links in done.'.format(len(DONE)))
+    write_log('[INFO]: {0}/{1} new errors caught.'.format(NEW_ERROR_COUNT, MAX_NEW_ERRORS))
+    write_log('[INFO]: {0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
+    write_log('[INFO]: {0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT, MAX_NEW_MIMES))
+    write_log('[INFO]: {0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
 
 
 def log(message):
     '''
-    Logs a single message to the logFile.
-    Prints message verbatim, so message must be formatted correctly outside of the function call.
+    Logs a single message to the error log file.
+    Prints message verbatim, so message must be formatted correctly in the function call.
     '''
     with open(ERR_LOG_FILE, 'a') as log:
         log.write('\n\n======LOG======')  # Write opening line
@@ -268,28 +257,11 @@ def log(message):
 
 
 def handle_keyboard_interrupt():
-    print('[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [ERR]: User performed a KeyboardInterrupt, stopping crawler...'.format(get_time()))
+    write_log('[ERR]: User performed a KeyboardInterrupt, stopping crawler...')
     log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
     save_files(WORDS)
     LOG_FILE.close()
     sys.exit()
-
-
-def err_print(item):
-    '''
-    Announce that an error occurred.
-    '''
-    print('[{0}] [spidy] [INFO]: An error was raised trying to process {1}'.format(get_time(), item))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: An error was raised trying to process {1}'.format(get_time(), item))
-
-
-def err_saved_message():
-    '''
-    Announce that error was successfully saved to log.
-    '''
-    print('[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Saved error message and timestamp to error log file.'.format(get_time()))
 
 
 def err_log(url, error1, error2):
@@ -305,23 +277,21 @@ def err_log(url, error1, error2):
         work_log.write(LOG_END)  # Write closing line
 
 
-def zip_files(out_file_name, dir):
+def zip_files(out_file_name, directory):
     '''
-    Creates a .zip file in the current directory containing all contents of dir, then deletes dir.
+    Creates a .zip file in the current directory containing all contents of dir, then empties.
     '''
-    shutil.make_archive(str(out_file_name), 'zip', dir)  # Zips files
-    shutil.rmtree(dir)  # Deletes folder
-    makedirs(dir[:-1])  # Creates empty folder of same name (minus the '/')
-    print('[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_file_name))
-    LOG_FILE.write('\n[{0}] [spidy] [LOG]: Zipped documents to {1}.zip'.format(get_time(), out_file_name))
+    shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
+    shutil.rmtree(directory)  # Deletes folder
+    makedirs(directory[:-1])  # Creates empty folder of same name (minus the '/')
+    write_log('[LOG]: Zipped documents to {0}.zip'.format(out_file_name))
 
 
 ########
 # INIT #
 ########
 
-print('[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
-LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating variables...'.format(get_time()))
+write_log('[INIT]: Creating variables...')
 
 # Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
 # Added by hand after being found by the crawler to reduce lookup times.
@@ -440,6 +410,9 @@ KILL_LIST = [
     'web.archive.org/web/'
 ]
 
+# Links to start crawling if the TODO list is empty
+START = ['https://en.wikipedia.org/wiki/Main_Page']
+
 # Empty set for error-causing links
 BAD_LINKS = set([])
 
@@ -463,8 +436,7 @@ no = ['n', 'no', 'N', 'No', 'False', 'false']
 
 try:
     path = 'config/' + sys.argv[1] + '.cfg'
-    print('[{0}] [spidy] [INFO]: Using configuration settings from {1}'.format(get_time(), path))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Using configuration settings from {1}'.format(get_time(), path))
+    write_log('[INFO]: Using configuration settings from {0}'.format(path))
     with open(path, 'r') as f:
         for line in f:
             exec(line)
@@ -476,8 +448,7 @@ except IndexError:
     GET_ARGS = True
 
 if GET_ARGS:
-    print('[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [INIT]: Please enter the following arguments. Leave blank to use the default values.'.format(get_time()))
+    write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
 
     INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
     LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
@@ -642,13 +613,11 @@ if GET_ARGS:
 
 # Import saved TODO file data
 if OVERWRITE:
-    print('[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [INIT]: Creating save files...'.format(get_time()))
+    write_log('[INIT]: Creating save files...')
     TODO = START
     DONE = []
 else:
-    print('[{0}] [spidy] [INIT]: Loading save files...'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [INIT]: Loading save files...'.format(get_time()))
+    write_log('[INIT]: Loading save files...')
     with open(TODO_FILE, 'r') as f:
         contents = f.readlines()
     TODO = [x.strip() for x in contents]
@@ -674,30 +643,24 @@ def main():
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
     global WORDS, TODO, DONE
 
-    print('[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
+    write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
     log('LOG: Successfully started crawler.')
-    LOG_FILE.write('\n[{0}] [spidy] [INIT]: Successfully started spidy Web Crawler version {1}...'.format(get_time(), VERSION))
 
-    print('[{0}] [spidy] [INFO]: TODO first value: {1}'.format(get_time(), TODO[0]))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: TODO first value: {1}'.format(get_time(), TODO[0]))
+    write_log('[INFO]: TODO first value: {0}'.format(TODO[0]))
 
-    print('[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADER))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Using headers: {1}'.format(get_time(), HEADER))
+    write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
     while len(TODO) != 0:  # While there are links to check
         try:
             if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
-                print('[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [INFO]: Too many errors have accumulated, stopping crawler.'.format(get_time()))
+                write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
                 save_files(WORDS)
                 sys.exit()
             elif COUNTER >= SAVE_COUNT:  # If it's time for an autosave
                 try:
-                    print('[{0}] [spidy] [INFO]: Queried {1} links.'.format(get_time(), str(COUNTER)))
-                    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Queried {1} links.'.format(get_time(), str(COUNTER)))
+                    write_log('[INFO]: Queried {0} links.'.format(str(COUNTER)))
                     info_log()
-                    print('[{0}] [spidy] [INFO]: Saving files...'.format(get_time()))
-                    LOG_FILE.write('\n[{0}] [spidy] [INFO]: Saving files...'.format(get_time()))
+                    write_log('[INFO]: Saving files...')
                     save_files(WORDS)
                     if ZIP_FILES:
                         zip_files(t.time(), 'saved/')
@@ -717,7 +680,7 @@ def main():
                 try:
                     links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
                 except (etree.XMLSyntaxError, etree.ParserError):
-                    pass
+                    links = []
                 links = list(set(links))  # Remove duplicates and shuffle links
                 links = [link for link in links if not check_link(link)]
                 TODO += links  # Add scraped links to the TODO list
@@ -725,12 +688,11 @@ def main():
                 if SAVE_PAGES:
                     save_page(TODO[0], page)
                 if SAVE_WORDS:
-                    print('[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(), len(word_list), len(links), TODO[0]))  # Announce which link was crawled
-                    LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links and {2} words on {3}'.format(get_time(),len(word_list),len(links),TODO[0]))
+                    # Announce which link was crawled
+                    write_log('[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), TODO[0]))
                 else:
-                    print('[{0}] [spidy] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), TODO[
-                        0]))  # Announce which link was crawled
-                    LOG_FILE.write('\n[{0}] [spidy] [CRAWL]: Found {1} links on {2}'.format(get_time(), len(links), TODO[0]))
+                    # Announce which link was crawled
+                    write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), TODO[0]))
                 del TODO[0]  # Remove crawled link from TODO list
                 COUNTER += 1
 
@@ -740,79 +702,65 @@ def main():
 
         except Exception as e:
             link = TODO[0].encode('utf-8', 'ignore')
-            err_print(link)
-            errMRO = type(e).mro()
+            write_log('[INFO]: An error was raised trying to process {0}'.format(link))
+            err_mro = type(e).mro()
 
             # HTTP Errors
             if str(e) == 'HTTP Error 403: Forbidden':
-                print('[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 403: Access Forbidden'.format(get_time()))
+                write_log('[ERR]: HTTP 403: Access Forbidden.')
                 BAD_LINKS.add(link)
 
             elif str(e) == 'HTTP Error 429: Too Many Requests':
-                if 'reddit.com' in TODO[0]:
-                    print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests - thanks reddit!'.format(get_time()))
-                    LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests - thanks reddit!'.format(get_time()))
-                else:
-                    print('[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
-                    LOG_FILE.write('\n[{0}] [spidy] [ERR]: HTTP 429: Too Many Requests.'.format(get_time()))
+                write_log('[ERR]: HTTP 429: Too Many Requests.')
                 TODO += TODO[0]  # Move link to end of TODO list
 
-            elif etree.XMLSyntaxError in errMRO or etree.ParserError in errMRO:  # Error processing html/xml
+            elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(                    get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: An XMLSyntaxError occured. A web dev screwed up somewhere.'.format(get_time()))
+                write_log('[ERR]: An XMLSyntaxError occurred. A web dev screwed up somewhere.')
                 err_log(link, 'XMLSyntaxError', e)
 
-            elif UnicodeError in errMRO:  # Error trying to convert foreign characters to Unicode
+            elif UnicodeError in err_mro:  # Error trying to convert foreign characters to Unicode
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: A UnicodeError occurred. URL had a foreign character or something.'.format(get_time()))
+                write_log('[ERR]: A UnicodeError occurred. URL had a foreign character or something.')
                 err_log(link, 'UnicodeError', e)
 
-            elif requests.exceptions.SSLError in errMRO:  # Invalid SSL certificate
+            elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: An SSLError occured. Site is using an invalid certificate.'.format(get_time()))
+                write_log('[ERR]: An SSLError occurred. Site is using an invalid certificate.')
                 err_log(link, 'SSLError', e)
                 BAD_LINKS.add(link)
 
-            elif requests.exceptions.ConnectionError in errMRO:  # Error connecting to page
+            elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(get_time()))
+                write_log('[ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.')
                 err_log(link, 'ConnectionError', e)
 
-            elif requests.exceptions.TooManyRedirects in errMRO:  # Exceeded 30 redirects.
+            elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(get_time()))
+                write_log('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
                 err_log(link, 'TooManyRedirects', e)
                 BAD_LINKS.add(link)
 
-            elif requests.exceptions.ContentDecodingError in errMRO:  # Received response with content-encoding: gzip, but failed to decode it.
+            elif requests.exceptions.ContentDecodingError in err_mro:
+                # Received response with content-encoding: gzip, but failed to decode it.
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(get_time()))
+                write_log('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
                 err_log(link, 'ContentDecodingError', e)
 
-            elif OSError in errMRO:
+            elif OSError in err_mro:
                 KNOWN_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: An OSError occurred.'.format(get_time()))
+                write_log('[ERR]: An OSError occurred.')
                 err_log(link, 'OSError', e)
                 BAD_LINKS.add(link)
 
             elif 'Unknown MIME type' in str(e):
                 NEW_MIME_COUNT += 1
-                print('[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), str(e)[18:]))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: Unkonwn MIME type: {1}'.format(get_time(), str(e)[18:]))
+                write_log('[ERR]: Unknown MIME type: {0}'.format(str(e)[18:]))
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
                 NEW_ERROR_COUNT += 1
-                print('[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: An unknown error happened. New debugging material!'.format(get_time()))
+                write_log('[ERR]: An unknown error happened. New debugging material!')
                 err_log(link, 'Unknown', e)
                 if RAISE_ERRORS:
                     LOG_FILE.close()
@@ -821,7 +769,7 @@ def main():
                 else:
                     continue
 
-            err_saved_message()
+            write_log('[LOG]: Saved error message and timestamp to error log file.')
             del TODO[0]
             COUNTER += 1
         finally:
@@ -833,8 +781,7 @@ def main():
             except KeyboardInterrupt:
                 handle_keyboard_interrupt()
 
-    print('[{0}] [spidy] [INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...'.format(get_time()))
+    write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
     save_files(WORDS)
     LOG_FILE.close()
 
@@ -842,5 +789,4 @@ def main():
 if __name__ == '__main__':
     main()
 else:
-    print('[{0}] [spidy] [INIT]: Successfully imported spidy Web Crawler.'.format(get_time()))
-    LOG_FILE.write('\n[{0}] [spidy] [INIT]: Successfully imported spidy Web Crawler.'.format(get_time()))
+    write_log('[INIT]: Successfully imported spidy Web Crawler.')
