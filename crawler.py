@@ -346,8 +346,356 @@ def info():
 ########
 # INIT #
 ########
-init()
-def init():
+
+
+write_log('[INIT]: Creating variables...')
+
+# Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
+# Added by hand after being found by the crawler to reduce lookup times.
+MIME_TYPES = {
+    'application/atom+xml': '.atom',
+    'application/epub+zip': '.epub',
+    'application/font-woff': '.woff',
+    'application/font-woff2': '.woff2',
+    'application/java-archive': '.jar',
+    'application/javascript': '.js',
+    'application/json': '.json',
+    'application/js': '.js',  # Should be application/javascript
+    'application/marcxml+xml': '.mrcx',
+    'application/msword': '.doc',
+    'application/gzip': '.gz',
+    'application/n-triples': '.nt',
+    'application/octet-stream': '.exe',  # Sometimes .bin
+    'application/ogg': '.ogx',
+    'application/opensearchdescription+xml': '.osdx',
+    'application/pdf': '.pdf',
+    'application/rdf+xml': '.rdf',
+    'application/rsd+xml': '.rsd',
+    'application/rss+xml': '.rss',
+    'application/vnd.ms-cab-compressed': '.cab',
+    'application/vnd.ms-fontobject': '.eot',
+    'application/vnd.ms-excel': '.',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+    'application/vnd.oasis.opendocument.text': '.odt',
+    'text/html,application/xhtml+xml,application/xml': '.html',  # Misunderstood 'Accept' header?
+    'application/vnd.php.serialized': '.php',
+    'application/x-bibtex': '.bib',  # I think
+    'application/x-font-woff': '.woff',
+    'application/x-gzip': '.gz',
+    'application/x-javascript': '.js',
+    'application/x-mobipocket-ebook': '.mobi',
+    'application/x-msi': '.msi',
+    'application/x-research-info-systems': '.ris',
+    'application/x-rss+xml': '.rss',
+    'application/x-shockwave-flash': '.swf',
+    'application/x-tar': '.tar.gz',  # Tarballs aren't official IANA types
+    'application/xhtml+xml': '.xhtml',
+    'application/xml': '.xml',
+    'application/zip': '.zip',
+    'audio/mpeg': '.mp3',
+    'font/woff': '.woff', 'font/woff2': '.woff2',
+    'html': '.html',  # Incorrect
+    'image/gif': '.gif',
+    'image/jpeg': '.jpeg',
+    'image/jpg': '.jpg',
+    'image/png': '.png',
+    'image/svg+xml': '.svg',
+    'image/tiff': '.tif',
+    'image/vnd.djvu': '.djvu',
+    'image/vnd.microsoft.icon': '.ico',
+    'image/webp': '.webp',
+    'image/x-icon': '.ico',
+    'image/x-ms-bmp': '.bmp',
+    'text/calendar': '.ics',
+    'text/css': '.css',
+    'text/html': '.html',
+    'text/javascript': '.js',
+    'text/n3': '.n3',
+    'text/plain': '.txt',
+    'text/turtle': '.ttl',
+    'text/vtt': '.vtt',
+    'text/vnd.wap.wml': '.xml',  # or .wml
+    'text/x-c': '.c',
+    'text/xml': '.xml',  # Incorrect
+    'video/mp4': '.mp4',
+    'video/webm': '.webp',
+    'vnd.ms-fontobject': '.eot',  # Incorrect
+}
+
+# Error log location
+ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
+ERR_LOG_FILE_NAME = 'logs/spidy_error_log_{0}.txt'.format(START_TIME)
+
+# User-Agent Header Strings
+HEADERS = {
+    'spidy': {
+        'User-Agent': 'spidy Web Crawler (Mozilla/5.0; bot; +https://github.com/rivermont/spidy/)',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
+    },
+    'Chrome': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
+    },
+    # 'Firefox': {
+    # 'User-Agent': '?'
+    # 'Accept-Language': 'en_US, en-US, en',
+    # 'Accept-Encoding': 'gzip',
+    # 'Connection': 'keep-alive'
+    # }
+    'IE': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
+    },
+    'Edge': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+        'Accept-Language': 'en_US, en-US, en',
+        'Accept-Encoding': 'gzip',
+        'Connection': 'keep-alive'
+    }
+}
+
+KILL_LIST = [
+    # Pages that are known to cause problems with the crawler in some way
+    'scores.usaultimate.org/',
+    'w3.org',
+    'web.archive.org/web/'
+]
+
+# Links to start crawling if the TODO list is empty
+START = ['https://en.wikipedia.org/wiki/Main_Page']
+
+# Empty set for error-causing links
+BAD_LINKS = set([])
+
+# Line to print at the end of each logFile log
+LOG_END = '\n======END======'
+
+# Counter variables
+COUNTER = 0
+NEW_ERROR_COUNT = 0
+KNOWN_ERROR_COUNT = 0
+HTTP_ERROR_COUNT = 0
+NEW_MIME_COUNT = 0
+
+# Empty set for word scraping
+WORDS = set([])
+
+# Getting arguments
+
+yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
+no = ['n', 'no', 'N', 'No', 'False', 'false']
+valid = False
+path = 'config/' + sys.argv[1] + '.cfg'
+while(valid != True):
+    valid = True
+    try:
+        write_log('[INFO]: Using configuration settings from {0}'.format(path))
+        with open(path, 'r') as f:
+            for line in f:
+                exec(line)
+        GET_ARGS = False
+    except FileNotFoundError:
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+        print('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file. or enter nothing to enter info by hand'.format(get_time()))
+        valid = False
+    except IndexError:
+        GET_ARGS = True
+    if(valid==False):
+        path = 'config/' + input() + '.cfg'
+
+if GET_ARGS:
+    write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
+    if not bool(INPUT):  # Use default value
+        OVERWRITE = False
+    elif INPUT in yes:  # Yes
+        OVERWRITE = False
+    elif INPUT in no:  # No
+        OVERWRITE = True
+    else:  # Invalid input
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
+    if not bool(INPUT):
+        RAISE_ERRORS = False
+    elif INPUT in yes:
+        RAISE_ERRORS = True
+    elif INPUT in no:
+        RAISE_ERRORS = False
+    else:
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
+    if not bool(INPUT):
+        SAVE_PAGES = True
+    elif INPUT in yes:
+        SAVE_PAGES = True
+    elif INPUT in no:
+        SAVE_PAGES = False
+    else:
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+    if SAVE_PAGES:
+        INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
+        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
+        if not bool(INPUT):
+            ZIP_FILES = False
+        elif INPUT in yes:
+            ZIP_FILES = True
+        elif INPUT in no:
+            ZIP_FILES = False
+        else:
+            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+    else:
+        ZIP_FILES = False
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
+    if not bool(INPUT):
+        SAVE_WORDS = True
+    elif INPUT in yes:
+        SAVE_WORDS = True
+    elif INPUT in no:
+        SAVE_WORDS = False
+    else:
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
+
+    INPUT = input('[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
+    if not bool(INPUT):
+        HEADER = HEADERS['spidy']
+    else:
+        try:
+            HEADER = HEADERS[INPUT]
+        except KeyError:
+            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
+            raise KeyError('[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
+    if not bool(INPUT):
+        TODO_FILE = 'crawler_todo.txt'
+    else:
+        TODO_FILE = INPUT
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
+    if not bool(INPUT):
+        DONE_FILE = 'crawler_done.txt'
+    else:
+        DONE_FILE = INPUT
+
+    if SAVE_WORDS:
+        INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
+        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
+        if not bool(INPUT):
+            WORD_FILE = 'crawler_words.txt'
+        else:
+            WORD_FILE = INPUT
+    else:
+        WORD_FILE = 'None'
+
+    INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
+    if not bool(INPUT):
+        BAD_FILE = 'crawler_bad.txt'
+    else:
+        BAD_FILE = INPUT
+
+    INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
+    if not bool(INPUT):
+        SAVE_COUNT = 100
+    elif not INPUT.isdigit():
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+    else:
+        SAVE_COUNT = int(INPUT)
+
+    if not RAISE_ERRORS:
+        INPUT = input('[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
+        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
+        if not bool(INPUT):
+            MAX_NEW_ERRORS = 5
+        elif not INPUT.isdigit():
+            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+        else:
+            MAX_NEW_ERRORS = int(INPUT)
+    else:
+        MAX_NEW_ERRORS = 1
+
+    INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
+    if not bool(INPUT):
+        MAX_KNOWN_ERRORS = 20
+    elif not INPUT.isdigit():
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+    else:
+        MAX_KNOWN_ERRORS = int(INPUT)
+
+    INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
+    if not bool(INPUT):
+        MAX_HTTP_ERRORS = 50
+    elif not INPUT.isdigit():
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+    else:
+        MAX_HTTP_ERRORS = int(INPUT)
+
+    INPUT = input('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
+    LOG_FILE.write('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
+    if not bool(INPUT):
+        MAX_NEW_MIMES = 10
+    elif not INPUT.isdigit():
+        LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+        raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
+    else:
+        MAX_NEW_MIMES = int(INPUT)
+
+    # Remove INPUT variable from memory
+    del INPUT
+
+# Import saved TODO file data
+if OVERWRITE:
+    write_log('[INIT]: Creating save files...')
+    TODO = START
+    DONE = []
+else:
+    write_log('[INIT]: Loading save files...')
+    with open(TODO_FILE, 'r') as f:
+        contents = f.readlines()
+    TODO = [x.strip() for x in contents]
+    # Import saved done file data
+    with open(DONE_FILE, 'r') as f:
+        contents = f.readlines()
+    DONE = [x.strip() for x in contents]
+    del contents
+
+    # If TODO list is empty, add default starting pages
+    if len(TODO) == 0:
+        TODO += START
+    
+    DISPLAY = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed\n')
+
+def main():
     # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
@@ -357,355 +705,6 @@ def init():
     global OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT, DISPLAY
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
     global WORDS, TODO, DONE
-    write_log('[INIT]: Creating variables...')
-    
-    # Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
-    # Added by hand after being found by the crawler to reduce lookup times.
-    MIME_TYPES = {
-        'application/atom+xml': '.atom',
-        'application/epub+zip': '.epub',
-        'application/font-woff': '.woff',
-        'application/font-woff2': '.woff2',
-        'application/java-archive': '.jar',
-        'application/javascript': '.js',
-        'application/json': '.json',
-        'application/js': '.js',  # Should be application/javascript
-        'application/marcxml+xml': '.mrcx',
-        'application/msword': '.doc',
-        'application/gzip': '.gz',
-        'application/n-triples': '.nt',
-        'application/octet-stream': '.exe',  # Sometimes .bin
-        'application/ogg': '.ogx',
-        'application/opensearchdescription+xml': '.osdx',
-        'application/pdf': '.pdf',
-        'application/rdf+xml': '.rdf',
-        'application/rsd+xml': '.rsd',
-        'application/rss+xml': '.rss',
-        'application/vnd.ms-cab-compressed': '.cab',
-        'application/vnd.ms-fontobject': '.eot',
-        'application/vnd.ms-excel': '.',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
-        'application/vnd.oasis.opendocument.text': '.odt',
-        'text/html,application/xhtml+xml,application/xml': '.html',  # Misunderstood 'Accept' header?
-        'application/vnd.php.serialized': '.php',
-        'application/x-bibtex': '.bib',  # I think
-        'application/x-font-woff': '.woff',
-        'application/x-gzip': '.gz',
-        'application/x-javascript': '.js',
-        'application/x-mobipocket-ebook': '.mobi',
-        'application/x-msi': '.msi',
-        'application/x-research-info-systems': '.ris',
-        'application/x-rss+xml': '.rss',
-        'application/x-shockwave-flash': '.swf',
-        'application/x-tar': '.tar.gz',  # Tarballs aren't official IANA types
-        'application/xhtml+xml': '.xhtml',
-        'application/xml': '.xml',
-        'application/zip': '.zip',
-        'audio/mpeg': '.mp3',
-        'font/woff': '.woff', 'font/woff2': '.woff2',
-        'html': '.html',  # Incorrect
-        'image/gif': '.gif',
-        'image/jpeg': '.jpeg',
-        'image/jpg': '.jpg',
-        'image/png': '.png',
-        'image/svg+xml': '.svg',
-        'image/tiff': '.tif',
-        'image/vnd.djvu': '.djvu',
-        'image/vnd.microsoft.icon': '.ico',
-        'image/webp': '.webp',
-        'image/x-icon': '.ico',
-        'image/x-ms-bmp': '.bmp',
-        'text/calendar': '.ics',
-        'text/css': '.css',
-        'text/html': '.html',
-        'text/javascript': '.js',
-        'text/n3': '.n3',
-        'text/plain': '.txt',
-        'text/turtle': '.ttl',
-        'text/vtt': '.vtt',
-        'text/vnd.wap.wml': '.xml',  # or .wml
-        'text/x-c': '.c',
-        'text/xml': '.xml',  # Incorrect
-        'video/mp4': '.mp4',
-        'video/webm': '.webp',
-        'vnd.ms-fontobject': '.eot',  # Incorrect
-    }
-    
-    # Error log location
-    ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
-    ERR_LOG_FILE_NAME = 'logs/spidy_error_log_{0}.txt'.format(START_TIME)
-    
-    # User-Agent Header Strings
-    HEADERS = {
-        'spidy': {
-            'User-Agent': 'spidy Web Crawler (Mozilla/5.0; bot; +https://github.com/rivermont/spidy/)',
-            'Accept-Language': 'en_US, en-US, en',
-            'Accept-Encoding': 'gzip',
-            'Connection': 'keep-alive'
-        },
-        'Chrome': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
-            'Accept-Language': 'en_US, en-US, en',
-            'Accept-Encoding': 'gzip',
-            'Connection': 'keep-alive'
-        },
-        # 'Firefox': {
-        # 'User-Agent': '?'
-        # 'Accept-Language': 'en_US, en-US, en',
-        # 'Accept-Encoding': 'gzip',
-        # 'Connection': 'keep-alive'
-        # }
-        'IE': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
-            'Accept-Language': 'en_US, en-US, en',
-            'Accept-Encoding': 'gzip',
-            'Connection': 'keep-alive'
-        },
-        'Edge': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-            'Accept-Language': 'en_US, en-US, en',
-            'Accept-Encoding': 'gzip',
-            'Connection': 'keep-alive'
-        }
-    }
-    
-    KILL_LIST = [
-        # Pages that are known to cause problems with the crawler in some way
-        'scores.usaultimate.org/',
-        'w3.org',
-        'web.archive.org/web/'
-    ]
-    
-    # Links to start crawling if the TODO list is empty
-    START = ['https://en.wikipedia.org/wiki/Main_Page']
-    
-    # Empty set for error-causing links
-    BAD_LINKS = set([])
-    
-    # Line to print at the end of each logFile log
-    LOG_END = '\n======END======'
-    
-    # Counter variables
-    COUNTER = 0
-    NEW_ERROR_COUNT = 0
-    KNOWN_ERROR_COUNT = 0
-    HTTP_ERROR_COUNT = 0
-    NEW_MIME_COUNT = 0
-    
-    # Empty set for word scraping
-    WORDS = set([])
-    
-    # Getting arguments
-    
-    yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
-    no = ['n', 'no', 'N', 'No', 'False', 'false']
-    valid = False
-    path = 'config/' + sys.argv[1] + '.cfg'
-    while(valid != True):
-        valid = True
-        try:
-            write_log('[INFO]: Using configuration settings from {0}'.format(path))
-            with open(path, 'r') as f:
-                for line in f:
-                    exec(line)
-            GET_ARGS = False
-        except FileNotFoundError:
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
-            print('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file. or enter nothing to enter info by hand'.format(get_time()))
-            valid = False
-        except IndexError:
-            GET_ARGS = True
-        if(valid==False):
-            path = 'config/' + input() + '.cfg'
-    
-    if GET_ARGS:
-        write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
-        if not bool(INPUT):  # Use default value
-            OVERWRITE = False
-        elif INPUT in yes:  # Yes
-            OVERWRITE = False
-        elif INPUT in no:  # No
-            OVERWRITE = True
-        else:  # Invalid input
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
-        if not bool(INPUT):
-            RAISE_ERRORS = False
-        elif INPUT in yes:
-            RAISE_ERRORS = True
-        elif INPUT in no:
-            RAISE_ERRORS = False
-        else:
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
-        if not bool(INPUT):
-            SAVE_PAGES = True
-        elif INPUT in yes:
-            SAVE_PAGES = True
-        elif INPUT in no:
-            SAVE_PAGES = False
-        else:
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
-        if SAVE_PAGES:
-            INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
-            LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
-            if not bool(INPUT):
-                ZIP_FILES = False
-            elif INPUT in yes:
-                ZIP_FILES = True
-            elif INPUT in no:
-                ZIP_FILES = False
-            else:
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-                raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-        else:
-            ZIP_FILES = False
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
-        if not bool(INPUT):
-            SAVE_WORDS = True
-        elif INPUT in yes:
-            SAVE_WORDS = True
-        elif INPUT in no:
-            SAVE_WORDS = False
-        else:
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
-        if not bool(INPUT):
-            HEADER = HEADERS['spidy']
-        else:
-            try:
-                HEADER = HEADERS[INPUT]
-            except KeyError:
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
-                raise KeyError('[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
-        if not bool(INPUT):
-            TODO_FILE = 'crawler_todo.txt'
-        else:
-            TODO_FILE = INPUT
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
-        if not bool(INPUT):
-            DONE_FILE = 'crawler_done.txt'
-        else:
-            DONE_FILE = INPUT
-    
-        if SAVE_WORDS:
-            INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
-            LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
-            if not bool(INPUT):
-                WORD_FILE = 'crawler_words.txt'
-            else:
-                WORD_FILE = INPUT
-        else:
-            WORD_FILE = 'None'
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
-        if not bool(INPUT):
-            BAD_FILE = 'crawler_bad.txt'
-        else:
-            BAD_FILE = INPUT
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
-        if not bool(INPUT):
-            SAVE_COUNT = 100
-        elif not INPUT.isdigit():
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-        else:
-            SAVE_COUNT = int(INPUT)
-    
-        if not RAISE_ERRORS:
-            INPUT = input('[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
-            LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
-            if not bool(INPUT):
-                MAX_NEW_ERRORS = 5
-            elif not INPUT.isdigit():
-                LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-                raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-            else:
-                MAX_NEW_ERRORS = int(INPUT)
-        else:
-            MAX_NEW_ERRORS = 1
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
-        if not bool(INPUT):
-            MAX_KNOWN_ERRORS = 20
-        elif not INPUT.isdigit():
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-        else:
-            MAX_KNOWN_ERRORS = int(INPUT)
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
-        LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
-        if not bool(INPUT):
-            MAX_HTTP_ERRORS = 50
-        elif not INPUT.isdigit():
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-        else:
-            MAX_HTTP_ERRORS = int(INPUT)
-    
-        INPUT = input('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
-        LOG_FILE.write('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
-        if not bool(INPUT):
-            MAX_NEW_MIMES = 10
-        elif not INPUT.isdigit():
-            LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-            raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid integer.'.format(get_time()))
-        else:
-            MAX_NEW_MIMES = int(INPUT)
-    
-        # Remove INPUT variable from memory
-        del INPUT
-    
-    # Import saved TODO file data
-    if OVERWRITE:
-        write_log('[INIT]: Creating save files...')
-        TODO = START
-        DONE = []
-    else:
-        write_log('[INIT]: Loading save files...')
-        with open(TODO_FILE, 'r') as f:
-            contents = f.readlines()
-        TODO = [x.strip() for x in contents]
-        # Import saved done file data
-        with open(DONE_FILE, 'r') as f:
-            contents = f.readlines()
-        DONE = [x.strip() for x in contents]
-        del contents
-    
-        # If TODO list is empty, add default starting pages
-        if len(TODO) == 0:
-            TODO += START
-    
-    DISPLAY = input('Enter a number 0-4 for size of done, size of todo, words in text, total errors, unknown errors to be constantly displayed\n')
-
-def main():
-
     write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
     log('LOG: Successfully started crawler.')
 
