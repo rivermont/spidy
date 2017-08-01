@@ -14,6 +14,7 @@ file = [x.strip() for x in file]
 
 file = list(set(file))
 
+
 def check_word(word):
 	'''
 	Returns True if word in not valid
@@ -24,6 +25,7 @@ def check_word(word):
 	else: 
 		return False
 
+
 def run():
 	before = len(file)
 
@@ -33,12 +35,12 @@ def run():
 
 	removed = before - len(file)
 
-	saveFile = open(wordFile, 'w')
+	save_file = open(wordFile, 'w')
 
 	for line in file:
-		saveFile.write('\n' + line)
+		save_file.write('\n' + line)
 
-	saveFile.close()
+	save_file.close()
 
 	print('Removed {0} links from {1}'.format(removed, wordFile))
 

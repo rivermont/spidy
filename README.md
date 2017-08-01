@@ -274,6 +274,8 @@ He has developed a bunch of features that we are working on merging into master.
 
 
 # TODO
+  - Consolidate `FalconWarriorr-branch` into `master`
+  - Move GUI into `crawler.py`
   - Moar docs
   - Upload spidy to PyPI/pip
   - Multiple HTTP threads

@@ -32,7 +32,7 @@ def get_text(field):
 # Main window
 window = Tk()
 window.title('spidy Web Crawler - by rivermont')
-window.iconbitmap('{0}\\media\\favicon.ico'.format(DIR))
+window.iconbitmap('{0}\\media\\favicon.ico'.format(CRAWLER_DIR))
 
 # Frame to fill main window
 mainFrame = ttk.Frame(window, padding='4')
