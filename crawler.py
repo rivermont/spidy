@@ -573,7 +573,7 @@ def init():
 			try:
 				HEADER = HEADERS[input_]
 			except KeyError:
-			handle_invalid_input('browser name')
+				handle_invalid_input('browser name')
 
 		write_log('[INPUT]: Location of the TODO save file (Default: crawler_todo.txt):')
 		input_ = input()
@@ -621,7 +621,7 @@ def init():
 			if not bool(input_):
 				MAX_NEW_ERRORS = 5
 			elif not input_.isdigit():
-			handle_invalid_input('integer')
+				handle_invalid_input('integer')
 			else:
 				MAX_NEW_ERRORS = int(input_)
 		else:
