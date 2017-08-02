@@ -4,6 +4,7 @@ Built by rivermont and FalconWarriorr
 '''
 VERSION = '1.0'
 
+
 ##########
 # IMPORT #
 ##########
@@ -17,6 +18,7 @@ START_TIME = int(t.time())
 
 def get_time():
 	return t.strftime('%H:%M:%S')
+
 START_TIME_LONG = get_time()
 
 
@@ -294,7 +296,7 @@ def zip_files(out_file_name, directory):
 write_log('[INIT]: Creating variables...')
 
 # Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
-# Added by hand after being found by the crawler to reduce lookup times.
+# Added by hand after being discovered by the crawler to reduce lookup times.
 MIME_TYPES = {
 	'application/atom+xml': '.atom',
 	'application/epub+zip': '.epub',
