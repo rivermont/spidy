@@ -275,9 +275,9 @@ He has developed a bunch of features that we are working on merging into master.
 
 
 # TODO
-  - Consolidate `FalconWarriorr-branch` into `master`
+  - Consolidate all features of `FalconWarriorr-branch` into `master`
   - Move GUI into `crawler.py`
-  - Moar docs
+  - More documentation
   - Upload spidy to PyPI/pip
   - Multiple HTTP threads
   - Respect robots.txt
@@ -292,7 +292,7 @@ We will happily look at anything that you build off of spidy; we're not very cre
 
 # License
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
-Honestly, if you link to this repo and credit `rivermont` and `Falconwarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.<br>
+Honestly, if you link to this repo and credit `rivermont` and `FalconWarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.<br>
 Thanks!
 
 

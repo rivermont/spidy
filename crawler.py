@@ -352,6 +352,7 @@ MIME_TYPES = {
 	'image/jpeg': '.jpeg',
 	'image/jpg': '.jpg',
 	'image/png': '.png',
+	'image/ico': '.ico',
 	'image/svg+xml': '.svg',
 	'image/tiff': '.tif',
 	'image/vnd.djvu': '.djvu',
