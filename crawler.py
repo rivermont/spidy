@@ -220,15 +220,15 @@ def save_page(url, page):
 
 
 def update_file(file, content, file_type):
-	with open(file, 'r+') as file:  # Open save file for reading and writing
-		file_content = file.readlines()  # Make list of all lines in file
+	with open(file, 'r+') as open_file:  # Open save file for reading and writing
+		file_content = open_file.readlines()  # Make list of all lines in file
 		file_content = [x.strip() for x in file_content]
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
 		del file_content
 		for item in content:
-			file.write('\n' + str(item))  # Write all words to file
-		file.truncate()  # Delete everything in file beyond what has been written (old stuff)
+			open_file.write('\n' + str(item))  # Write all words to file
+		open_file.truncate()  # Delete everything in file beyond what has been written (old stuff)
 	write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), file_type, file))
 
 
@@ -317,6 +317,7 @@ MIME_TYPES = {
 	'application/ogg': '.ogx',
 	'application/opensearchdescription+xml': '.osdx',
 	'application/pdf': '.pdf',
+	'application/postscript': '.eps',  # Also .ps
 	'application/rdf+xml': '.rdf',
 	'application/rsd+xml': '.rsd',
 	'application/rss+xml': '.rss',
@@ -328,7 +329,7 @@ MIME_TYPES = {
 	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
 	'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
 	'application/vnd.php.serialized': '.php',
-	'application/x-bibtex': '.bib',  # I think
+	'application/x-bibtex': '.bib',
 	'application/x-font-ttf': '.ttf',
 	'application/x-font-woff': '.woff',
 	'application/x-gzip': '.gz',
