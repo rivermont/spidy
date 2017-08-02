@@ -1,6 +1,6 @@
-'''
+"""
 Wordlist post-processing
-'''
+"""
 
 
 import sys
@@ -16,10 +16,10 @@ file = list(set(file))
 
 
 def check_word(word):
-	'''
+	"""
 	Returns True if word in not valid
 	Returns False if word is valid
-	'''
+	"""
 	if len(word) > 16:
 		return True
 	else: 

@@ -19,6 +19,10 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 
 # New Features!
 
+### PEP 8 Compliance - #[#](#)
+98% of code now obeys the PEP 8 standard.<br>
+[PEP 8](https://www.python.org/dev/peps/pep-0008/) is the Style Guide for all Python code.
+
 ### Better File Saving - #[8c0dcd4](https://github.com/rivermont/spidy/commit/8c0dcd4d637eadde4326065cbed74eafcb381dbe)
 Now uses the `Content-Type` header to determine how to save files.<br>
 Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
@@ -26,9 +30,6 @@ Also cut the number of requests to sites in half, effectively killing HTTP 429 E
 ### Browser Imitation - #[fa106a3](https://github.com/rivermont/spidy/commit/fa106a3d30f383b07dcf57b431448bfeae173830)
 Support for Chrome, Internet Explorer, and Microsoft Edge.<br>
 Also more configuration options. Yay.
-
-### Config Files - #[32d8f91](https://github.com/rivermont/spidy/commit/32d8f9164f5b4af3d47840f84cb5022f07180276)
-Fine-tune the bahaviour of spidy with new config files!
 
 # Table of Contents
 

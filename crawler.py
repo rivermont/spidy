@@ -323,6 +323,7 @@ MIME_TYPES = {
 	'application/vnd.ms-cab-compressed': '.cab',
 	'application/vnd.ms-excel': '.',
 	'application/vnd.ms-fontobject': '.eot',
+	'application/x-endnote-refer': '.enw',
 	'application/vnd.oasis.opendocument.text': '.odt',
 	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
 	'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
@@ -371,6 +372,7 @@ MIME_TYPES = {
 	'text/x-c': '.c',
 	'text/xml charset=utf-8': '.xml',  # Shouldn't have encoding
 	'text/xml': '.xml',  # Incorrect
+	'video/3gpp': '.3gp',
 	'video/mp4': '.mp4',
 	'video/webm': '.webp',
 	'vnd.ms-fontobject': '.eot',  # Incorrect
