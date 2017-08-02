@@ -19,7 +19,7 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 
 # New Features!
 
-### PEP 8 Compliance - #[#](#)
+### PEP 8 Compliance - #[133dcdc](https://github.com/rivermont/spidy/commit/133dcdc02a0d63d94725cb86c089b7fdb3eba2d4)
 98% of code now obeys the PEP 8 standard.<br>
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) is the Style Guide for all Python code.
 
