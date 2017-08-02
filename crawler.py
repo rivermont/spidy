@@ -54,6 +54,7 @@ import shutil
 import sys
 from lxml import html, etree
 from os import makedirs
+from winsound import Beep
 
 ###########
 # CLASSES #
@@ -200,6 +201,7 @@ def mime_lookup(value):
 	elif value == '':
 		return '.html'
 	else:
+		Beep(1000, 100)
 		raise HeaderError('Unknown MIME type: {0}'.format(value))
 
 
@@ -305,6 +307,7 @@ MIME_TYPES = {
 	'application/java-archive': '.jar',
 	'application/javascript': '.js',
 	'application/json': '.json',
+	'application/json+oembed': '.json',
 	'application/js': '.js',  # Should be application/javascript
 	'application/marcxml+xml': '.mrcx',
 	'application/msword': '.doc',
@@ -338,6 +341,7 @@ MIME_TYPES = {
 	'application/xhtml+xml': '.xhtml',
 	'application/xml': '.xml',
 	'application/zip': '.zip',
+	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'audio/mpeg': '.mp3',
 	'font/woff': '.woff', 'font/woff2': '.woff2',
 	'html': '.html',  # Incorrect
@@ -352,6 +356,7 @@ MIME_TYPES = {
 	'image/webp': '.webp',
 	'image/x-icon': '.ico',
 	'image/x-ms-bmp': '.bmp',
+	'image/x-bitmap': '.xbm',
 	'text/calendar': '.ics',
 	'text/css': '.css',
 	'text/html': '.html',
@@ -408,6 +413,7 @@ HEADERS = {
 
 KILL_LIST = [
 	# Pages that are known to cause problems with the crawler in some way
+	'bhphotovideo.com/c/search',
 	'scores.usaultimate.org/',
 	'w3.org',
 	'web.archive.org/web/'
