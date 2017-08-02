@@ -54,7 +54,6 @@ import shutil
 import sys
 from lxml import html, etree
 from os import makedirs
-import msvcrt
 
 ###########
 # CLASSES #
@@ -289,62 +288,10 @@ def zip_files(out_file_name, directory):
 	makedirs(directory[:-1])  # Creates empty folder of same name (minus the '/')
 	write_log('[LOG]: Zipped documents to {0}.zip'.format(out_file_name))
 
-#called when u key is pressed
-def update():
-    COCUNTER = 0
-    print('\r' + '[LOG] ' + get_time() + ': updating logs...')
-    save_files()
-
-
-#called when p key is pressed
-def pause():
-    command = ' '
-    #stays paused as long as the input isn't '' or 'r'(restart)
-    while command != '' and command != 'r':
-
-        #pause menu
-        try:
-            command = input('\rPress enter to resume or u, i, r and then enter to update, get info, restart\n')
-
-            #checks to see if any valid command is entered and then executes it
-            if(command == 'u'):
-                update()
-            elif(command == 'i'):
-                info_log()
-            elif(command == 'r'):
-                restart()
-            else:
-                None
-            end()
-        except EOFError:
-            end()
-    print('\r[LOG] ' + getTimeNoSecs() + ': Resuming crawl')
-
-#called when r key is pressed
-def restart():
-    
-
-#used to draw keyboard commmands to the bottom of the command prompt
-#0-4 for size of done, size of todo, words in text, total errors, unknown errors
-def info():
-    if display == '0':
-        sys.stdout.write("\r" + "[INFO]: Links in done: " + str(len(DONE)) + " p>pause, u>update, r>restart, e>prune, or s>status")
-    if display == '1':
-        sys.stdout.write("\r" + "[INFO]: Links in todo: " + str(len(TODO)) + " p>pause, u>update, r>restart, e>prune, or s>status")
-    if display == '2':
-        sys.stdout.write("\r" + "[INFO]: Words in text: " + str(len(WORDS)) + " p>pause, u>update, r>restart, e>prune, or s>status")
-    if display == '3':
-        sys.stdout.write("\r" + "[INFO]: Total errors: " + str(MAX_KNOWN_ERRORS + MAX_NEW_ERRORS) + " p>pause, u>update, r>restart, e>prune, or s>status")
-    if display == '4':
-        sys.stdout.write("\r" + "[INFO]: Unknown errors: " + str(MAX_NEW_ERRORS) + " p>pause, u>update, r>restart, e>prune, or s>status")
-    else:
-        sys.stdout.write("\r" + "[INFO]: Crawled " + str(COUNTER) + " webpages crawled since last save")
-    flush()
 
 ########
 # INIT #
 ########
-
 
 write_log('[INIT]: Creating variables...')
 
