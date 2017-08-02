@@ -1,7 +1,7 @@
-'''
+"""
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
-'''
+"""
 VERSION = '1.0'
 
 
@@ -13,22 +13,19 @@ VERSION = '1.0'
 # This is done before anything else to enable timestamp logging at every step
 import time as t
 
-START_TIME = int(t.time())
-
 
 def get_time():
 	return t.strftime('%H:%M:%S')
-
-START_TIME_LONG = get_time()
 
 
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
 
+START_TIME = int(t.time())
+START_TIME_LONG = get_time()
 
 # Get current working directory of spidy
 from os import path
-
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 # Open log file for logging
@@ -37,12 +34,15 @@ LOG_FILE_NAME = 'logs/spidy_log_{0}'.format(START_TIME)
 
 
 def write_log(message):
-	'''
+	"""
 	Writes message to both the console and the log file.
 	NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
-	'''
+	"""
 	message = '[{0}] [spidy] '.format(get_time()) + message
 	print(message)
+
+	# Write to tkinter console
+
 	LOG_FILE.write('\n' + message)
 
 write_log('[INIT]: Starting spidy Web Crawler version {0}'.format(VERSION))
@@ -64,9 +64,9 @@ write_log('[INIT]: Creating classes...')
 
 
 class HeaderError(Exception):
-	'''
+	"""
 	Raised when there's a problem deciphering returned HTTP headers.
-	'''
+	"""
 	pass
 
 
@@ -78,10 +78,10 @@ write_log('[INIT]: Creating functions...')
 
 
 def check_link(item):
-	'''
+	"""
 	Returns True if item is not a valid url.
 	Returns False if item passes all inspections (is valid url).
-	'''
+	"""
 	# Shortest possible url being 'http://a.b', and
 	# Links longer than 255 characters are usually useless or full of foreign characters,
 	# and will also cause problems when saving.
@@ -100,10 +100,10 @@ def check_link(item):
 
 
 def check_word(word):
-	'''
+	"""
 	Returns True if word is not valid.
 	Returns False if word passes all inspections (is valid).
-	'''
+	"""
 	# If word is longer than 16 characters (avg password length is ~8)
 	if len(word) > 16:
 		return True
@@ -112,11 +112,11 @@ def check_word(word):
 
 
 def check_path(file_path):
-	'''
+	"""
 	Checks the path of a given filename to see whether it will cause errors when saving.
 	Returns True if path is valid.
 	Returns False if path is invalid.
-	'''
+	"""
 	if len(file_path) > 256:
 		return False
 	else:
@@ -124,9 +124,9 @@ def check_path(file_path):
 
 
 def make_words(site):
-	'''
+	"""
 	Returns list of all valid words in page.
-	'''
+	"""
 	page = str(site.content)  # Get page content
 	word_list = page.split()  # Split content into lists of words, as separated by spaces
 	del page
@@ -138,10 +138,10 @@ def make_words(site):
 
 
 def save_files(word_list):
-	'''
+	"""
 	Saves the TODO, done, word, and bad lists into their respective files.
 	Also logs the action to the console.
-	'''
+	"""
 	with open(TODO_FILE, 'w') as todoList:
 		for site in TODO:
 			try:
@@ -165,22 +165,22 @@ def save_files(word_list):
 
 
 def make_file_path(url, ext):
-	'''
+	"""
 	Makes a valid Windows file path for a url.
-	'''
+	"""
 	url = url.replace(ext, '')  # Remove extension from path
-	for char in '''/\ *''':  # Remove illegal characters from path
+	for char in """/\ *""":  # Remove illegal characters from path
 		url = url.replace(char, '-')
-	for char in '''|:?&<>''':
+	for char in """|:?&<>""":
 		url = url.replace(char, '')
 	url = url[:255]  # Truncate to valid file length
 	return url
 
 
 def get_mime_type(page):
-	'''
+	"""
 	Extracts the Content-Type header from the headers returned by page.
-	'''
+	"""
 	try:
 		doc_type = str(page.headers['content-type'])
 		return doc_type
@@ -189,11 +189,11 @@ def get_mime_type(page):
 
 
 def mime_lookup(value):
-	'''
+	"""
 	Finds the correct file extension for a MIME type using the MIME_TYPES dictionary.
 	If the MIME type is blank it defaults to .html,
 	and if the MIME type is not in the dictionary it raises a HeaderError.
-	'''
+	"""
 	value = value.lower()  # Reduce to lowercase
 	value = value.split(';')[0]  # Remove possible encoding
 	if value in MIME_TYPES:
@@ -206,36 +206,36 @@ def mime_lookup(value):
 
 
 def save_page(url, page):
-	'''
+	"""
 	Download content of url and save to the save folder.
-	'''
+	"""
 	# Make file path
 	ext = mime_lookup(get_mime_type(page))
 	cropped_url = make_file_path(url, ext)
-	path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
+	file_path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
 
 	# Save file
-	with open(path, 'wb+') as file:
+	with open(file_path, 'wb+') as file:
 		file.write(page.content)
 
 
-def update_file(file, content, filetype):
-	with open(file, 'r+') as f:  # Open save file for reading and writing
-		file_content = f.readlines()  # Make list of all lines in file
+def update_file(file, content, file_type):
+	with open(file, 'r+') as file:  # Open save file for reading and writing
+		file_content = file.readlines()  # Make list of all lines in file
 		file_content = [x.strip() for x in file_content]
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
 		del file_content
 		for item in content:
-			f.write('\n' + str(item))  # Write all words to file
-		f.truncate()  # Delete everything in file beyond what has been written (old stuff)
-	write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), filetype, file))
+			file.write('\n' + str(item))  # Write all words to file
+		file.truncate()  # Delete everything in file beyond what has been written (old stuff)
+	write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), file_type, file))
 
 
 def info_log():
-	'''
+	"""
 	Logs important information to the console and log file.
-	'''
+	"""
 	# Print to console
 	write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
 	write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
@@ -249,15 +249,15 @@ def info_log():
 
 
 def log(message):
-	'''
+	"""
 	Logs a single message to the error log file.
 	Prints message verbatim, so message must be formatted correctly in the function call.
-	'''
-	with open(ERR_LOG_FILE, 'a') as log:
-		log.write('\n\n======LOG======')  # Write opening line
-		log.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
-		log.write(message)  # Write message
-		log.write(LOG_END)  # Write closing line
+	"""
+	with open(ERR_LOG_FILE, 'a') as file:
+		file.write('\n\n======LOG======')  # Write opening line
+		file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
+		file.write(message)  # Write message
+		file.write(LOG_END)  # Write closing line
 
 
 def handle_keyboard_interrupt():
@@ -269,11 +269,11 @@ def handle_keyboard_interrupt():
 
 
 def err_log(url, error1, error2):
-	'''
+	"""
 	Saves the triggering error to the log file.
 	error1 is the trimmed error source.
 	error2 is the extended text of the error.
-	'''
+	"""
 	time = t.strftime('%H:%M:%S, %A %b %Y')  # Get the current time
 	with open(ERR_LOG_FILE, 'a') as work_log:
 		work_log.write('\n\n=====ERROR=====')  # Write opening line
@@ -282,9 +282,9 @@ def err_log(url, error1, error2):
 
 
 def zip_files(out_file_name, directory):
-	'''
+	"""
 	Creates a .zip file in the current directory containing all contents of dir, then empties.
-	'''
+	"""
 	shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
 	shutil.rmtree(directory)  # Deletes folder
 	makedirs(directory[:-1])  # Creates empty folder of same name (minus the '/')
@@ -304,17 +304,16 @@ MIME_TYPES = {
 	'application/epub+zip': '.epub',
 	'application/font-woff': '.woff',
 	'application/font-woff2': '.woff2',
+	'application/gzip': '.gz',
 	'application/java-archive': '.jar',
 	'application/javascript': '.js',
+	'application/js': '.js',  # Should be application/javascript
 	'application/json': '.json',
 	'application/json+oembed': '.json',
-	'application/js': '.js',  # Should be application/javascript
 	'application/marcxml+xml': '.mrcx',
 	'application/msword': '.doc',
-	'application/gzip': '.gz',
 	'application/n-triples': '.nt',
 	'application/octet-stream': '.exe',  # Sometimes .bin
-	'text/xml charset=utf-8': '.xml',  # Shouldn't have encoding
 	'application/ogg': '.ogx',
 	'application/opensearchdescription+xml': '.osdx',
 	'application/pdf': '.pdf',
@@ -322,17 +321,19 @@ MIME_TYPES = {
 	'application/rsd+xml': '.rsd',
 	'application/rss+xml': '.rss',
 	'application/vnd.ms-cab-compressed': '.cab',
-	'application/vnd.ms-fontobject': '.eot',
 	'application/vnd.ms-excel': '.',
-	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+	'application/vnd.ms-fontobject': '.eot',
 	'application/vnd.oasis.opendocument.text': '.odt',
-	'text/html,application/xhtml+xml,application/xml': '.html',  # Misunderstood 'Accept' header?
+	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+	'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
 	'application/vnd.php.serialized': '.php',
 	'application/x-bibtex': '.bib',  # I think
+	'application/x-font-ttf': '.ttf',
 	'application/x-font-woff': '.woff',
 	'application/x-gzip': '.gz',
 	'application/x-javascript': '.js',
 	'application/x-mobipocket-ebook': '.mobi',
+	'application/x-mpegurl': '.m3u8',
 	'application/x-msi': '.msi',
 	'application/x-research-info-systems': '.ris',
 	'application/x-rss+xml': '.rss',
@@ -341,8 +342,8 @@ MIME_TYPES = {
 	'application/xhtml+xml': '.xhtml',
 	'application/xml': '.xml',
 	'application/zip': '.zip',
-	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'audio/mpeg': '.mp3',
+	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'font/woff': '.woff', 'font/woff2': '.woff2',
 	'html': '.html',  # Incorrect
 	'image/gif': '.gif',
@@ -354,19 +355,21 @@ MIME_TYPES = {
 	'image/vnd.djvu': '.djvu',
 	'image/vnd.microsoft.icon': '.ico',
 	'image/webp': '.webp',
+	'image/x-bitmap': '.xbm',
 	'image/x-icon': '.ico',
 	'image/x-ms-bmp': '.bmp',
-	'image/x-bitmap': '.xbm',
 	'text/calendar': '.ics',
 	'text/css': '.css',
 	'text/html': '.html',
+	'text/html,application/xhtml+xml,application/xml': '.html',  # Misunderstood 'Accept' header?
 	'text/javascript': '.js',
 	'text/n3': '.n3',
 	'text/plain': '.txt',
 	'text/turtle': '.ttl',
-	'text/vtt': '.vtt',
 	'text/vnd.wap.wml': '.xml',  # or .wml
+	'text/vtt': '.vtt',
 	'text/x-c': '.c',
+	'text/xml charset=utf-8': '.xml',  # Shouldn't have encoding
 	'text/xml': '.xml',  # Incorrect
 	'video/mp4': '.mp4',
 	'video/webm': '.webp',
@@ -386,7 +389,8 @@ HEADERS = {
 		'Connection': 'keep-alive'
 	},
 	'Chrome': {
-		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'  # Line broken up to appease PEP 8
+		'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
 		'Accept-Language': 'en_US, en-US, en',
 		'Accept-Encoding': 'gzip',
 		'Connection': 'keep-alive'
@@ -396,7 +400,7 @@ HEADERS = {
 	# 'Accept-Language': 'en_US, en-US, en',
 	# 'Accept-Encoding': 'gzip',
 	# 'Connection': 'keep-alive'
-	# }
+	# },
 	'IE': {
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
 		'Accept-Language': 'en_US, en-US, en',
@@ -404,7 +408,8 @@ HEADERS = {
 		'Connection': 'keep-alive'
 	},
 	'Edge': {
-		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'  # Line broken up to appease PEP 8
+		'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
 		'Accept-Language': 'en_US, en-US, en',
 		'Accept-Encoding': 'gzip',
 		'Connection': 'keep-alive'
@@ -459,8 +464,8 @@ except IndexError:
 if GET_ARGS:
 	write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
+	write_log('[INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes):')
+	INPUT = input()
 	if not bool(INPUT):  # Use default value
 		OVERWRITE = False
 	elif INPUT in yes:  # Yes
@@ -471,8 +476,8 @@ if GET_ARGS:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
+	write_log('[INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No):')
+	INPUT = input()
 	if not bool(INPUT):
 		RAISE_ERRORS = False
 	elif INPUT in yes:
@@ -483,8 +488,8 @@ if GET_ARGS:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
+	write_log('[INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes):')
+	INPUT = input()
 	if not bool(INPUT):
 		SAVE_PAGES = True
 	elif INPUT in yes:
@@ -496,8 +501,8 @@ if GET_ARGS:
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
 	if SAVE_PAGES:
-		INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
+		write_log('[INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No):')
+		INPUT = input()
 		if not bool(INPUT):
 			ZIP_FILES = False
 		elif INPUT in yes:
@@ -510,8 +515,8 @@ if GET_ARGS:
 	else:
 		ZIP_FILES = False
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
+	write_log('[INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes):')
+	INPUT = input()
 	if not bool(INPUT):
 		SAVE_WORDS = True
 	elif INPUT in yes:
@@ -522,8 +527,9 @@ if GET_ARGS:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
+	write_log('[INPUT]: What browser headers should spidy use?')
+	write_log('[INPUT]: Choices: spidy (default), Chrome, IE, Edge:')
+	INPUT = input()
 	if not bool(INPUT):
 		HEADER = HEADERS['spidy']
 	else:
@@ -533,23 +539,23 @@ if GET_ARGS:
 			LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
 			raise KeyError('[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
+	write_log('[INPUT]: Location of the TODO save file (Default: crawler_todo.txt):')
+	INPUT = input()
 	if not bool(INPUT):
 		TODO_FILE = 'crawler_todo.txt'
 	else:
 		TODO_FILE = INPUT
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
+	write_log('[INPUT]: Location of the done save file (Default: crawler_done.txt):')
+	INPUT = input()
 	if not bool(INPUT):
 		DONE_FILE = 'crawler_done.txt'
 	else:
 		DONE_FILE = INPUT
 
 	if SAVE_WORDS:
-		INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
+		write_log('[INPUT]: Location of the word save file: (Default: crawler_words.txt):')
+		INPUT = input()
 		if not bool(INPUT):
 			WORD_FILE = 'crawler_words.txt'
 		else:
@@ -557,15 +563,15 @@ if GET_ARGS:
 	else:
 		WORD_FILE = 'None'
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
+	write_log('[INPUT]: Location of the bad link save file (Default: crawler_bad.txt):')
+	INPUT = input()
 	if not bool(INPUT):
 		BAD_FILE = 'crawler_bad.txt'
 	else:
 		BAD_FILE = INPUT
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
+	write_log('[INPUT]: After how many queried links should spidy autosave? (default 100):')
+	INPUT = input()
 	if not bool(INPUT):
 		SAVE_COUNT = 100
 	elif not INPUT.isdigit():
@@ -575,8 +581,8 @@ if GET_ARGS:
 		SAVE_COUNT = int(INPUT)
 
 	if not RAISE_ERRORS:
-		INPUT = input('[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
+		write_log('[INPUT]: After how many new errors should spidy stop? (default: 5):')
+		INPUT = input()
 		if not bool(INPUT):
 			MAX_NEW_ERRORS = 5
 		elif not INPUT.isdigit():
@@ -587,8 +593,8 @@ if GET_ARGS:
 	else:
 		MAX_NEW_ERRORS = 1
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
+	write_log('[INPUT]: After how many known errors should spidy stop? (default: 10):')
+	INPUT = input()
 	if not bool(INPUT):
 		MAX_KNOWN_ERRORS = 20
 	elif not INPUT.isdigit():
@@ -597,8 +603,8 @@ if GET_ARGS:
 	else:
 		MAX_KNOWN_ERRORS = int(INPUT)
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
+	write_log('[INPUT]: After how many HTTP errors should spidy stop? (default: 20):')
+	INPUT = input()
 	if not bool(INPUT):
 		MAX_HTTP_ERRORS = 50
 	elif not INPUT.isdigit():
@@ -607,8 +613,8 @@ if GET_ARGS:
 	else:
 		MAX_HTTP_ERRORS = int(INPUT)
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
-	LOG_FILE.write('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
+	write_log('[INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10):')
+	INPUT = input()
 	if not bool(INPUT):
 		MAX_NEW_MIMES = 10
 	elif not INPUT.isdigit():
@@ -698,6 +704,7 @@ def main():
 					save_page(TODO[0], page)
 				if SAVE_WORDS:
 					# Announce which link was crawled
+					word_list = []  # Added to appease PEP 8
 					write_log('[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), TODO[0]))
 				else:
 					# Announce which link was crawled
