@@ -26,6 +26,7 @@ DIR = path.dirname(path.realpath(__file__))
 def get_file():
 	return filedialog.askopenfilename()
 
+
 def get_text(field):
 	return field.get('1.0', 'end')
 
