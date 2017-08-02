@@ -3,8 +3,6 @@ crawler_log.txt
 crawler_todo.txt
 crawler_words.txt
 crawler_bad.txt
-crawler_types.txt
-profile.txt
 saved/
 logs/
 *.zip
