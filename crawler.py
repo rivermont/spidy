@@ -564,11 +564,14 @@ def init():
 		else:
 			handle_invalid_input()
 
-		write_log('[INPUT]: What browser headers should spidy use?')
-		write_log('[INPUT]: Choices: spidy (default), Chrome, IE, Edge:')
+		write_log('[INPUT]: What HTTP browser headers should spidy imitate?')
+		write_log('[INPUT]: Choices: spidy (default), Chrome, IE, Edge, Custom:')
 		input_ = input()
 		if not bool(input_):
 			HEADER = HEADERS['spidy']
+		elif input_.lower() == 'custom':
+			write_log('[INPUT]: Valid HTTP headers:')
+			HEADER = input()
 		else:
 			try:
 				HEADER = HEADERS[input_]
