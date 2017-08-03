@@ -12,8 +12,10 @@ VERSION = '1.0'
 # This is done before anything else to enable timestamp logging at every step
 import time as t
 
+
 def get_time():
 	return t.strftime('%H:%M:%S')
+
 
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
@@ -36,6 +38,10 @@ def write_log(message):
 	Writes message to both the console and the log file.
 	NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
 	"""
+	try:
+		window.update()
+	except NameError:
+		pass
 	message = '[{0}] [spidy] '.format(get_time()) + message
 	print(message)
 
@@ -235,7 +241,10 @@ def save_page(url, page):
 def update_file(file, content, file_type):
 	with open(file, 'r+') as open_file:  # Open save file for reading and writing
 		file_content = open_file.readlines()  # Make list of all lines in file
-		file_content = [x.strip() for x in file_content]
+		contents = []
+		for x in file_content:
+			window.update()
+			contents.append(x.strip())
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
 		del file_content
@@ -249,6 +258,7 @@ def info_log():
 	"""
 	Logs important information to the console and log file.
 	"""
+	window.update()
 	# Print to console
 	write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
 	write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
@@ -266,6 +276,7 @@ def log(message):
 	Logs a single message to the error log file.
 	Prints message verbatim, so message must be formatted correctly in the function call.
 	"""
+	window.update()
 	with open(ERR_LOG_FILE, 'a') as file:
 		file.write('\n\n======LOG======')  # Write opening line
 		file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
@@ -876,20 +887,24 @@ def init():
 		# Remove INPUT variable from memory
 		del input_
 
-	# Import saved TODO file data
 	if OVERWRITE:
 		write_log('[INIT]: Creating save files...')
 		TODO = START
 		DONE = []
 	else:
 		write_log('[INIT]: Loading save files...')
+		# Import saved TODO file data
 		with open(TODO_FILE, 'r') as f:
 			contents = f.readlines()
-		TODO = [x.strip() for x in contents]
+		for x in contents:
+			window.update()
+			TODO.append(x.strip())
 		# Import saved done file data
 		with open(DONE_FILE, 'r') as f:
 			contents = f.readlines()
-		DONE = [x.strip() for x in contents]
+		for x in contents:
+			DONE.append(x.strip())
+
 		del contents
 
 		# If TODO list is empty, add default starting pages
@@ -918,6 +933,7 @@ def main():
 	write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
 	while len(TODO) != 0:  # While there are links to check
+		window.update()
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
 				write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
@@ -944,12 +960,16 @@ def main():
 				if SAVE_WORDS:
 					word_list = make_words(page)  # Get all words from page
 					WORDS.update(word_list)  # Add words to word list
+				links = []
 				try:
-					links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
+					for item in html.iterlinks(page.content):
+						for element, attribute, link, pos in item:
+							window.update()
+							if not check_link(link):
+								links.append(link)
 				except (etree.XMLSyntaxError, etree.ParserError):
-					links = []
+					pass
 				links = list(set(links))  # Remove duplicates and shuffle links
-				links = [link for link in links if not check_link(link)]
 				TODO += links  # Add scraped links to the TODO list
 				DONE.append(TODO[0])  # Add crawled link to done list
 				if SAVE_PAGES:
