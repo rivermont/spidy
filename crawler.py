@@ -4,7 +4,6 @@ Built by rivermont and FalconWarriorr
 """
 VERSION = '1.0'
 
-
 ##########
 # IMPORT #
 ##########
@@ -26,6 +25,7 @@ START_TIME_LONG = get_time()
 
 # Get current working directory of spidy
 from os import path as Path
+
 CRAWLER_DIR = Path.dirname(Path.realpath(__file__))
 
 # Open log file for logging
@@ -51,10 +51,10 @@ write_log('[INIT]: Importing required libraries...')
 # Import required libraries
 import requests
 import shutil
-import sys
 from lxml import html, etree
 from os import makedirs
 from winsound import Beep
+
 
 ###########
 # CLASSES #
@@ -68,7 +68,6 @@ class HeaderError(Exception):
 	Raised when there's a problem deciphering returned HTTP headers.
 	"""
 	pass
-
 
 #############
 # FUNCTIONS #
@@ -222,7 +221,9 @@ def save_page(url, page):
 def update_file(file, content, file_type):
 	with open(file, 'r+') as open_file:  # Open save file for reading and writing
 		file_content = open_file.readlines()  # Make list of all lines in file
-		file_content = [x.strip() for x in file_content]
+		contents = []
+		for x in file_content:
+			contents.append(x.strip())
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
 		del file_content
@@ -265,7 +266,7 @@ def handle_keyboard_interrupt():
 	log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 	save_files(WORDS)
 	LOG_FILE.close()
-	sys.exit()
+	exit()
 
 
 def handle_invalid_input(type_='input'):
@@ -297,7 +298,6 @@ def zip_files(out_file_name, directory):
 	shutil.rmtree(directory)  # Deletes folder
 	makedirs(directory[:-1])  # Creates empty folder of same name (minus the '/')
 	write_log('[LOG]: Zipped documents to {0}.zip'.format(out_file_name))
-
 
 ########
 # INIT #
@@ -461,7 +461,8 @@ no = ['n', 'no', 'N', 'No', 'False', 'false']
 # Create global variables that will be assigned in main()
 HEADER = {}
 MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES = 0, 0, 0, 0
-USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT = False, False, False, False, False, False, False
+USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES = False, False, False, False
+SAVE_WORDS, SAVE_PAGES, SAVE_COUNT = False, False, False
 TODO_FILE, DONE_FILE, WORD_FILE, BAD_FILE = '', '', '', ''
 TODO, DONE = [], []
 
@@ -479,7 +480,7 @@ def init():
 
 	# Getting arguments
 
-	write_log('[INIT]: Would you like to use a premade config file? (y/n):')
+	write_log('[INIT]: Should spidy load settings from a config file? (y/n):')
 	input_ = input()
 	if not bool(input_):
 		USE_CONFIG = False
@@ -490,20 +491,22 @@ def init():
 	else:
 		handle_invalid_input()
 
-	try:
-		path = 'config/' + sys.argv[1] + '.cfg'
-		write_log('[INFO]: Using configuration settings from {0}'.format(path))
-		with open(path, 'r') as f:
-			for line in f.readlines():
-				exec(line, globals())
-		get_args = False
-	except FileNotFoundError:
-		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
-		raise FileNotFoundError('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
-	except IndexError:
-		get_args = True
-
-	if get_args:
+	if USE_CONFIG:
+		try:
+			write_log('[INPUT]: Config file name:')
+			input_ = input()
+			if input_[-4:] == '.cfg':
+				path = 'config/{0}'.format(input_)
+			else:
+				path = 'config/{0}.cfg'.format(input_)
+			write_log('[INFO]: Loading configuration settings from {0}'.format(path))
+			with open(path, 'r') as f:
+				for line in f.readlines():
+					exec(line, globals())
+		except FileNotFoundError:
+			LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+			raise FileNotFoundError('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+	else:
 		write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
 
 		write_log('[INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes):')
@@ -660,20 +663,23 @@ def init():
 		# Remove INPUT variable from memory
 		del input_
 
-	# Import saved TODO file data
 	if OVERWRITE:
 		write_log('[INIT]: Creating save files...')
 		TODO = START
 		DONE = []
 	else:
 		write_log('[INIT]: Loading save files...')
+		# Import saved TODO file data
 		with open(TODO_FILE, 'r') as f:
 			contents = f.readlines()
-		TODO = [x.strip() for x in contents]
+		for x in contents:
+			TODO.append(x.strip())
 		# Import saved done file data
 		with open(DONE_FILE, 'r') as f:
 			contents = f.readlines()
-		DONE = [x.strip() for x in contents]
+		for x in contents:
+			DONE.append(x.strip())
+
 		del contents
 
 		# If TODO list is empty, add default starting pages
@@ -682,6 +688,8 @@ def init():
 
 
 def main():
+	init()
+
 	# Declare global variables
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
@@ -704,7 +712,7 @@ def main():
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
 				write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
 				save_files(WORDS)
-				sys.exit()
+				exit()
 			elif COUNTER >= SAVE_COUNT:  # If it's time for an autosave
 				try:
 					write_log('[INFO]: Queried {0} links.'.format(str(COUNTER)))
@@ -731,7 +739,6 @@ def main():
 				except (etree.XMLSyntaxError, etree.ParserError):
 					links = []
 				links = list(set(links))  # Remove duplicates and shuffle links
-				links = [link for link in links if not check_link(link)]
 				TODO += links  # Add scraped links to the TODO list
 				DONE.append(TODO[0])  # Add crawled link to done list
 				if SAVE_PAGES:
@@ -739,7 +746,8 @@ def main():
 				if SAVE_WORDS:
 					# Announce which link was crawled
 					word_list = []  # Added to appease PEP 8
-					write_log('[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), TODO[0]))
+					write_log(
+						'[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), TODO[0]))
 				else:
 					# Announce which link was crawled
 					write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), TODO[0]))
@@ -825,9 +833,9 @@ def main():
 		finally:
 			try:
 				TODO = list(set(TODO))  # Removes duplicates and shuffles links so trees don't form.
-				# For debugging purposes; to check one link and then stop:
-				# save_files(WORDS)
-				# sys.exit()
+			# For debugging purposes; to check one link and then stop:
+			# handle_keyboard_interrupt()
+			# exit()
 			except KeyboardInterrupt:
 				handle_keyboard_interrupt()
 
@@ -837,7 +845,6 @@ def main():
 
 
 if __name__ == '__main__':
-	init()
 	main()
 else:
 	write_log('[INIT]: Successfully imported spidy Web Crawler.')
