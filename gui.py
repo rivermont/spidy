@@ -934,7 +934,7 @@ def main():
 
 	write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
-	if len(TODO) != 0:  # While there are links to check
+	while len(TODO) != 0:  # While there are links to check
 		window.update()
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
