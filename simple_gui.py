@@ -6,12 +6,10 @@ from multiprocessing import Process
 def setup_window():
 	global window
 	print('Configuring window.')
-	window.title('WORK')
 	# Add window elements and configure
 
 
 def go():
-	global window
 	setup_window()
 	print('Done configuring window')
 	window.mainloop()
@@ -38,5 +36,9 @@ if __name__ == '__main__':
 	p1.start()
 	print('p2 start')
 	p2.start()
+	print('p1 join')
+	p1.join()
+	print('p2 join')
+	p2.join()
 	print('No more processes')
 	exit()
