@@ -493,18 +493,18 @@ def setup_window():
 	overwrite = BooleanVar()
 	raise_errors = BooleanVar()
 	save_pages = BooleanVar()
-	zip_files = BooleanVar()
+	zip_files_ = BooleanVar()
 	save_words = BooleanVar()
-	todo_file = StringVar()
-	done_file = StringVar()
-	bad_file = StringVar()
-	word_file = StringVar()
+	# todo_file = StringVar()
+	# done_file = StringVar()
+	# bad_file = StringVar()
+	# word_file = StringVar()
 	save_count = IntVar()
 	max_new_errors = IntVar()
 	max_http_errors = IntVar()
 	max_known_errors = IntVar()
 	max_new_mimes = IntVar()
-	custom_headers = StringVar()
+	# custom_headers = StringVar()
 
 	# Frame to fill main window
 	main_frame = ttk.Frame(window, padding='4')
@@ -582,7 +582,7 @@ def setup_window():
 	save_pages_check.rowconfigure(3, weight=1)
 
 	# Option to set ZipFiles
-	zip_files_check = ttk.Checkbutton(setting_box, text='Zip Files', variable=zip_files)
+	zip_files_check = ttk.Checkbutton(setting_box, text='Zip Files', variable=zip_files_)
 	zip_files_check.grid(column=0, row=4, columnspan=2, sticky=W)
 	zip_files_check.columnconfigure(0, weight=1)
 	zip_files_check.rowconfigure(4, weight=1)
