@@ -38,10 +38,6 @@ def write_log(message):
 	Writes message to both the console and the log file.
 	NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
 	"""
-	try:
-		window.update()
-	except NameError:
-		pass
 	message = '[{0}] [spidy] '.format(get_time()) + message
 	print(message)
 
@@ -245,7 +241,6 @@ def update_file(file, content, file_type):
 		file_content = open_file.readlines()  # Make list of all lines in file
 		contents = []
 		for x in file_content:
-			window.update()
 			contents.append(x.strip())
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
@@ -260,7 +255,6 @@ def info_log():
 	"""
 	Logs important information to the console and log file.
 	"""
-	window.update()
 	# Print to console
 	write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
 	write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
@@ -278,7 +272,6 @@ def log(message):
 	Logs a single message to the error log file.
 	Prints message verbatim, so message must be formatted correctly in the function call.
 	"""
-	window.update()
 	with open(ERR_LOG_FILE, 'a') as file:
 		file.write('\n\n======LOG======')  # Write opening line
 		file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
@@ -492,6 +485,7 @@ TODO, DONE = [], []
 
 
 def setup_window():
+	global window
 	# Main window
 	window.title('spidy Web Crawler - by rivermont')
 	window.iconbitmap('{0}\\media\\favicon.ico'.format(CRAWLER_DIR))
@@ -899,7 +893,6 @@ def init():
 		with open(TODO_FILE, 'r') as f:
 			contents = f.readlines()
 		for x in contents:
-			window.update()
 			TODO.append(x.strip())
 		# Import saved done file data
 		with open(DONE_FILE, 'r') as f:
@@ -935,7 +928,6 @@ def main():
 	write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
 	while len(TODO) != 0:  # While there are links to check
-		window.update()
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
 				write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
@@ -966,7 +958,6 @@ def main():
 				try:
 					for item in html.iterlinks(page.content):
 						for element, attribute, link, pos in item:
-							window.update()
 							if not check_link(link):
 								links.append(link)
 				except (etree.XMLSyntaxError, etree.ParserError):
@@ -1070,7 +1061,7 @@ def main():
 			# handle_keyboard_interrupt()
 			# exit()
 			except KeyboardInterrupt:
-			   handle_keyboard_interrupt()
+					handle_keyboard_interrupt()
 
 	write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
 	save_files(WORDS)
@@ -1078,21 +1069,22 @@ def main():
 
 
 def keep_alive():
+	global window
 	init()
-   main()
+	main()
 
 
 def run():
-   window = Tk()
+	global window
 	setup_window()
 	window.mainloop()
 
+# Create window
+window = Tk()
 
 if __name__ == '__main__':
-	
 	run_process = Process(target=run)
 	keep_alive_process = Process(target=keep_alive)
-   
 	run_process.start()
 	keep_alive_process.start()
 	run_process.join()
