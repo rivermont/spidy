@@ -934,7 +934,7 @@ def main():
 
 	write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
-	while len(TODO) != 0:  # While there are links to check
+	if len(TODO) != 0:  # While there are links to check
 		window.update()
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
@@ -1070,7 +1070,7 @@ def main():
 			# handle_keyboard_interrupt()
 			# exit()
 			except KeyboardInterrupt:
-				handle_keyboard_interrupt()
+			   handle_keyboard_interrupt()
 
 	write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
 	save_files(WORDS)
@@ -1078,19 +1078,21 @@ def main():
 
 
 def keep_alive():
-	while True:
-		window.update()
+	init()
+   main()
 
 
 def run():
+   window = Tk()
+	setup_window()
 	window.mainloop()
 
 
 if __name__ == '__main__':
-	window = Tk()
-	setup_window()
+	
 	run_process = Process(target=run)
 	keep_alive_process = Process(target=keep_alive)
+   
 	run_process.start()
 	keep_alive_process.start()
 	run_process.join()
