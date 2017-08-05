@@ -59,6 +59,8 @@ from lxml import html, etree
 from os import makedirs
 from winsound import Beep
 
+from multiprocessing import Process
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -1075,10 +1077,24 @@ def main():
 	LOG_FILE.close()
 
 
+def keep_alive():
+	while True:
+		window.update()
+
+
+def run():
+	window.mainloop()
+
+
 if __name__ == '__main__':
 	window = Tk()
 	setup_window()
-	window.mainloop()
+	run_process = Process(target=run)
+	keep_alive_process = Process(target=keep_alive)
+	run_process.start()
+	keep_alive_process.start()
+	run_process.join()
+	keep_alive_process.join()
 	exit()
 else:
 	write_log('[INIT]: Successfully imported spidy Web Crawler.')
