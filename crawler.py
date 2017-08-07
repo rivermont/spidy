@@ -315,13 +315,13 @@ MIME_TYPES = {
 	'application/gzip': '.gz',
 	'application/java-archive': '.jar',
 	'application/javascript': '.js',
-	'application/js': '.js',  # Should be application/javascript
+	'application/js': '.js',
 	'application/json': '.json',
 	'application/json+oembed': '.json',
 	'application/marcxml+xml': '.mrcx',
 	'application/msword': '.doc',
 	'application/n-triples': '.nt',
-	'application/octet-stream': '.exe',  # Sometimes .bin
+	'application/octet-stream': '.exe',  # Or .bin
 	'application/ogg': '.ogx',
 	'application/opensearchdescription+xml': '.osdx',
 	'application/pdf': '.pdf',
@@ -349,7 +349,7 @@ MIME_TYPES = {
 	'application/x-research-info-systems': '.ris',
 	'application/x-rss+xml': '.rss',
 	'application/x-shockwave-flash': '.swf',
-	'application/x-tar': '.tar.gz',  # Tarballs aren't official IANA types
+	'application/x-tar': '.tar.gz',  # Tarballs aren't official IANA types (yet)
 	'application/xhtml+xml': '.xhtml',
 	'application/xml': '.xml',
 	'application/zip': '.zip',
@@ -357,7 +357,7 @@ MIME_TYPES = {
 	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'font/woff': '.woff',
 	'font/woff2': '.woff2',
-	'html': '.html',  # Incorrect
+	'html': '.html',  # Missing type
 	'image/gif': '.gif',
 	'image/jpeg': '.jpeg',
 	'image/jpg': '.jpg',
@@ -379,15 +379,15 @@ MIME_TYPES = {
 	'text/n3': '.n3',
 	'text/plain': '.txt',
 	'text/turtle': '.ttl',
-	'text/vnd.wap.wml': '.xml',  # or .wml
+	'text/vnd.wap.wml': '.wml',
 	'text/vtt': '.vtt',
 	'text/x-c': '.c',
-	'text/xml charset=utf-8': '.xml',  # Shouldn't have encoding
+	'text/xml charset=utf-8': '.xml',  # Shouldn't be sent with encoding
 	'text/xml': '.xml',  # Incorrect
 	'video/3gpp': '.3gp',
 	'video/mp4': '.mp4',
 	'video/webm': '.webp',
-	'vnd.ms-fontobject': '.eot',  # Incorrect
+	'vnd.ms-fontobject': '.eot',  # Missing type
 }
 
 # Error log location
