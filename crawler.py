@@ -337,6 +337,7 @@ MIME_TYPES = {
 	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
 	'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
 	'application/vnd.php.serialized': '.php',
+	'application/woff2': '.woff2',
 	'application/x-bibtex': '.bib',
 	'application/x-font-ttf': '.ttf',
 	'application/x-font-woff': '.woff',
@@ -354,7 +355,8 @@ MIME_TYPES = {
 	'application/zip': '.zip',
 	'audio/mpeg': '.mp3',
 	'binary/octet-stream': '.exe',  # Should be application/octet-stream
-	'font/woff': '.woff', 'font/woff2': '.woff2',
+	'font/woff': '.woff',
+	'font/woff2': '.woff2',
 	'html': '.html',  # Incorrect
 	'image/gif': '.gif',
 	'image/jpeg': '.jpeg',

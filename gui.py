@@ -1070,7 +1070,6 @@ def main():
 
 def keep_alive():
 	global window
-	init()
 	main()
 
 
