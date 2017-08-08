@@ -154,7 +154,7 @@ def make_words(site):
 	return word_list
 
 
-def save_files(word_list):
+def save_files():
 	"""
 	Saves the TODO, done, word, and bad lists into their respective files.
 	Also logs the action to the console.
@@ -176,7 +176,7 @@ def save_files(word_list):
 	write_log('[LOG]: Saved done list to {0}'.format(DONE_FILE))
 
 	if SAVE_WORDS:
-		update_file(WORD_FILE, word_list, 'words')
+		update_file(WORD_FILE, WORDS, 'words')
 
 	update_file(BAD_FILE, BAD_LINKS, 'bad links')
 
@@ -319,28 +319,26 @@ def zip_saved_files(out_file_name, directory):
 
 
 def pause():
-	command = ' '
-	# stays paused as long as the input isn't '' or 'r'(restart)
-	while command != '' and command != 'r':
-
-		# pause menu
+	INPUT = ''
+	while not bool(INPUT):
 		try:
-			command = input('\rPress enter to resume or u, s, r, or e and then enter to update, get status, restart, or prune todo\n')
-
-			# checks to see if any valid command is entered and then executes it
-			if command == 'u':
-				update()
-			elif command == 's':
-				status()
-			elif command == 'r':
-				restart()
-			elif command == 'e':
-				prune()
+			write_log(
+				'[INPUT]: spidy Pause Menu\nU: Update save files\nS: Show crawler status\nR: Reset global variables')
+			INPUT = input().lower()
+			if INPUT == 'u':
+				save_files()
+			elif INPUT == 's':
+				info_log()
+			elif INPUT == 'r':
+				init()
+				break
+			else:
+				write_log([])
 		except KeyboardInterrupt:
 			handle_keyboard_interrupt()
 		except EOFError:
 			handle_keyboard_interrupt()
-	print('[LOG] ' + getTimeNoSecs() + ': Resuming crawl')
+	write_log('[INFO]: Resuming crawler.')
 
 
 ########
@@ -505,7 +503,8 @@ no = ['n', 'no', 'N', 'No', 'False', 'false']
 # Create global variables that will be assigned in main()
 HEADER = {}
 MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES = 0, 0, 0, 0
-USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT = False, False, False, False, False, False, False
+USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES = False, False, False, False
+SAVE_WORDS, SAVE_PAGES, SAVE_COUNT = False, False, False
 TODO_FILE, DONE_FILE, WORD_FILE, BAD_FILE = '', '', '', ''
 TODO, DONE = [], []
 
@@ -526,8 +525,8 @@ def go():
 	MAX_KNOWN_ERRORS = max_known_errors.get()
 	MAX_NEW_MIMES = max_new_mimes.get()
 	CUSTOM_HEADERS = custom_headers.get()
-	global RUN
 	RUN = True
+	global RUN
 
 
 def setup_window():
@@ -980,14 +979,14 @@ def main():
 		try:
 			if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
 				write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
-				save_files(WORDS)
+				save_files()
 				exit()
 			elif COUNTER >= SAVE_COUNT:  # If it's time for an autosave
 				try:
 					write_log('[INFO]: Queried {0} links.'.format(str(COUNTER)))
 					info_log()
 					write_log('[INFO]: Saving files...')
-					save_files(WORDS)
+					save_files()
 					if ZIP_FILES:
 						zip_saved_files(t.time(), 'saved/')
 				finally:
