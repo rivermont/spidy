@@ -308,7 +308,7 @@ def err_log(url, error1, error2):
 		work_log.write(LOG_END)  # Write closing line
 
 
-def zip_files(out_file_name, directory):
+def zip_saved_files(out_file_name, directory):
 	"""
 	Creates a .zip file in the current directory containing all contents of dir, then empties.
 	"""
@@ -940,7 +940,7 @@ def main():
 					write_log('[INFO]: Saving files...')
 					save_files(WORDS)
 					if ZIP_FILES:
-						zip_files(t.time(), 'saved/')
+						zip_saved_files(t.time(), 'saved/')
 				finally:
 					# Reset variables
 					COUNTER = 0

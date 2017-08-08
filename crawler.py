@@ -308,7 +308,7 @@ def err_log(url, error1, error2):
         work_log.write(LOG_END)  # Write closing line
 
 
-def zip_files(out_file_name, directory):
+def zip_saved_files(out_file_name, directory):
     """
     Creates a .zip file in the current directory containing all contents of dir, then empties.
     """
@@ -320,14 +320,14 @@ def zip_files(out_file_name, directory):
 
 def pause():
     command = ' '
-    #stays paused as long as the input isn't '' or 'r'(restart)
+    # stays paused as long as the input isn't '' or 'r'(restart)
     while command != '' and command != 'r':
 
-        #pause menu
+        # pause menu
         try:
             command = input('\rPress enter to resume or u, s, r, or e and then enter to update, get status, restart, or prune todo\n')
 
-            #checks to see if any valid command is entered and then executes it
+            # checks to see if any valid command is entered and then executes it
             if(command == 'u'):
                 update()
             elif(command == 's'):
@@ -336,13 +336,13 @@ def pause():
                 restart()
             elif(command == 'e'):
                 prune()
-            else:
-                None
         except KeyboardInterrupt:
             end()
         except EOFError:
             end()
     print('[LOG] ' + getTimeNoSecs() + ': Resuming crawl')
+
+
 ########
 # INIT #
 ########
@@ -508,6 +508,8 @@ MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES = 0, 0, 0, 0
 USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT = False, False, False, False, False, False, False
 TODO_FILE, DONE_FILE, WORD_FILE, BAD_FILE = '', '', '', ''
 TODO, DONE = [], []
+
+
 def go():
    OVERWRITE = overwrite.get()
    RAISE_ERRORS = raise_errors.get()
@@ -526,6 +528,7 @@ def go():
    CUSTOM_HEADERS = custom_headers.get()
    global RUN
    RUN = True
+
 
 def setup_window():
     global window
@@ -548,6 +551,8 @@ def setup_window():
     max_known_errors = IntVar()
     max_new_mimes = IntVar()
     custom_headers = StringVar()
+
+	global overwrite, raise_errors, save_pages, zip_files, save_words, todo_file, done_file,
 
     # Frame to fill main window
     main_frame = ttk.Frame(window, padding='4')
@@ -983,7 +988,7 @@ def main():
                     write_log('[INFO]: Saving files...')
                     save_files(WORDS)
                     if ZIP_FILES:
-                        zip_files(t.time(), 'saved/')
+                        zip_saved_files(t.time(), 'saved/')
                 finally:
                     # Reset variables
                     COUNTER = 0
