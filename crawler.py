@@ -282,7 +282,7 @@ def log(message):
 def handle_keyboard_interrupt():
 	write_log('[ERR]: User performed a KeyboardInterrupt, stopping crawler...')
 	log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
-	save_files(WORDS)
+	save_files()
 	LOG_FILE.close()
 	exit()
 
@@ -1094,7 +1094,7 @@ def main():
 				err_log(link, 'Unknown', e)
 				if RAISE_ERRORS:
 					LOG_FILE.close()
-					save_files(WORDS)
+					save_files()
 					raise e
 
 			write_log('[LOG]: Saved error message and timestamp to error log file.')
@@ -1110,7 +1110,7 @@ def main():
 					handle_keyboard_interrupt()
 
 	write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
-	save_files(WORDS)
+	save_files()
 	LOG_FILE.close()
 
 
@@ -1131,11 +1131,12 @@ def run():
 
 # Create window
 window = Tk()
+RUN = False
 
 if __name__ == '__main__':
-	global gui
 	global RUN
-	gui = input("[INIT] Would you like to use the GUI y/n")
+	gui = input('[INIT]: Would you like to use the spidy GUI? (y/n)')
+	global gui
 	if gui == "y":
 		RUN = False
 		run_process = Process(target=run)
