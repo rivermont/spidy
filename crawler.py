@@ -1148,6 +1148,6 @@ if __name__ == '__main__':
 	else:
 		RUN = True
 		keep_alive()
-	sys.exit()
+	exit()
 else:
 	write_log('[INIT]: Successfully imported spidy Web Crawler.')
