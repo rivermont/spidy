@@ -49,6 +49,7 @@ write_log('[INIT]: Importing required libraries...')
 # Import required libraries
 import requests
 import shutil
+from urllib.parse import quote
 from lxml import html, etree
 from os import makedirs
 from winsound import Beep
@@ -161,19 +162,6 @@ def save_files():
 	update_file(BAD_FILE, BAD_LINKS, 'bad links')
 
 
-def make_file_path(url, ext):
-	"""
-	Makes a valid Windows file path for a url.
-	"""
-	url = url.replace(ext, '')  # Remove extension from path
-	for char in """/\ *""":  # Remove illegal characters from path
-		url = url.replace(char, '-')
-	for char in """|:?&<>""":
-		url = url.replace(char, '')
-	url = url[:255]  # Truncate to valid file length
-	return url
-
-
 def get_mime_type(page):
 	"""
 	Extracts the Content-Type header from the headers returned by page.
@@ -202,6 +190,16 @@ def mime_lookup(value):
 		raise HeaderError('Unknown MIME type: {0}'.format(value))
 
 
+def make_file_path(url, ext):
+	"""
+	Makes a valid Windows file path for a url.
+	"""
+	url = url.replace(ext, '')
+	url = url[:255]  # Truncate to valid file length
+	url = quote(url, safe='')
+	return url
+
+
 def save_page(url, page):
 	"""
 	Download content of url and save to the save folder.
@@ -209,10 +207,10 @@ def save_page(url, page):
 	# Make file path
 	ext = mime_lookup(get_mime_type(page))
 	cropped_url = make_file_path(url, ext)
-	file_path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
+	file_path = '{0}\\saved\\{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
 
 	# Save file
-	with open(file_path, 'wb+') as file:
+	with open(file_path, 'a+') as file:
 		file.write(page.content)
 
 
@@ -686,6 +684,7 @@ def init():
 
 
 def main():
+	init()
 	# Declare global variables
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
@@ -695,8 +694,6 @@ def main():
 	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
-
-	init()
 
 	write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
 	log('LOG: Successfully started crawler.')
@@ -735,9 +732,12 @@ def main():
 				links = []
 				try:
 					for item in html.iterlinks(page.content):
-						for element, attribute, link, pos in item:
-							if not check_link(link):
-								links.append(link)
+						try:
+							for element, attribute, link, pos in item:
+								if not check_link(link):
+									links.append(link)
+						except ValueError:
+							pass
 				except (etree.XMLSyntaxError, etree.ParserError):
 					pass
 				links = list(set(links))  # Remove duplicates and shuffle links
