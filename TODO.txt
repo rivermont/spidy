@@ -2,8 +2,6 @@ spidy Web Crawler - TODO List
 
  - Automatic bug testing - Travis CI?
  - Windows, MacOS, Linux versions
- - Automatic file/folder creation
- - Completely self-contained; start with ONLY crawler.py
  - Working GUI for lulz
  - Multiple HTTP threads?
  - Respecting robots.txt

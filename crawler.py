@@ -24,11 +24,16 @@ START_TIME = int(t.time())
 START_TIME_LONG = get_time()
 
 # Get current working directory of spidy
-from os import path
+from os import path, makedirs
 
 CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 # Open log file for logging
+try:
+	makedirs('logs\\')  # Attempts to make the logs directory
+except OSError:
+	pass  # Assumes only OSError wil complain logs/ already exists
+
 LOG_FILE = open('{0}\\logs\\spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+')
 LOG_FILE_NAME = 'logs\\spidy_log_{0}'.format(START_TIME)
 
@@ -49,7 +54,6 @@ write_log('[INIT]: Importing required libraries...')
 import requests
 import shutil
 from lxml import html, etree
-from os import makedirs
 from winsound import Beep
 
 
@@ -486,16 +490,20 @@ def init():
 
 	# Getting Arguments
 
-	write_log('[INIT]: Should spidy load settings from an available config file? (y/n):')
-	input_ = input()
-	if not bool(input_):
-		USE_CONFIG = False
-	elif input_ in yes:
-		USE_CONFIG = True
-	elif input_ in no:
+	if not path.exists('config\\'):
+		write_log('[INFO]: No config folder available.')
 		USE_CONFIG = False
 	else:
-		handle_invalid_input()
+		write_log('[INIT]: Should spidy load settings from an available config file? (y/n):')
+		input_ = input()
+		if not bool(input_):
+			USE_CONFIG = False
+		elif input_ in yes:
+			USE_CONFIG = True
+		elif input_ in no:
+			USE_CONFIG = False
+		else:
+			handle_invalid_input()
 
 	if USE_CONFIG:
 		try:
@@ -677,13 +685,19 @@ def init():
 	else:
 		write_log('[INIT]: Loading save files...')
 		# Import saved TODO file data
-		with open(TODO_FILE, 'r') as f:
-			contents = f.readlines()
+		try:
+			with open(TODO_FILE, 'r') as f:
+				contents = f.readlines()
+		except FileNotFoundError:  # If no TODO file is present
+			contents = []
 		for line in contents:
 			TODO.append(line.strip())
 		# Import saved done file data
-		with open(DONE_FILE, 'r') as f:
-			contents = f.readlines()
+		try:
+			with open(DONE_FILE, 'r') as f:
+				contents = f.readlines()
+		except FileNotFoundError:  # If no DONE file is present
+			contents = []
 		for line in contents:
 			DONE.append(line.strip())
 		del contents
@@ -695,10 +709,8 @@ def init():
 
 def main():
 	"""
-	The main function or spidy.
+	The main function of spidy.
 	"""
-	init()
-
 	# Declare global variables
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
@@ -708,6 +720,21 @@ def main():
 	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
 	global WORDS, TODO, DONE
+
+	init()
+
+	# Create required saved/ folder
+	try:
+		makedirs('saved\\')
+	except OSError:
+		pass  # Assumes only OSError wil complain saved/ already exists
+
+	# Create required files
+	with open(WORD_FILE, 'w'):
+		pass
+
+	with open(BAD_FILE, 'w'):
+		pass
 
 	write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
 	log('LOG: Successfully started crawler.')
