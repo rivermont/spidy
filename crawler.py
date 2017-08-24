@@ -1,7 +1,7 @@
-'''
+"""
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
-'''
+"""
 VERSION = '1.0'
 
 
@@ -37,10 +37,10 @@ LOG_FILE_NAME = 'logs/spidy_log_{0}'.format(START_TIME)
 
 
 def write_log(message):
-	'''
+	"""
 	Writes message to both the console and the log file.
 	NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
-	'''
+	"""
 	message = '[{0}] [spidy] '.format(get_time()) + message
 	print(message)
 	LOG_FILE.write('\n' + message)
@@ -64,9 +64,9 @@ write_log('[INIT]: Creating classes...')
 
 
 class HeaderError(Exception):
-	'''
+	"""
 	Raised when there's a problem deciphering returned HTTP headers.
-	'''
+	"""
 	pass
 
 
@@ -78,10 +78,10 @@ write_log('[INIT]: Creating functions...')
 
 
 def check_link(item):
-	'''
+	"""
 	Returns True if item is not a valid url.
 	Returns False if item passes all inspections (is valid url).
-	'''
+	"""
 	# Shortest possible url being 'http://a.b', and
 	# Links longer than 255 characters are usually useless or full of foreign characters,
 	# and will also cause problems when saving.
@@ -100,10 +100,10 @@ def check_link(item):
 
 
 def check_word(word):
-	'''
+	"""
 	Returns True if word is not valid.
 	Returns False if word passes all inspections (is valid).
-	'''
+	"""
 	# If word is longer than 16 characters (avg password length is ~8)
 	if len(word) > 16:
 		return True
@@ -112,11 +112,11 @@ def check_word(word):
 
 
 def check_path(file_path):
-	'''
+	"""
 	Checks the path of a given filename to see whether it will cause errors when saving.
 	Returns True if path is valid.
 	Returns False if path is invalid.
-	'''
+	"""
 	if len(file_path) > 256:
 		return False
 	else:
@@ -124,9 +124,9 @@ def check_path(file_path):
 
 
 def make_words(site):
-	'''
+	"""
 	Returns list of all valid words in page.
-	'''
+	"""
 	page = str(site.content)  # Get page content
 	word_list = page.split()  # Split content into lists of words, as separated by spaces
 	del page
@@ -138,10 +138,10 @@ def make_words(site):
 
 
 def save_files(word_list):
-	'''
+	"""
 	Saves the TODO, done, word, and bad lists into their respective files.
 	Also logs the action to the console.
-	'''
+	"""
 	with open(TODO_FILE, 'w') as todoList:
 		for site in TODO:
 			try:
@@ -165,22 +165,22 @@ def save_files(word_list):
 
 
 def make_file_path(url, ext):
-	'''
+	"""
 	Makes a valid Windows file path for a url.
-	'''
+	"""
 	url = url.replace(ext, '')  # Remove extension from path
-	for char in '''/\ *''':  # Remove illegal characters from path
+	for char in """/\ *""":  # Remove illegal characters from path
 		url = url.replace(char, '-')
-	for char in '''|:?&<>''':
+	for char in """|:?&<>""":
 		url = url.replace(char, '')
 	url = url[:255]  # Truncate to valid file length
 	return url
 
 
 def get_mime_type(page):
-	'''
+	"""
 	Extracts the Content-Type header from the headers returned by page.
-	'''
+	"""
 	try:
 		doc_type = str(page.headers['content-type'])
 		return doc_type
@@ -189,11 +189,11 @@ def get_mime_type(page):
 
 
 def mime_lookup(value):
-	'''
+	"""
 	Finds the correct file extension for a MIME type using the MIME_TYPES dictionary.
 	If the MIME type is blank it defaults to .html,
 	and if the MIME type is not in the dictionary it raises a HeaderError.
-	'''
+	"""
 	value = value.lower()  # Reduce to lowercase
 	value = value.split(';')[0]  # Remove possible encoding
 	if value in MIME_TYPES:
@@ -206,36 +206,36 @@ def mime_lookup(value):
 
 
 def save_page(url, page):
-	'''
+	"""
 	Download content of url and save to the save folder.
-	'''
+	"""
 	# Make file path
 	ext = mime_lookup(get_mime_type(page))
 	cropped_url = make_file_path(url, ext)
-	path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
+	file_path = '{0}/saved/{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
 
 	# Save file
-	with open(path, 'wb+') as file:
+	with open(file_path, 'wb+') as file:
 		file.write(page.content)
 
 
 def update_file(file, content, filetype):
-	with open(file, 'r+') as f:  # Open save file for reading and writing
-		file_content = f.readlines()  # Make list of all lines in file
+	with open(file, 'r+') as file:  # Open save file for reading and writing
+		file_content = file.readlines()  # Make list of all lines in file
 		file_content = [x.strip() for x in file_content]
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
 		del file_content
 		for item in content:
-			f.write('\n' + str(item))  # Write all words to file
-		f.truncate()  # Delete everything in file beyond what has been written (old stuff)
+			file.write('\n' + str(item))  # Write all words to file
+		file.truncate()  # Delete everything in file beyond what has been written (old stuff)
 	write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), filetype, file))
 
 
 def info_log():
-	'''
+	"""
 	Logs important information to the console and log file.
-	'''
+	"""
 	# Print to console
 	write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
 	write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
@@ -249,15 +249,15 @@ def info_log():
 
 
 def log(message):
-	'''
+	"""
 	Logs a single message to the error log file.
 	Prints message verbatim, so message must be formatted correctly in the function call.
-	'''
-	with open(ERR_LOG_FILE, 'a') as log:
-		log.write('\n\n======LOG======')  # Write opening line
-		log.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
-		log.write(message)  # Write message
-		log.write(LOG_END)  # Write closing line
+	"""
+	with open(ERR_LOG_FILE, 'a') as file:
+		file.write('\n\n======LOG======')  # Write opening line
+		file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
+		file.write(message)  # Write message
+		file.write(LOG_END)  # Write closing line
 
 
 def handle_keyboard_interrupt():
@@ -269,11 +269,11 @@ def handle_keyboard_interrupt():
 
 
 def err_log(url, error1, error2):
-	'''
+	"""
 	Saves the triggering error to the log file.
 	error1 is the trimmed error source.
 	error2 is the extended text of the error.
-	'''
+	"""
 	time = t.strftime('%H:%M:%S, %A %b %Y')  # Get the current time
 	with open(ERR_LOG_FILE, 'a') as work_log:
 		work_log.write('\n\n=====ERROR=====')  # Write opening line
@@ -282,9 +282,9 @@ def err_log(url, error1, error2):
 
 
 def zip_files(out_file_name, directory):
-	'''
+	"""
 	Creates a .zip file in the current directory containing all contents of dir, then empties.
-	'''
+	"""
 	shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
 	shutil.rmtree(directory)  # Deletes folder
 	makedirs(directory[:-1])  # Creates empty folder of same name (minus the '/')
@@ -393,7 +393,8 @@ HEADERS = {
 		'Connection': 'keep-alive'
 	},
 	'Chrome': {
-		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+		'(KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
 		'Accept-Language': 'en_US, en-US, en',
 		'Accept-Encoding': 'gzip',
 		'Connection': 'keep-alive'
@@ -411,7 +412,8 @@ HEADERS = {
 		'Connection': 'keep-alive'
 	},
 	'Edge': {
-		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+		'(KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
 		'Accept-Language': 'en_US, en-US, en',
 		'Accept-Encoding': 'gzip',
 		'Connection': 'keep-alive'
@@ -690,6 +692,7 @@ def main():
 			# Run
 			else:
 				page = requests.get(TODO[0], headers=HEADER)  # Get page
+				word_list = []
 				if SAVE_WORDS:
 					word_list = make_words(page)  # Get all words from page
 					WORDS.update(word_list)  # Add words to word list
