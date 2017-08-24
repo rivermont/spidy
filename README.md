@@ -2,7 +2,7 @@
 Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses the Python [`lxml`](http://lxml.de/index.html) and [`requests`](http://docs.python-requests.org) libraries to query the webpages.<br>
 Spidy then extracts all links from the DOM of the page and adds them to its list.<br>
-It does this to infinity[*](#asterisk).
+It does this to infinity!
 
 Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
@@ -78,8 +78,7 @@ Also more configuration options. Yay.
   - [Branches](#branches)
     - [master](#master)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
-    - [GUI-spidy](#gui-spidy)
-  - [TODO](#todo)
+    - [GUI-spidy](#gui-spidy
   - [Contribute](#contribute)
   - [License](#license)
 
@@ -274,15 +273,6 @@ Falconwarriorr's branch.<br>
 He has developed a bunch of features that we are working on merging into master.
 
 
-# TODO
-  - Consolidate all features of `FalconWarriorr-branch` into `master`
-  - Move GUI into `crawler.py`
-  - More documentation
-  - Upload spidy to PyPI/pip
-  - Multiple HTTP threads
-  - Respect robots.txt
-
-
 # Contribute
 We would love your help with anything!<br>
 Right now neither of us have access to a Linux or OS/X machine, so we don't have any documentation for running spidy on those systems.<br>
@@ -297,9 +287,3 @@ Thanks!
 
 
 --------------------
-
-### Asterisk
-Studies have shown that the spidy web crawler will run to infinity, however it has not yet been proven whether there is computing power *beyond* infinity.<br>
-If there is, then yes - spidy will run to infinity **and beyond**-
-
-![](/media/physics.dll.png?raw=true)

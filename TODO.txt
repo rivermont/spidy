@@ -1,0 +1,12 @@
+spidy Web Crawler - TODO List
+
+ - Add all changes since commit #121c964
+ - Automatic bug testing - Travis?
+ - Windows, MacOS, Linux versions
+ - Automatic file/folder creation
+ - Completely self-contained; start with ONLY crawler.py
+ - Working GUI for lulz
+ - Multiple HTTP threads?
+ - Respecting robots.txt
+ - More docs
+ - PyPI and pip
