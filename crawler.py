@@ -48,7 +48,6 @@ write_log('[INIT]: Importing required libraries...')
 # Import required libraries
 import requests
 import shutil
-import sys
 from lxml import html, etree
 from os import makedirs
 from winsound import Beep
