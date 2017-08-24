@@ -13,18 +13,16 @@ VERSION = '1.0'
 # This is done before anything else to enable timestamp logging at every step
 import time as t
 
-START_TIME = int(t.time())
-
 
 def get_time():
 	return t.strftime('%H:%M:%S')
-
-START_TIME_LONG = get_time()
 
 
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
 
+START_TIME = int(t.time())
+START_TIME_LONG = get_time()
 
 # Get current working directory of spidy
 from os import path
@@ -219,17 +217,17 @@ def save_page(url, page):
 		file.write(page.content)
 
 
-def update_file(file, content, filetype):
-	with open(file, 'r+') as file:  # Open save file for reading and writing
-		file_content = file.readlines()  # Make list of all lines in file
+def update_file(file, content, file_type):
+	with open(file, 'r+') as open_file:  # Open save file for reading and writing
+		file_content = open_file.readlines()  # Make list of all lines in file
 		file_content = [x.strip() for x in file_content]
 		for item in file_content:
 			content.update(item)  # Otherwise add item to content (set)
 		del file_content
 		for item in content:
-			file.write('\n' + str(item))  # Write all words to file
-		file.truncate()  # Delete everything in file beyond what has been written (old stuff)
-	write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), filetype, file))
+			open_file.write('\n' + str(item))  # Write all words to file
+		open_file.truncate()  # Delete everything in file beyond what has been written (old stuff)
+	write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), file_type, file))
 
 
 def info_log():
