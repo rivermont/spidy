@@ -1,6 +1,5 @@
 spidy Web Crawler - TODO List
 
- - Add all changes since commit #121c964
  - Automatic bug testing - Travis CI?
  - Windows, MacOS, Linux versions
  - Automatic file/folder creation
