@@ -468,8 +468,8 @@ except IndexError:
 if GET_ARGS:
 	write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes): '.format(get_time()))
+	write_log('[INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes):')
+	INPUT = input()
 	if not bool(INPUT):  # Use default value
 		OVERWRITE = False
 	elif INPUT in yes:  # Yes
@@ -480,8 +480,8 @@ if GET_ARGS:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No): '.format(get_time()))
+	write_log('[INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No):')
+	INPUT = input()
 	if not bool(INPUT):
 		RAISE_ERRORS = False
 	elif INPUT in yes:
@@ -492,8 +492,8 @@ if GET_ARGS:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes): '.format(get_time()))
+	write_log('[INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes):')
+	INPUT = input()
 	if not bool(INPUT):
 		SAVE_PAGES = True
 	elif INPUT in yes:
@@ -505,8 +505,8 @@ if GET_ARGS:
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
 	if SAVE_PAGES:
-		INPUT = input('[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No): '.format(get_time()))
+		write_log('[INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No):')
+		INPUT = input()
 		if not bool(INPUT):
 			ZIP_FILES = False
 		elif INPUT in yes:
@@ -519,8 +519,8 @@ if GET_ARGS:
 	else:
 		ZIP_FILES = False
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes): '.format(get_time()))
+	write_log('[INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes):')
+	INPUT = input()
 	if not bool(INPUT):
 		SAVE_WORDS = True
 	elif INPUT in yes:
@@ -531,8 +531,9 @@ if GET_ARGS:
 		LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 		raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid input. (yes/no)'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: What browser headers should spidy use?\n[{0}] [spidy] [INPUT]: Choices: spidy (default), Chrome, IE, Edge: '.format(get_time()))
+	write_log('[INPUT]: What browser headers should spidy use?')
+	write_log('[INPUT]: Choices: spidy (default), Chrome, IE, Edge:')
+	INPUT = input()
 	if not bool(INPUT):
 		HEADER = HEADERS['spidy']
 	else:
@@ -542,23 +543,23 @@ if GET_ARGS:
 			LOG_FILE.write('\n[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
 			raise KeyError('[{0}] [spidy] [ERR]: Invalid browser name.'.format(get_time()))
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the TODO save file (Default: crawler_todo.txt): '.format(get_time()))
+	write_log('[INPUT]: Location of the TODO save file (Default: crawler_todo.txt):')
+	INPUT = input()
 	if not bool(INPUT):
 		TODO_FILE = 'crawler_todo.txt'
 	else:
 		TODO_FILE = INPUT
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the done save file (Default: crawler_done.txt): '.format(get_time()))
+	write_log('[INPUT]: Location of the done save file (Default: crawler_done.txt):')
+	INPUT = input()
 	if not bool(INPUT):
 		DONE_FILE = 'crawler_done.txt'
 	else:
 		DONE_FILE = INPUT
 
 	if SAVE_WORDS:
-		INPUT = input('[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the word save file: (Default: crawler_words.txt): '.format(get_time()))
+		write_log('[INPUT]: Location of the word save file: (Default: crawler_words.txt):')
+		INPUT = input()
 		if not bool(INPUT):
 			WORD_FILE = 'crawler_words.txt'
 		else:
@@ -566,15 +567,15 @@ if GET_ARGS:
 	else:
 		WORD_FILE = 'None'
 
-	INPUT = input('[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: Location of the bad link save file (Default: crawler_bad.txt): '.format(get_time()))
+	write_log('[INPUT]: Location of the bad link save file (Default: crawler_bad.txt):')
+	INPUT = input()
 	if not bool(INPUT):
 		BAD_FILE = 'crawler_bad.txt'
 	else:
 		BAD_FILE = INPUT
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many queried links should spidy autosave? (default 100): '.format(get_time()))
+	write_log('[INPUT]: After how many queried links should spidy autosave? (default 100):')
+	INPUT = input()
 	if not bool(INPUT):
 		SAVE_COUNT = 100
 	elif not INPUT.isdigit():
@@ -584,8 +585,8 @@ if GET_ARGS:
 		SAVE_COUNT = int(INPUT)
 
 	if not RAISE_ERRORS:
-		INPUT = input('[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
-		LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many new errors should spidy stop? (default: 5): '.format(get_time()))
+		write_log('[INPUT]: After how many new errors should spidy stop? (default: 5):')
+		INPUT = input()
 		if not bool(INPUT):
 			MAX_NEW_ERRORS = 5
 		elif not INPUT.isdigit():
@@ -596,8 +597,8 @@ if GET_ARGS:
 	else:
 		MAX_NEW_ERRORS = 1
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many known errors should spidy stop? (default: 10): '.format(get_time()))
+	write_log('[INPUT]: After how many known errors should spidy stop? (default: 10):')
+	INPUT = input()
 	if not bool(INPUT):
 		MAX_KNOWN_ERRORS = 20
 	elif not INPUT.isdigit():
@@ -606,8 +607,8 @@ if GET_ARGS:
 	else:
 		MAX_KNOWN_ERRORS = int(INPUT)
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
-	LOG_FILE.write('\n[{0}] [spidy] [INPUT]: After how many HTTP errors should spidy stop? (default: 20): '.format(get_time()))
+	write_log('[INPUT]: After how many HTTP errors should spidy stop? (default: 20):')
+	INPUT = input()
 	if not bool(INPUT):
 		MAX_HTTP_ERRORS = 50
 	elif not INPUT.isdigit():
@@ -616,8 +617,8 @@ if GET_ARGS:
 	else:
 		MAX_HTTP_ERRORS = int(INPUT)
 
-	INPUT = input('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
-	LOG_FILE.write('[{0}] [spidy] [INPUT]: After how many unrecognized MIME types should spidy stop? (default: 10)'.format(get_time()))
+	write_log('[INPUT]: After how many HTTP errors should spidy stop? (default: 20):')
+	INPUT = input()
 	if not bool(INPUT):
 		MAX_NEW_MIMES = 10
 	elif not INPUT.isdigit():
