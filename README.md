@@ -19,6 +19,9 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 
 # New Features!
 
+### Release v1.0!
+[spidy Web Crawler Release 1.0](https://github.com/rivermont/spidy/releases/tag/1.0)
+
 ### PEP 8 Compliance - #[133dcdc](https://github.com/rivermont/spidy/commit/133dcdc02a0d63d94725cb86c089b7fdb3eba2d4)
 98% of code now obeys the PEP 8 standard.<br>
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) is the Style Guide for all Python code.
@@ -26,10 +29,6 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 ### Better File Saving - #[8c0dcd4](https://github.com/rivermont/spidy/commit/8c0dcd4d637eadde4326065cbed74eafcb381dbe)
 Now uses the `Content-Type` header to determine how to save files.<br>
 Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
-
-### Browser Imitation - #[fa106a3](https://github.com/rivermont/spidy/commit/fa106a3d30f383b07dcf57b431448bfeae173830)
-Support for Chrome, Internet Explorer, and Microsoft Edge.<br>
-Also more configuration options. Yay.
 
 # Table of Contents
 
