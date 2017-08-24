@@ -450,8 +450,7 @@ WORDS = set([])
 yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
 no = ['n', 'no', 'N', 'No', 'False', 'false']
 
-# Declare variables empty that will need to be global
-
+# Initialize variables as empty that will be needed in the global scope
 HEADER = ''
 SAVE_COUNT, MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES = 0, 0, 0, 0, 0
 OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, GET_ARGS = False, False, False, False, False, False
@@ -460,6 +459,10 @@ TODO, DONE = [], []
 
 
 def init():
+	"""
+	Sets all of the variables for spidy,
+	and as a result can be used for effectively resetting the crawler.
+	"""
 	# Declare global variables
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
@@ -671,6 +674,9 @@ def init():
 
 
 def main():
+	"""
+	The main function or spidy.
+	"""
 	init()
 
 	# Declare global variables
