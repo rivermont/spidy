@@ -1,5 +1,6 @@
 spidy Web Crawler - TODO List
 
+ - Move page crawling/downloading/scraping to a crawl_page() function
  - Automatic bug testing - Travis CI?
  - Windows, MacOS, Linux versions
  - Working GUI for lulz
