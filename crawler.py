@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.0.1'
+VERSION = '1.0.2'
 
 ##########
 # IMPORT #
@@ -356,8 +356,10 @@ MIME_TYPES = {
 	'application/xml': '.xml',
 	'application/zip': '.zip',
 	'audio/mpeg': '.mp3',
+	'audio/x-m4a': '.m4a',
 	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'font/woff': '.woff', 'font/woff2': '.woff2',
+	'font/ttf': '.ttf',
 	'html': '.html',  # Incorrect
 	'image/gif': '.gif',
 	'image/jpeg': '.jpeg',
@@ -375,6 +377,7 @@ MIME_TYPES = {
 	'text/calendar': '.ics',
 	'text/css': '.css',
 	'text/csv': '.csv',
+	'text/directory': '.vcf',
 	'text/html': '.html',
 	'text/html,application/xhtml+xml,application/xml': '.html',  # Misunderstood 'Accept' header?
 	'text/javascript': '.js',
