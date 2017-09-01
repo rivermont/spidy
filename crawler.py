@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 
 ##########
 # IMPORT #
@@ -315,12 +315,14 @@ MIME_TYPES = {
 	'application/epub+zip': '.epub',
 	'application/font-woff': '.woff',
 	'application/font-woff2': '.woff2',
+	'application/force-download': '.bin',  # No idea what this is so saving as .bin
 	'application/gzip': '.gz',
 	'application/java-archive': '.jar',
 	'application/javascript': '.js',
 	'application/js': '.js',  # Should be application/javascript
 	'application/json': '.json',
 	'application/json+oembed': '.json',
+	'application/ld+json': '.jsonld',
 	'application/marcxml+xml': '.mrcx',
 	'application/msword': '.doc',
 	'application/n-triples': '.nt',
@@ -332,13 +334,17 @@ MIME_TYPES = {
 	'application/rdf+xml': '.rdf',
 	'application/rsd+xml': '.rsd',
 	'application/rss+xml': '.rss',
+	'application/txt': '.txt',
 	'application/vnd.ms-cab-compressed': '.cab',
 	'application/vnd.ms-excel': '.',
 	'application/vnd.ms-fontobject': '.eot',
 	'application/x-endnote-refer': '.enw',
+	'application/x-www-form-urlencoded': '.png',
+	'application/vnd.android.package-archive': '.apk',
 	'application/vnd.oasis.opendocument.text': '.odt',
 	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
 	'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+	'application/vnd.oasis.opendocument.formula-template': '.otf',
 	'application/vnd.php.serialized': '.php',
 	'application/x-bibtex': '.bib',
 	'application/x-font-ttf': '.ttf',
@@ -360,6 +366,7 @@ MIME_TYPES = {
 	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'font/woff': '.woff', 'font/woff2': '.woff2',
 	'font/ttf': '.ttf',
+	'font/otf': '.otf',
 	'html': '.html',  # Incorrect
 	'image/gif': '.gif',
 	'image/jpeg': '.jpeg',
@@ -387,6 +394,7 @@ MIME_TYPES = {
 	'text/vnd.wap.wml': '.xml',  # or .wml
 	'text/vtt': '.vtt',
 	'text/x-c': '.c',
+	'text/x-wiki': '.txt',  # Doesn't seem to have a filetype of its own
 	'text/xml charset=utf-8': '.xml',  # Shouldn't have encoding
 	'text/xml': '.xml',  # Incorrect
 	'video/3gpp': '.3gp',
