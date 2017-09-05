@@ -11,25 +11,46 @@ If you're looking for the plain English, check out the [README](https://github.c
   - [spidy](#spidy-web-crawler)
   - [Table of Contents](#table-of-contents)
   - [Info](#info)
-  - [Errors](#errors)
+  - [Classes](#Classes)
     - [HeaderError](#headererror--source)
   - [Functions](#functions)
     - [check_link](#check_link--source)
 	- [check_path](#check_path--source)
 	- [check_word](#check_word--source)
+	- [err_log](#err_log--source)
+	- [get_mime_type](#get_mime_type--source)
+	- [handle_invalid_input](#handle_invalid_input--source)
+	- [handle_keyboard_interrupt](#handle_keyboard_interrupt--source)
 	- [info_log](#info_log--source)
+	- [log](#log--source)
+	- [make_file_path](#make_file_path--source)
 	- [make_words](#make_words--source)
     - [mime_lookup](#mime_lookup--source)
 	- [save_files](#save_files--source)
+	- [save_page](#save_page--source)
+	- [update_file](#update_file--source)
+	- [zip_saved_files](#zip_saved_files--source)
   - [Global Variables](#global-variables)
+    - [BAD_LINKS](#bad_links--source)
+    - [COUNTER](#counter--source)
     - [CRAWLER_DIR](#crawler_dir--source)
-	- [KILL_LIST](#kill_list--source)
+    - [ERR_LOG_FILE](#err_log_file--source)
+    - [ERR_LOG_FILE_NAME](#err_log_file_name--source)
+    - [HEADERS](#headers--source)
+    - [HTTP_ERROR_COUNT](#http_error_count--source)
+    - [KILL_LIST](#kill_list--source)
+    - [KNOWN_ERROR_COUNT](#known_error_count--source)
+    - [LOG_END](#log_end--source)
 	- [LOG_FILE](#log_file--source)
 	- [LOG_FILE_NAME](#log_file_name--source)
     - [MIME_TYPES](#mime_types--source)
+    - [NEW_ERROR_COUNT](#new_error_count--source)
+    - [NEW_MIME_COUNT](#new_mime_count--source)
+    - [START](#start--source)
 	- [START_TIME](#start_time--source)
 	- [START_TIME_LONG](#start_time_long--source)
 	- [VERSION](#version--source)
+	- [WORDS](#words--source)       
 
 
 # Info
@@ -39,8 +60,9 @@ A good read about web crawlers and some theory that goes with them is Michael Ni
 It helped me understand how a web crawler should run, and is just a good article in general.
 
 
-# Errors
-This section lists the custom Errors and Exceptions in `crawler.py` that may be raised throughout the code.
+# Classes
+This section lists the custom classes in `crawler.py`.<br>
+Most are Errors or Exceptions that may be raised throughout the code.
 
 ## `HeaderError` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
 Raised when there is a problem deciphering HTTP headers returned from a website.
@@ -77,6 +99,12 @@ TODO
 TODO
 
 ## `get_mime_type` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L159))
+TODO
+
+## `get_time` - ([Source](https://github.com/rivermont/spidy/blobl/master/crawler.py#L16))
+Returns the current time in the format `HH:MM::SS`
+
+## `get_full_time` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L20))
 TODO
 
 ## `handle_KeyboardInterrupt` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L247))

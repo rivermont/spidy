@@ -12,7 +12,7 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 [![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 <br>
-[![Lines of Code: 1051](https://img.shields.io/badge/lines%20of%20code-1130-green.svg)](#)
+[![Lines of Code: 904](https://img.shields.io/badge/lines%20of%20code-904-green.svg)](#)
 [![Lines of Docs: 529](https://img.shields.io/badge/lines%20of%20docs-529-orange.svg)](#)
 
 --------------------
@@ -60,24 +60,21 @@ Also cut the number of requests to sites in half, effectively killing HTTP 429 E
       - [Force Quit](#force-quit)
       - [End](#end)
   - [Files](#files)
-      - [README.md](#readmemd)
+      - [config/](#config)
       - [media/](#media)
     - [Save Files](#save-files)
       - [crawler_todo.txt](#crawler-todotxt)
       - [crawler_done.txt](#crawler-donetxt)
-      - [crawler_log.txt](#crawler-logtxt)
-      - [crawler_words.txt](#crawler-wordstxt)
       - [crawler_bad.txt](#crawler-badtxt)
+      - [crawler_words.txt](#crawler-wordstxt)
     - [Run Files](#run-files)
-      - [clear.bat](#clearbat)
       - [crawler.py](#crawlerpy)
 	  - [gui.py](#guipy)
-      - [post-process.py](#post-processpy)
-      - [run.bat](#runbat)
   - [Branches](#branches)
     - [master](#master)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
-    - [GUI-spidy](#gui-spidy
+    - [GUI-spidy](#gui-spidy)
+  - [TODO](#todo)
   - [Contribute](#contribute)
   - [License](#license)
 
@@ -218,13 +215,14 @@ Sample log after crawler visits all links in TODO.
 
 # Files
 
-### README.md
-This readme file.
+### config/
+Contains configuration files.
 
 ### media/
-Images used in this readme file.
+Contains the images used in this README file.
 
 ## Save Files
+Some of these files will be created when `crawler.py` is first run.
 
 ### crawler_todo.txt
 Contains all of the links that spidy has found but not yet crawled.
@@ -232,20 +230,13 @@ Contains all of the links that spidy has found but not yet crawled.
 ### crawler_done.txt
 Contains all of the links that spidy has already visited.
 
-### crawler_log.txt
-The log file for the crawler.<br>
-Contains errors and other important information.
+### crawler_bad.txt
+Contains all of the links that caused errors for some reason.
 
 ### crawler_words.txt
 Contains all of the words that spidy has found.
 
-### crawler_bad.txt
-Contains all of the links that caused errors for some reason.
-
 ## Run Files
-
-### clear.bat
-Clears all save files by deleting them and creating empty ones.
 
 ### crawler.py
 The important code. This is what you will run to crawl links and save information.<br>
@@ -253,13 +244,6 @@ Because the internet is so big, this will practically never end.
 
 ### gui.py
 The development file for a GUI.
-
-### post-process.py
-This removes all the lines in `crawler_words.txt` longer than 16 characters.<br>
-Run this after running crawler.py for a while.
-
-### run.bat
-A Windows batch file to run the program.<br>
 
 
 # Branches
@@ -278,11 +262,22 @@ Right now neither of us have access to a Linux or OS/X machine, so we don't have
 If you find a bug raise an issue, and if you have a suggestion go ahead and fork it.<br>
 We will happily look at anything that you build off of spidy; we're not very creative people and we know that there're more ideas out there!
 
+## TODO
+This project is far from done; this is a list of planned features:
+
+  - Move page crawling/scraping/saving to a `crawl()` function.
+  - Automatic bug testing with Travis CI
+  - Versions for Windows, Mac, Linux
+  - Working GUI
+  - Multiple HTTP threads at once - need to communicate
+  - Respecting of `robots.txt`
+  - More thorough documentation
+  - PyPI and pip
+
 
 # License
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
 Honestly, if you link to this repo and credit `rivermont` and `FalconWarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.<br>
 Thanks!
-
 
 --------------------

@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.0.3'
+VERSION = '1.1.0'
 
 ##########
 # IMPORT #
@@ -217,6 +217,9 @@ def save_page(url, page):
 
 	# Save file
 	with open(file_path, 'wb+') as file:
+		file.write(bytes('''<!-- {0} -->
+<!-- Downloaded with the spidy Web Crawler -->
+<!-- https://github.com/rivermont/spidy -->'''.format(url), 'ascii'))
 		file.write(page.content)
 
 
@@ -371,6 +374,7 @@ MIME_TYPES = {
 	'image/gif': '.gif',
 	'image/jpeg': '.jpeg',
 	'image/jpg': '.jpg',
+	'image/pjpeg': '.jpg',
 	'image/png': '.png',
 	'image/ico': '.ico',
 	'image/svg+xml': '.svg',
@@ -401,6 +405,7 @@ MIME_TYPES = {
 	'video/3gp': '.3gp',
 	'video/mp4': '.mp4',
 	'video/webm': '.webp',
+	'video/mpeg': '.mpeg',
 	'vnd.ms-fontobject': '.eot',  # Incorrect
 }
 
