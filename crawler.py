@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 ##########
 # IMPORT #
@@ -86,6 +86,9 @@ def check_link(item):
 	# Shortest possible url being 'http://a.b', and
 	# Links longer than 255 characters are usually useless or full of foreign characters,
 	# and will also cause problems when saving.
+	if RESTRICT:
+		if DOMAIN not in item:
+			return True
 	if len(item) < 10 or len(item) > 255:
 		return True
 	# Must be an http(s) link
@@ -217,9 +220,10 @@ def save_page(url, page):
 
 	# Save file
 	with open(file_path, 'wb+') as file:
-		file.write(bytes('''<!-- {0} -->
+		file.write(bytes('''<!-- "{0}" -->
 <!-- Downloaded with the spidy Web Crawler -->
-<!-- https://github.com/rivermont/spidy -->'''.format(url), 'ascii'))
+<!-- https://github.com/rivermont/spidy -->
+'''.format(url), 'ascii'))
 		file.write(page.content)
 
 
@@ -406,12 +410,13 @@ MIME_TYPES = {
 	'video/mp4': '.mp4',
 	'video/webm': '.webp',
 	'video/mpeg': '.mpeg',
-	'vnd.ms-fontobject': '.eot',  # Incorrect
+	'video/x-flv': '.flv',
+	'vnd.ms-fontobject': '.eot'  # Incorrect
 }
 
 # Error log location
-ERR_LOG_FILE = '{0}/logs/spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
-ERR_LOG_FILE_NAME = 'logs/spidy_error_log_{0}.txt'.format(START_TIME)
+ERR_LOG_FILE = '{0}\\logs\\spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
+ERR_LOG_FILE_NAME = 'logs\\spidy_error_log_{0}.txt'.format(START_TIME)
 
 # User-Agent Header Strings
 HEADERS = {
@@ -485,6 +490,7 @@ no = ['n', 'no', 'N', 'No', 'False', 'false']
 HEADER = ''
 SAVE_COUNT, MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS = 0, 0, 0, 0
 MAX_NEW_MIMES = 0
+RESTRICT, DOMAIN = False, ''
 USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES = False, False, False, False
 SAVE_PAGES, SAVE_WORDS = False, False
 TODO_FILE, DONE_FILE, WORD_FILE, BAD_FILE = '', '', '', ''
@@ -504,6 +510,7 @@ def init():
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
 	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
+	global RESTRICT, DOMAIN
 	global WORDS, TODO, DONE
 
 	# Getting Arguments
@@ -600,6 +607,25 @@ def init():
 		else:
 			handle_invalid_input()
 
+		write_log('[INPUT]: Should spidy restrict crawling to a specific domain only? (y/n) (Default: No):')
+		input_ = input()
+		if not bool(input_):
+			RESTRICT = False
+		elif input_ in yes:
+			RESTRICT = True
+		elif input_ in no:
+			RESTRICT = False
+		else:
+			handle_invalid_input()
+
+		if RESTRICT:
+			write_log('[INPUT]: What domain should crawling be limited to? Can be subdomains, http/https, etc.')
+			input_ = input()
+			try:
+				DOMAIN = input_
+			except KeyError:
+				handle_invalid_input('string')
+
 		write_log('[INPUT]: What HTTP browser headers should spidy imitate?')
 		write_log('[INPUT]: Choices: spidy (default), Chrome, IE, Edge, Custom:')
 		input_ = input()
@@ -684,7 +710,7 @@ def init():
 		else:
 			MAX_HTTP_ERRORS = int(input_)
 
-		write_log('[INPUT]: After how many HTTP errors should spidy stop? (default: 20):')
+		write_log('[INPUT]: After encountering how many MIME types should spidy stop? (default: 20):')
 		input_ = input()
 		if not bool(input_):
 			MAX_NEW_MIMES = 10
@@ -737,6 +763,7 @@ def main():
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
 	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
 	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
+	global RESTRICT, DOMAIN
 	global WORDS, TODO, DONE
 
 	init()
@@ -902,3 +929,4 @@ if __name__ == '__main__':
 	main()
 else:
 	write_log('[INIT]: Successfully imported spidy Web Crawler.')
+	write_log('[INIT]: Call `spidy.main()` to start crawling, or refer to docs.md to see use of specific functions.')

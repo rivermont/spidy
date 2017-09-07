@@ -7,13 +7,13 @@ Pretty simple!
 Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
 
+[![Version: 1.2.0](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-[![Contains Vegans](https://img.shields.io/badge/contains-vegans-orange.svg)](#)
 <br>
-[![Lines of Code: 904](https://img.shields.io/badge/lines%20of%20code-904-green.svg)](#)
-[![Lines of Docs: 529](https://img.shields.io/badge/lines%20of%20docs-529-orange.svg)](#)
+[![Lines of Code: 933](https://img.shields.io/badge/lines%20of%20code-933-green.svg)](#)
+[![Lines of Docs: 534](https://img.shields.io/badge/lines%20of%20docs-534-orange.svg)](#)
 
 --------------------
 
@@ -73,7 +73,6 @@ Also cut the number of requests to sites in half, effectively killing HTTP 429 E
   - [Branches](#branches)
     - [master](#master)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
-    - [GUI-spidy](#gui-spidy)
   - [TODO](#todo)
   - [Contribute](#contribute)
   - [License](#license)
@@ -272,7 +271,7 @@ This project is far from done; this is a list of planned features:
   - Multiple HTTP threads at once - need to communicate
   - Respecting of `robots.txt`
   - More thorough documentation
-  - PyPI and pip
+  - spidy on PyPI and pip
 
 
 # License

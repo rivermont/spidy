@@ -13,6 +13,12 @@ SAVE_WORDS = <True/False>
 # Whether to zip saved pages when autosaving.
 ZIP_FILES = <True/False>
 
+# Whether to restrict crawling to a single domain or not.
+RESTRICT = <True/False>
+
+# The domain within which to restrict crawling.
+DOMAIN = ''
+
 # Location of the TODO save file.
 TODO_FILE = ''
 
