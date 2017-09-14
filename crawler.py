@@ -80,6 +80,31 @@ class HeaderError(Exception):
 write_log('[INIT]: Creating functions...')
 
 
+def crawl(url):
+	global TODO
+	page = requests.get(url, headers=HEADER)  # Get page
+	word_list = []
+	if SAVE_WORDS:
+		word_list = make_words(page)
+		WORDS.update(word_list)
+	try:
+		links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
+	except (etree.XMLSyntaxError, etree.ParserError):
+		links = []
+	links = list(set(links))
+	TODO += links
+	DONE.append(url)
+	if SAVE_PAGES:
+		save_page(url, page)
+	if SAVE_WORDS:
+		# Announce which link was crawled
+		write_log(
+				'[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), url))
+	else:
+		# Announce which link was crawled
+		write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), url))
+
+
 def check_link(item):
 	"""
 	Returns True if item is not a valid url.
@@ -811,29 +836,9 @@ def main():
 					BAD_LINKS.clear()
 			elif check_link(TODO[0]):  # If the link is invalid
 				del TODO[0]
-			# Run
+			# Crawl the page
 			else:
-				page = requests.get(TODO[0], headers=HEADER)  # Get page
-				word_list = []
-				if SAVE_WORDS:
-					word_list = make_words(page)  # Get all words from page
-					WORDS.update(word_list)  # Add words to word list
-				try:
-					links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
-				except (etree.XMLSyntaxError, etree.ParserError):
-					links = []
-				links = list(set(links))  # Remove duplicates and shuffle links
-				TODO += links  # Add scraped links to the TODO list
-				DONE.append(TODO[0])  # Add crawled link to done list
-				if SAVE_PAGES:
-					save_page(TODO[0], page)
-				if SAVE_WORDS:
-					# Announce which link was crawled
-					write_log(
-						'[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), TODO[0]))
-				else:
-					# Announce which link was crawled
-					write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), TODO[0]))
+				crawl(TODO[0])
 				del TODO[0]  # Remove crawled link from TODO list
 				COUNTER += 1
 

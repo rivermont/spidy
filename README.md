@@ -268,8 +268,8 @@ We will happily look at anything that you build off of spidy; we're not very cre
 ## TODO
 This project is far from done; this is a list of planned features:
 
-  - Move page crawling/scraping/saving to a `crawl()` function.
   - Automatic bug testing with Travis CI
+  - Automatic bug submission with Sentry
   - Versions for Windows, Mac, Linux
   - Working GUI
   - Multiple HTTP threads at once - need to communicate
