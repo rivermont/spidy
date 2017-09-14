@@ -273,7 +273,7 @@ def log(message):
 
 
 def handle_keyboard_interrupt():
-	write_log('[ERR]: User performed a KeyboardInterrupt, stopping crawler...')
+	write_log('[ERROR]: User performed a KeyboardInterrupt, stopping crawler...')
 	log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
 	save_files()
 	LOG_FILE.close()
@@ -284,8 +284,8 @@ def handle_invalid_input(type_='input'):
 	"""
 	Handles an invalid user input, usually from the input() function.
 	"""
-	LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
-	raise SyntaxError('[{0}] [spidy] [ERR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
+	LOG_FILE.write('\n[{0}] [spidy] [ERROR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
+	raise SyntaxError('[{0}] [spidy] [ERROR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
 
 
 def err_log(url, error1, error2):
@@ -545,8 +545,8 @@ def init():
 				for line in file.readlines():
 					exec(line, globals())
 		except FileNotFoundError:
-			LOG_FILE.write('\n[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
-			raise FileNotFoundError('[{0}] [spidy] [ERR]: Please use a valid .cfg file.'.format(get_time()))
+			LOG_FILE.write('\n[{0}] [spidy] [ERROR]: Please use a valid .cfg file.'.format(get_time()))
+			raise FileNotFoundError('[{0}] [spidy] [ERROR]: Please use a valid .cfg file.'.format(get_time()))
 
 	else:
 		write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
@@ -819,7 +819,7 @@ def main():
 					word_list = make_words(page)  # Get all words from page
 					WORDS.update(word_list)  # Add words to word list
 				try:
-					links = [link for element, attribute, link, pos in html.iterlinks(page.text)]
+					links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
 				except (etree.XMLSyntaxError, etree.ParserError):
 					links = []
 				links = list(set(links))  # Remove duplicates and shuffle links
@@ -848,55 +848,50 @@ def main():
 
 			if OSError in err_mro:
 				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: An OSError occurred.')
+				write_log('[ERROR]: An OSError occurred.')
 				err_log(link, 'OSError', e)
 				BAD_LINKS.add(link)
 
-			# HTTP Errors
-			# elif str(e) == 'HTTP Error 403: Forbidden':
-			# 	write_log('[ERR]: HTTP 403: Access Forbidden.')
-			# 	BAD_LINKS.add(link)
+			elif str(e) == 'HTTP Error 403: Forbidden':
+				write_log('[ERROR]: HTTP 403: Access Forbidden.')
+				BAD_LINKS.add(link)
 
-			# elif str(e) == 'HTTP Error 429: Too Many Requests':
-			# 	write_log('[ERR]: HTTP 429: Too Many Requests.')
-			# 	TODO += TODO[0]  # Move link to end of TODO list
+			elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
+				KNOWN_ERROR_COUNT += 1
+				write_log('[ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.')
+				err_log(link, 'XMLSyntaxError', e)
 
-			# elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
-			# 	KNOWN_ERROR_COUNT += 1
-			# 	write_log('[ERR]: An XMLSyntaxError occurred. A web dev screwed up somewhere.')
-			# 	err_log(link, 'XMLSyntaxError', e)
+			elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
+				KNOWN_ERROR_COUNT += 1
+				write_log('[ERROR]: An SSLError occurred. Site is using an invalid certificate.')
+				err_log(link, 'SSLError', e)
+				BAD_LINKS.add(link)
 
-			# elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
-			# 	KNOWN_ERROR_COUNT += 1
-			# 	write_log('[ERR]: An SSLError occurred. Site is using an invalid certificate.')
-			# 	err_log(link, 'SSLError', e)
-			# 	BAD_LINKS.add(link)
+			elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
+				KNOWN_ERROR_COUNT += 1
+				write_log('[ERROR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.')
+				err_log(link, 'ConnectionError', e)
 
-			# elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
-			# 	KNOWN_ERROR_COUNT += 1
-			# 	write_log('[ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.')
-			# 	err_log(link, 'ConnectionError', e)
+			elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
+				KNOWN_ERROR_COUNT += 1
+				write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
+				err_log(link, 'TooManyRedirects', e)
+				BAD_LINKS.add(link)
 
-			# elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
-			# 	KNOWN_ERROR_COUNT += 1
-			# 	write_log('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
-			# 	err_log(link, 'TooManyRedirects', e)
-			# 	BAD_LINKS.add(link)
+			elif requests.exceptions.ContentDecodingError in err_mro:
+				# Received response with content-encoding: gzip, but failed to decode it.
+				KNOWN_ERROR_COUNT += 1
+				write_log('[ERROR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
+				err_log(link, 'ContentDecodingError', e)
 
-			# elif requests.exceptions.ContentDecodingError in err_mro:
-			# 	# Received response with content-encoding: gzip, but failed to decode it.
-			# 	KNOWN_ERROR_COUNT += 1
-			# 	write_log('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
-			# 	err_log(link, 'ContentDecodingError', e)
-
-			# elif 'Unknown MIME type' in str(e):
-			# 	NEW_MIME_COUNT += 1
-			# 	write_log('[ERR]: Unknown MIME type: {0}'.format(str(e)[18:]))
-			# 	err_log(link, 'Unknown MIME', e)
+			elif 'Unknown MIME type' in str(e):
+				NEW_MIME_COUNT += 1
+				write_log('[ERROR]: Unknown MIME type: {0}'.format(str(e)[18:]))
+				err_log(link, 'Unknown MIME', e)
 
 			else:  # Any other error
 				NEW_ERROR_COUNT += 1
-				write_log('[ERR]: An unknown error happened. New debugging material!')
+				write_log('[ERROR]: An unknown error happened. New debugging material!')
 				err_log(link, 'Unknown', e)
 				if RAISE_ERRORS:
 					LOG_FILE.close()
@@ -911,7 +906,7 @@ def main():
 		finally:
 			try:
 				TODO = list(set(TODO))  # Removes duplicates and shuffles links so trees don't form.
-				# For debugging purposes. Uncomment to check one link and then stop:
+				# For debugging purposes; uncomment to check one link and then stop:
 				# handle_keyboard_interrupt()
 				# exit()
 			except KeyboardInterrupt:

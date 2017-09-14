@@ -7,7 +7,7 @@ Pretty simple!
 Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
 
-[![Version: 1.3.0](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
+[![Version: 1.3.0](https://img.shields.io/badge/version-1.3.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
