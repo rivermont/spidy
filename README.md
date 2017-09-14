@@ -7,20 +7,21 @@ Pretty simple!
 Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)
 
-[![Version: 1.2.0](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
+[![Version: 1.3.0](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 <br>
-[![Lines of Code: 933](https://img.shields.io/badge/lines%20of%20code-933-green.svg)](#)
-[![Lines of Docs: 537](https://img.shields.io/badge/lines%20of%20docs-537-orange.svg)](#)
+[![Lines of Code: 930](https://img.shields.io/badge/lines%20of%20code-930-green.svg)](#)
+[![Lines of Docs: 538](https://img.shields.io/badge/lines%20of%20docs-538-orange.svg)](#)
 
 --------------------
 
 # New Features!
 
 ### Domain Limiting - #[e229b01](https://github.com/rivermont/spidy/commit/e229b01eed7e1f95530d06afc671e40dbf4dac53)
-Scrape only a single site instead of the whole internet. May use slightly less space on your disk.
+Scrape only a single site instead of the whole internet. May use slightly less space on your disk.<br>
+See `/config/wsj.cfg` for an example.
 
 ### Release v1.0!
 [spidy Web Crawler Release 1.0](https://github.com/rivermont/spidy/releases/tag/1.0)

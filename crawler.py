@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.2.0'
+VERSION = '1.3.0'
 
 ##########
 # IMPORT #
@@ -20,6 +20,7 @@ def get_time():
 def get_full_time():
 	return t.strftime('%H:%M:%S, %A %b %Y')
 
+
 START_TIME = int(t.time())
 START_TIME_LONG = get_time()
 
@@ -34,7 +35,7 @@ try:
 except OSError:
 	pass  # Assumes only OSError wil complain logs/ already exists
 
-LOG_FILE = open('{0}\\logs\\spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+')
+LOG_FILE = open('{0}\\logs\\spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = 'logs\\spidy_log_{0}'.format(START_TIME)
 
 
@@ -46,6 +47,7 @@ def write_log(message):
 	message = '[{0}] [spidy] '.format(get_time()) + message
 	print(message)
 	LOG_FILE.write('\n' + message)
+
 
 write_log('[INIT]: Starting spidy Web Crawler version {0}'.format(VERSION))
 write_log('[INIT]: Importing required libraries...')
@@ -131,7 +133,7 @@ def make_words(site):
 	"""
 	Returns list of all valid words in page.
 	"""
-	page = str(site.content)  # Get page content
+	page = site.text  # Get page content
 	word_list = page.split()  # Split content into lists of words, as separated by spaces
 	del page
 	word_list = list(set(word_list))  # Remove duplicates
@@ -146,7 +148,7 @@ def save_files():
 	Saves the TODO, done, word, and bad lists into their respective files.
 	Also logs the action to the console.
 	"""
-	with open(TODO_FILE, 'w') as todoList:
+	with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
 		for site in TODO:
 			try:
 				todoList.write(site + '\n')  # Save TODO list
@@ -154,7 +156,7 @@ def save_files():
 				continue
 	write_log('[LOG]: Saved TODO list to {0}'.format(TODO_FILE))
 
-	with open(DONE_FILE, 'w') as done_list:
+	with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
 		for site in DONE:
 			try:
 				done_list.write(site + '\n')  # Save done list
@@ -219,16 +221,16 @@ def save_page(url, page):
 	file_path = '{0}\\saved\\{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
 
 	# Save file
-	with open(file_path, 'wb+') as file:
-		file.write(bytes('''<!-- "{0}" -->
+	with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
+		file.write('''<!-- "{0}" -->
 <!-- Downloaded with the spidy Web Crawler -->
 <!-- https://github.com/rivermont/spidy -->
-'''.format(url), 'ascii'))
-		file.write(page.content)
+'''.format(url))
+		file.write(page.text)
 
 
 def update_file(file, content, file_type):
-	with open(file, 'r+') as open_file:  # Open save file for reading and writing
+	with open(file, 'r+', encoding='utf-8', errors='ignore') as open_file:  # Open save file for reading and writing
 		file_content = open_file.readlines()  # Make list of all lines in file
 		contents = []
 		for x in file_content:
@@ -263,7 +265,7 @@ def log(message):
 	Logs a single message to the error log file.
 	Prints message verbatim, so message must be formatted correctly in the function call.
 	"""
-	with open(ERR_LOG_FILE, 'a') as open_file:
+	with open(ERR_LOG_FILE, 'a', encoding='utf-8', errors='ignore') as open_file:
 		open_file.write('\n\n======LOG======')  # Write opening line
 		open_file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
 		open_file.write(message)  # Write message
@@ -293,7 +295,7 @@ def err_log(url, error1, error2):
 	error2 is the extended text of the error.
 	"""
 	time = t.strftime('%H:%M:%S, %A %b %Y')  # Get the current time
-	with open(ERR_LOG_FILE, 'a') as work_log:
+	with open(ERR_LOG_FILE, 'a', encoding='utf-8', errors='ignore') as work_log:
 		work_log.write('\n\n=====ERROR=====')  # Write opening line
 		work_log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(time, url, error1, str(error2)))
 		work_log.write(LOG_END)  # Write closing line
@@ -539,7 +541,7 @@ def init():
 			else:
 				file_path = 'config\\{0}.cfg'.format(input_)
 			write_log('[INFO]: Loading configuration settings from {0}'.format(file_path))
-			with open(file_path, 'r') as file:
+			with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
 				for line in file.readlines():
 					exec(line, globals())
 		except FileNotFoundError:
@@ -730,7 +732,7 @@ def init():
 		write_log('[INIT]: Loading save files...')
 		# Import saved TODO file data
 		try:
-			with open(TODO_FILE, 'r') as f:
+			with open(TODO_FILE, 'r', encoding='utf-8', errors='ignore') as f:
 				contents = f.readlines()
 		except FileNotFoundError:  # If no TODO file is present
 			contents = []
@@ -738,7 +740,7 @@ def init():
 			TODO.append(line.strip())
 		# Import saved done file data
 		try:
-			with open(DONE_FILE, 'r') as f:
+			with open(DONE_FILE, 'r', encoding='utf-8', errors='ignore') as f:
 				contents = f.readlines()
 		except FileNotFoundError:  # If no DONE file is present
 			contents = []
@@ -775,10 +777,10 @@ def main():
 		pass  # Assumes only OSError wil complain saved/ already exists
 
 	# Create required files
-	with open(WORD_FILE, 'w'):
+	with open(WORD_FILE, 'w', encoding='utf-8', errors='ignore'):
 		pass
 
-	with open(BAD_FILE, 'w'):
+	with open(BAD_FILE, 'w', encoding='utf-8', errors='ignore'):
 		pass
 
 	write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
@@ -817,7 +819,7 @@ def main():
 					word_list = make_words(page)  # Get all words from page
 					WORDS.update(word_list)  # Add words to word list
 				try:
-					links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
+					links = [link for element, attribute, link, pos in html.iterlinks(page.text)]
 				except (etree.XMLSyntaxError, etree.ParserError):
 					links = []
 				links = list(set(links))  # Remove duplicates and shuffle links
@@ -844,58 +846,53 @@ def main():
 			write_log('[INFO]: An error was raised trying to process {0}'.format(link))
 			err_mro = type(e).mro()
 
-			# HTTP Errors
-			if str(e) == 'HTTP Error 403: Forbidden':
-				write_log('[ERR]: HTTP 403: Access Forbidden.')
-				BAD_LINKS.add(link)
-
-			elif str(e) == 'HTTP Error 429: Too Many Requests':
-				write_log('[ERR]: HTTP 429: Too Many Requests.')
-				TODO += TODO[0]  # Move link to end of TODO list
-
-			elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
-				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: An XMLSyntaxError occurred. A web dev screwed up somewhere.')
-				err_log(link, 'XMLSyntaxError', e)
-
-			elif UnicodeError in err_mro:  # Error trying to convert foreign characters to Unicode
-				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: A UnicodeError occurred. URL had a foreign character or something.')
-				err_log(link, 'UnicodeError', e)
-
-			elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
-				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: An SSLError occurred. Site is using an invalid certificate.')
-				err_log(link, 'SSLError', e)
-				BAD_LINKS.add(link)
-
-			elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
-				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.')
-				err_log(link, 'ConnectionError', e)
-
-			elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
-				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
-				err_log(link, 'TooManyRedirects', e)
-				BAD_LINKS.add(link)
-
-			elif requests.exceptions.ContentDecodingError in err_mro:
-				# Received response with content-encoding: gzip, but failed to decode it.
-				KNOWN_ERROR_COUNT += 1
-				write_log('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
-				err_log(link, 'ContentDecodingError', e)
-
-			elif OSError in err_mro:
+			if OSError in err_mro:
 				KNOWN_ERROR_COUNT += 1
 				write_log('[ERR]: An OSError occurred.')
 				err_log(link, 'OSError', e)
 				BAD_LINKS.add(link)
 
-			elif 'Unknown MIME type' in str(e):
-				NEW_MIME_COUNT += 1
-				write_log('[ERR]: Unknown MIME type: {0}'.format(str(e)[18:]))
-				err_log(link, 'Unknown MIME', e)
+			# HTTP Errors
+			# elif str(e) == 'HTTP Error 403: Forbidden':
+			# 	write_log('[ERR]: HTTP 403: Access Forbidden.')
+			# 	BAD_LINKS.add(link)
+
+			# elif str(e) == 'HTTP Error 429: Too Many Requests':
+			# 	write_log('[ERR]: HTTP 429: Too Many Requests.')
+			# 	TODO += TODO[0]  # Move link to end of TODO list
+
+			# elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
+			# 	KNOWN_ERROR_COUNT += 1
+			# 	write_log('[ERR]: An XMLSyntaxError occurred. A web dev screwed up somewhere.')
+			# 	err_log(link, 'XMLSyntaxError', e)
+
+			# elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
+			# 	KNOWN_ERROR_COUNT += 1
+			# 	write_log('[ERR]: An SSLError occurred. Site is using an invalid certificate.')
+			# 	err_log(link, 'SSLError', e)
+			# 	BAD_LINKS.add(link)
+
+			# elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
+			# 	KNOWN_ERROR_COUNT += 1
+			# 	write_log('[ERR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.')
+			# 	err_log(link, 'ConnectionError', e)
+
+			# elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
+			# 	KNOWN_ERROR_COUNT += 1
+			# 	write_log('[ERR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
+			# 	err_log(link, 'TooManyRedirects', e)
+			# 	BAD_LINKS.add(link)
+
+			# elif requests.exceptions.ContentDecodingError in err_mro:
+			# 	# Received response with content-encoding: gzip, but failed to decode it.
+			# 	KNOWN_ERROR_COUNT += 1
+			# 	write_log('[ERR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
+			# 	err_log(link, 'ContentDecodingError', e)
+
+			# elif 'Unknown MIME type' in str(e):
+			# 	NEW_MIME_COUNT += 1
+			# 	write_log('[ERR]: Unknown MIME type: {0}'.format(str(e)[18:]))
+			# 	err_log(link, 'Unknown MIME', e)
 
 			else:  # Any other error
 				NEW_ERROR_COUNT += 1
