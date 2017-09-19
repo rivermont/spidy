@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 
 ##########
 # IMPORT #
@@ -56,7 +56,6 @@ write_log('[INIT]: Importing required libraries...')
 import requests
 import shutil
 from lxml import html, etree
-from winsound import Beep
 
 
 ###########
@@ -232,7 +231,6 @@ def mime_lookup(value):
 	elif value == '':
 		return '.html'
 	else:
-		Beep(1000, 100)
 		raise HeaderError('Unknown MIME type: {0}'.format(value))
 
 
@@ -279,6 +277,7 @@ def info_log():
 	write_log('[INFO]: Error log location: {0}'.format(ERR_LOG_FILE_NAME))
 	write_log('[INFO]: {0} links in TODO.'.format(len(TODO)))
 	write_log('[INFO]: {0} links in done.'.format(len(DONE)))
+	write_log('[INFO]: Todo/Done: {0}'.format(len(TODO) / len(DONE)))
 	write_log('[INFO]: {0}/{1} new errors caught.'.format(NEW_ERROR_COUNT, MAX_NEW_ERRORS))
 	write_log('[INFO]: {0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
 	write_log('[INFO]: {0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT, MAX_NEW_MIMES))
@@ -396,6 +395,7 @@ MIME_TYPES = {
 	'application/xml': '.xml',
 	'application/zip': '.zip',
 	'audio/mpeg': '.mp3',
+	'audio/mp3': '.mp3',
 	'audio/x-m4a': '.m4a',
 	'binary/octet-stream': '.exe',  # Should be application/octet-stream
 	'font/woff': '.woff', 'font/woff2': '.woff2',
