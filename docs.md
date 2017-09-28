@@ -67,6 +67,8 @@ The original plan for a spidy GUI was an interface for those who prefer clicky t
 Users would select options from dropdowns, checkboxes, and text fields instead of using a config file or entering them in the console. A textbox would hold the console output, and there would be counters for errors, pages crawled, etc.<br>
 Eventually an exe created with something like [py2exe](http://py2exe.org/) would be great.
 
+[Here](https://raw.githubusercontent.com/rivermont/spidy/master/media/frame.png) is a rough wireframe of the original idea.
+
 
 --------------------
 
