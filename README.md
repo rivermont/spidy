@@ -54,9 +54,6 @@ Also cut the number of requests to sites in half, effectively killing HTTP 429 E
       - [Python Base](#python-base)
     - [Launching](#launching)
       - [Windows (Command Line)](#windows-command-line)
-      - [Windows (batch file)](#windows-batch-file)
-      - [Arguments](#arguments)
-        - [Defaults](#defaults)
     - [Running](#running)
       - [Expected Behaviour](#expected-behaviour)
       - [Start](#start)
@@ -156,11 +153,6 @@ This will create all of the necessary files if they don't already exist.
 > python crawler.py
 
 We like to use Windows Powershell, but spidy will work in either `cmd.exe` or Powershell.
-
-### Windows (batch file)
-Use `cd` to navigate to spidy's directory and run `makefiles.bat`.<br>
-This will create all of the necessary files if they don't already exist.<br>
-Then run `run.bat`.
 
 ### Config
 On running, spidy may ask for input regarding its various arguments.<br>
