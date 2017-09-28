@@ -64,7 +64,8 @@ It helped me understand how a web crawler should run, and is just a good article
 # GUI
 
 The original plan for a spidy GUI was an interface for those who prefer clicky things other command line.<br>
-Users would select options from dropdowns, checkboxes, and text fields instead of using a config file or entering them in the console. A textbox would hold the console output, and there would be counters for errors, pages crawled, etc.
+Users would select options from dropdowns, checkboxes, and text fields instead of using a config file or entering them in the console. A textbox would hold the console output, and there would be counters for errors, pages crawled, etc.<br>
+Eventually an exe created with something like [py2exe](http://py2exe.org/) would be great.
 
 
 --------------------
