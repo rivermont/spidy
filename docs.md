@@ -11,6 +11,7 @@ If you're looking for the plain English, check out the [README](https://github.c
   - [spidy](#spidy-web-crawler)
   - [Table of Contents](#table-of-contents)
   - [Info](#info)
+  - [GUI](#gui)
   - [Classes](#Classes)
     - [HeaderError](#headererror--source)
   - [Functions](#functions)
@@ -59,6 +60,16 @@ General information and thoughts about spidy.
 A good read about web crawlers and some theory that goes with them is Michael Nielson's [How to crawl a quarter billion webpages in 40 hours](http://www.michaelnielsen.org/ddi/how-to-crawl-a-quarter-billion-webpages-in-40-hours/).<br>
 It helped me understand how a web crawler should run, and is just a good article in general.
 
+
+# GUI
+
+The original plan for a spidy GUI was an interface for those who prefer clicky things other command line.<br>
+Users would select options from dropdowns, checkboxes, and text fields instead of using a config file or entering them in the console. A textbox would hold the console output, and there would be counters for errors, pages crawled, etc.
+
+
+--------------------
+
+Everything that follows is intended to be detailed information on each piece in `crawler.py`. There's a lot of 'TODO's, though!
 
 # Classes
 This section lists the custom classes in `crawler.py`.<br>
