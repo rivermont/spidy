@@ -77,8 +77,6 @@ Also cut the number of requests to sites in half, effectively killing HTTP 429 E
   - [Branches](#branches)
     - [master](#master)
     - [FalconWarriorr-branch](#falconwarriorr-branch)
-  - [TODO](#todo)
-  - [Contribute](#contribute)
   - [License](#license)
 
 
@@ -257,25 +255,6 @@ The stable, up-to-date branch.
 ## FalconWarriorr-branch
 Falconwarriorr's branch.<br>
 He has developed a bunch of features that we are working on merging into master.
-
-
-# Contribute
-We would love your help with anything!<br>
-Right now neither of us have access to a Linux or OS/X machine, so we don't have any documentation for running spidy on those systems.<br>
-If you find a bug raise an issue, and if you have a suggestion go ahead and fork it.<br>
-We will happily look at anything that you build off of spidy; we're not very creative people and we know that there're more ideas out there!
-
-## TODO
-This project is far from done; this is a list of planned features:
-
-  - Automatic bug testing with Travis CI
-  - Automatic bug submission with Sentry
-  - Versions for Windows, Mac, Linux
-  - Working GUI
-  - Multiple HTTP threads at once - need to communicate
-  - Respecting of `robots.txt`
-  - More thorough documentation
-  - spidy on PyPI and pip
 
 
 # License
