@@ -2,7 +2,9 @@
 Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 This is the very technical documentation file.<br>
 Heads up: We have no idea how to do this! If you wish to help please do, just edit and make a Pull Request!<br>
-If you're looking for the plain English, check out the [README](https://github.com/rivermont/spidy).
+
+If you're looking for the plain English, check out the [README](https://github.com/rivermont/spidy).<br>
+See [`CONTRIBUTING.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTING.md) for some guidelines on how
 
 --------------------
 
@@ -12,46 +14,11 @@ If you're looking for the plain English, check out the [README](https://github.c
   - [Table of Contents](#table-of-contents)
   - [Info](#info)
   - [GUI](#gui)
+  - [Files](#files)
+  - [Branches](#branches)
   - [Classes](#Classes)
-    - [HeaderError](#headererror--source)
   - [Functions](#functions)
-    - [check_link](#check_link--source)
-	- [check_path](#check_path--source)
-	- [check_word](#check_word--source)
-	- [err_log](#err_log--source)
-	- [get_mime_type](#get_mime_type--source)
-	- [handle_invalid_input](#handle_invalid_input--source)
-	- [handle_keyboard_interrupt](#handle_keyboard_interrupt--source)
-	- [info_log](#info_log--source)
-	- [log](#log--source)
-	- [make_file_path](#make_file_path--source)
-	- [make_words](#make_words--source)
-    - [mime_lookup](#mime_lookup--source)
-	- [save_files](#save_files--source)
-	- [save_page](#save_page--source)
-	- [update_file](#update_file--source)
-	- [zip_saved_files](#zip_saved_files--source)
   - [Global Variables](#global-variables)
-    - [BAD_LINKS](#bad_links--source)
-    - [COUNTER](#counter--source)
-    - [CRAWLER_DIR](#crawler_dir--source)
-    - [ERR_LOG_FILE](#err_log_file--source)
-    - [ERR_LOG_FILE_NAME](#err_log_file_name--source)
-    - [HEADERS](#headers--source)
-    - [HTTP_ERROR_COUNT](#http_error_count--source)
-    - [KILL_LIST](#kill_list--source)
-    - [KNOWN_ERROR_COUNT](#known_error_count--source)
-    - [LOG_END](#log_end--source)
-	- [LOG_FILE](#log_file--source)
-	- [LOG_FILE_NAME](#log_file_name--source)
-    - [MIME_TYPES](#mime_types--source)
-    - [NEW_ERROR_COUNT](#new_error_count--source)
-    - [NEW_MIME_COUNT](#new_mime_count--source)
-    - [START](#start--source)
-	- [START_TIME](#start_time--source)
-	- [START_TIME_LONG](#start_time_long--source)
-	- [VERSION](#version--source)
-	- [WORDS](#words--source)       
 
 
 # Info
@@ -68,6 +35,49 @@ Users would select options from dropdowns, checkboxes, and text fields instead o
 Eventually an exe created with something like [py2exe](http://py2exe.org/) would be great.
 
 [Here](https://raw.githubusercontent.com/rivermont/spidy/master/media/frame.png) is a rough wireframe of the original idea.
+
+
+# Files
+
+### config/
+Contains configuration files.
+
+### media/
+Contains images used in this README file.
+
+## Save Files
+Some of these files will be created when `crawler.py` is first run.
+
+### crawler_todo.txt
+Contains all of the links that spidy has found but not yet crawled.
+
+### crawler_done.txt
+Contains all of the links that spidy has already visited.
+
+### crawler_bad.txt
+Contains all of the links that caused errors for some reason.
+
+### crawler_words.txt
+Contains all of the words that spidy has found.
+
+## Run Files
+
+### crawler.py
+The important code. This is what you will run to crawl links and save information.<br>
+Because the internet is so big, this will practically never end.
+
+### gui.py
+The development file for the GUI.
+
+
+# Branches
+
+## master
+The stable, up-to-date branch.
+
+## FalconWarriorr-branch
+Falconwarriorr's branch.<br>
+He has developed a bunch of features that we are working on merging into master.
 
 
 --------------------
