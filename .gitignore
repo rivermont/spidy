@@ -3,3 +3,4 @@ logs/
 *.txt
 *.zip
 *.pyc
+.idea

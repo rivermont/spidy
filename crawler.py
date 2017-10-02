@@ -31,12 +31,12 @@ CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 # Open log file for logging
 try:
-	makedirs('logs\\')  # Attempts to make the logs directory
+	makedirs('logs')  # Attempts to make the logs directory
 except OSError:
 	pass  # Assumes only OSError wil complain logs/ already exists
 
-LOG_FILE = open('{0}\\logs\\spidy_log_{1}.txt'.format(CRAWLER_DIR, START_TIME), 'w+', encoding='utf-8', errors='ignore')
-LOG_FILE_NAME = 'logs\\spidy_log_{0}'.format(START_TIME)
+LOG_FILE = open(path.join(CRAWLER_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
+LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
 
 
 def write_log(message):
@@ -241,7 +241,7 @@ def save_page(url, page):
 	# Make file path
 	ext = mime_lookup(get_mime_type(page))
 	cropped_url = make_file_path(url, ext)
-	file_path = '{0}\\saved\\{1}{2}'.format(CRAWLER_DIR, cropped_url, ext)
+	file_path = path.join(CRAWLER_DIR, 'saved', '{0}{1}'.format(cropped_url, ext))
 
 	# Save file
 	with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
@@ -442,8 +442,8 @@ MIME_TYPES = {
 }
 
 # Error log location
-ERR_LOG_FILE = '{0}\\logs\\spidy_error_log_{1}.txt'.format(CRAWLER_DIR, START_TIME)
-ERR_LOG_FILE_NAME = 'logs\\spidy_error_log_{0}.txt'.format(START_TIME)
+ERR_LOG_FILE = path.join(CRAWLER_DIR, 'logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
+ERR_LOG_FILE_NAME = path.join('logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
 
 # User-Agent Header Strings
 HEADERS = {
@@ -542,7 +542,7 @@ def init():
 
 	# Getting Arguments
 
-	if not path.exists('config\\'):
+	if not path.exists('config'):
 		write_log('[INFO]: No config folder available.')
 		USE_CONFIG = False
 	else:
@@ -562,9 +562,9 @@ def init():
 			write_log('[INPUT]: Config file name:')
 			input_ = input()
 			if input_[-4:] == '.cfg':
-				file_path = 'config\\{0}'.format(input_)
+				file_path = path.join('config', input_)
 			else:
-				file_path = 'config\\{0}.cfg'.format(input_)
+				file_path = path.join('config', '{0}.cfg'.format(input_))
 			write_log('[INFO]: Loading configuration settings from {0}'.format(file_path))
 			with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
 				for line in file.readlines():
@@ -797,7 +797,7 @@ def main():
 
 	# Create required saved/ folder
 	try:
-		makedirs('saved\\')
+		makedirs('saved')
 	except OSError:
 		pass  # Assumes only OSError wil complain saved/ already exists
 
@@ -828,7 +828,7 @@ def main():
 					write_log('[INFO]: Saving files...')
 					save_files()
 					if ZIP_FILES:
-						zip_saved_files(t.time(), 'saved\\')
+						zip_saved_files(t.time(), 'saved')
 				finally:
 					# Reset variables
 					COUNTER = 0
