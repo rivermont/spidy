@@ -46,7 +46,7 @@ Also cut the number of requests to sites in half, effectively killing HTTP 429 E
   - [How it Works](#how-it-works)
   - [Features](#features)
   - [Tutorial](#tutorial)
-    - [Windows](#windows)
+    - [Windows and Mac](#windows)
       - [Python Installation](#python-installation)
         - [Anaconda](#anaconda)
         - [Python Base](#python-base)
@@ -83,9 +83,9 @@ Here are some features we figure are worth noting.
 
 # Tutorial
 The way that you will run spidy depends on the way you have Python installed.<br>
-Spidy can be run from the command line, a Python IDE, or (on Windows systems) by launching the `.bat` file.
+Spidy can be run from the command line (on Mac systems), a Python IDE, or (on Windows systems) by launching the `.bat` file.
 
-## Windows
+## Windows and Mac
 
 ### Python Installation
 There are many different versions of [Python](https://www.python.org/about/), and hundreds of different installations for each them.<br>
