@@ -1,0 +1,2 @@
+python ./crawler.py
+pause
