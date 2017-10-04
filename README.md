@@ -8,15 +8,15 @@ Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [F
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
-![Version: 1.3.1](https://img.shields.io/badge/version-1.3.1-brightgreen.svg)
+![Version: 1.4.0](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)
 [![Release: 1.3.0](https://img.shields.io/badge/release-1.3.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-![Windows](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20brightgreen.svg)
+![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
-![Lines of Code: 1168](https://img.shields.io/badge/lines%20of%20code-1168-green.svg)
-![Lines of Docs: 460](https://img.shields.io/badge/lines%20of%20docs-460-orange.svg)
+![Lines of Code: 1178](https://img.shields.io/badge/lines%20of%20code-1178-green.svg)
+![Lines of Docs: 544](https://img.shields.io/badge/lines%20of%20docs-544-orange.svg)
 
 ***
 
@@ -36,6 +36,7 @@ See `config/wsj.cfg` for an example.
 ### Better File Saving - #[8c0dcd4](https://github.com/rivermont/spidy/commit/8c0dcd4d637eadde4326065cbed74eafcb381dbe)
 Now uses the `Content-Type` header to determine how to save files.<br>
 Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
+
 
 # Contents
 

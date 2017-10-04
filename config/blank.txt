@@ -13,6 +13,9 @@ SAVE_WORDS = <True/False>
 # Whether to zip saved pages when autosaving.
 ZIP_FILES = <True/False>
 
+# Whether to get documents larger than 500 MB
+OVERRIDE_SIZE = <True/False>
+
 # Whether to restrict crawling to a single domain or not.
 RESTRICT = <True/False>
 
@@ -27,9 +30,6 @@ DONE_FILE = ''
 
 # Location of the word save file.
 WORD_FILE = ''
-
-# Location of the bad link save file.
-BAD_FILE = ''
 
 # Number of queried links after which to autosave.
 SAVE_COUNT = #

@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.3.1'
+VERSION = '1.4.0'
 
 ##########
 # IMPORT #
@@ -33,7 +33,7 @@ CRAWLER_DIR = path.dirname(path.realpath(__file__))
 try:
 	makedirs('logs')  # Attempts to make the logs directory
 except OSError:
-	pass  # Assumes only OSError wil complain logs/ already exists
+	pass  # Assumes only OSError wil complain if logs/ already exists
 
 LOG_FILE = open(path.join(CRAWLER_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
@@ -55,7 +55,8 @@ write_log('[INIT]: Importing required libraries...')
 # Import required libraries
 import requests
 import shutil
-from lxml import html, etree
+from lxml import etree
+from lxml.html import iterlinks, resolve_base_href
 
 
 ###########
@@ -72,6 +73,13 @@ class HeaderError(Exception):
 	pass
 
 
+class SizeError(Exception):
+	"""
+	Raised when a file is too large to download in an acceptable time.
+	"""
+	pass
+
+
 #############
 # FUNCTIONS #
 #############
@@ -81,14 +89,25 @@ write_log('[INIT]: Creating functions...')
 
 def crawl(url):
 	global TODO
+	if not OVERRIDE_SIZE:
+		try:
+			length = int(requests.head(url).headers['Content-Length'])  # Attempt to get the size in bytes of the document
+		except KeyError:  # Sometimes no Content-Length header is returned...
+			length = 1
+		if length > 524288000:  # If the page is larger than 500 MB
+			raise SizeError
+	# If the SizeError is raised it will be caught in the except block in the run section,
+	# and the following code will not be run.
 	page = requests.get(url, headers=HEADER)  # Get page
 	word_list = []
 	if SAVE_WORDS:
 		word_list = make_words(page)
 		WORDS.update(word_list)
 	try:
-		links = [link for element, attribute, link, pos in html.iterlinks(page.content)]
+		# Pull out all links after resolving them using any <base> tags found in the document.
+		links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(page.content))]
 	except (etree.XMLSyntaxError, etree.ParserError):
+		# If the document is not HTML content this will return an empty list.
 		links = []
 	links = list(set(links))
 	TODO += links
@@ -98,7 +117,7 @@ def crawl(url):
 	if SAVE_WORDS:
 		# Announce which link was crawled
 		write_log(
-				'[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), url))
+			'[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), url))
 	else:
 		# Announce which link was crawled
 		write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), url))
@@ -110,8 +129,7 @@ def check_link(item):
 	Returns False if item passes all inspections (is valid url).
 	"""
 	# Shortest possible url being 'http://a.b', and
-	# Links longer than 255 characters are usually useless or full of foreign characters,
-	# and will also cause problems when saving.
+	# Links longer than 255 characters are usually too long for the filesystem to handle.
 	if RESTRICT:
 		if DOMAIN not in item:
 			return True
@@ -122,10 +140,6 @@ def check_link(item):
 		return True
 	elif item in DONE:
 		return True
-	else:
-		for bad_link in KILL_LIST:
-			if bad_link in item:
-				return True
 	return False
 
 
@@ -169,7 +183,7 @@ def make_words(site):
 
 def save_files():
 	"""
-	Saves the TODO, done, word, and bad lists into their respective files.
+	Saves the TODO, done, and word lists into their respective files.
 	Also logs the action to the console.
 	"""
 	with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
@@ -190,8 +204,6 @@ def save_files():
 
 	if SAVE_WORDS:
 		update_file(WORD_FILE, WORDS, 'words')
-
-	update_file(BAD_FILE, BAD_LINKS, 'bad links')
 
 
 def make_file_path(url, ext):
@@ -460,12 +472,12 @@ HEADERS = {
 		'Accept-Encoding': 'gzip',
 		'Connection': 'keep-alive'
 	},
-	# 'Firefox': {
-	# 'User-Agent': '?'
-	# 'Accept-Language': 'en_US, en-US, en',
-	# 'Accept-Encoding': 'gzip',
-	# 'Connection': 'keep-alive'
-	# }
+	'Firefox': {
+		'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:56.0) Gecko/20100101 Firefox/56.0',
+		'Accept-Language': 'en_US, en-US, en',
+		'Accept-Encoding': 'gzip',
+		'Connection': 'keep-alive'
+	},
 	'IE': {
 		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
 		'Accept-Language': 'en_US, en-US, en',
@@ -492,9 +504,6 @@ KILL_LIST = [
 # Links to start crawling if the TODO list is empty
 START = ['https://en.wikipedia.org/wiki/Main_Page']
 
-# Empty set for error-causing links
-BAD_LINKS = set([])
-
 # Line to print at the end of each logFile log
 LOG_END = '\n======END======'
 
@@ -518,9 +527,9 @@ HEADER = ''
 SAVE_COUNT, MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS = 0, 0, 0, 0
 MAX_NEW_MIMES = 0
 RESTRICT, DOMAIN = False, ''
-USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES = False, False, False, False
+USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE = False, False, False, False, False
 SAVE_PAGES, SAVE_WORDS = False, False
-TODO_FILE, DONE_FILE, WORD_FILE, BAD_FILE = '', '', '', ''
+TODO_FILE, DONE_FILE, WORD_FILE = '', '', ''
 TODO, DONE = [], []
 
 
@@ -532,11 +541,11 @@ def init():
 	# Declare global variables
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-	global HEADER, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
+	global HEADER, CRAWLER_DIR, KILL_LIST, LOG_END
 	global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
-	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
-	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
+	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
+	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
 	global RESTRICT, DOMAIN
 	global WORDS, TODO, DONE
 
@@ -623,6 +632,17 @@ def init():
 		else:
 			ZIP_FILES = False
 
+		write_log('[INPUT]: Should spidy download documents larger than 500 MB? (y/n) (Default: No):')
+		input_ = input()
+		if not bool(input_):
+			OVERRIDE_SIZE = False
+		elif input_ in yes:
+			OVERRIDE_SIZE = True
+		elif input_ in no:
+			OVERRIDE_SIZE = False
+		else:
+			handle_invalid_input()
+
 		write_log('[INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes):')
 		input_ = input()
 		if not bool(input_):
@@ -654,7 +674,7 @@ def init():
 				handle_invalid_input('string')
 
 		write_log('[INPUT]: What HTTP browser headers should spidy imitate?')
-		write_log('[INPUT]: Choices: spidy (default), Chrome, IE, Edge, Custom:')
+		write_log('[INPUT]: Choices: spidy (default), Chrome, Firefox, IE, Edge, Custom:')
 		input_ = input()
 		if not bool(input_):
 			HEADER = HEADERS['spidy']
@@ -690,13 +710,6 @@ def init():
 				WORD_FILE = input_
 		else:
 			WORD_FILE = 'None'
-
-		write_log('[INPUT]: Location of the bad link save file (Default: crawler_bad.txt):')
-		input_ = input()
-		if not bool(input_):
-			BAD_FILE = 'crawler_bad.txt'
-		else:
-			BAD_FILE = input_
 
 		write_log('[INPUT]: After how many queried links should spidy autosave? (default 100):')
 		input_ = input()
@@ -785,11 +798,11 @@ def main():
 	# Declare global variables
 	global VERSION, START_TIME, START_TIME_LONG
 	global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-	global HEADER, CRAWLER_DIR, KILL_LIST, BAD_LINKS, LOG_END
+	global HEADER, CRAWLER_DIR, KILL_LIST, LOG_END
 	global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
 	global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
-	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
-	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE, BAD_FILE
+	global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
+	global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
 	global RESTRICT, DOMAIN
 	global WORDS, TODO, DONE
 
@@ -803,9 +816,6 @@ def main():
 
 	# Create required files
 	with open(WORD_FILE, 'w', encoding='utf-8', errors='ignore'):
-		pass
-
-	with open(BAD_FILE, 'w', encoding='utf-8', errors='ignore'):
 		pass
 
 	write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
@@ -833,7 +843,6 @@ def main():
 					# Reset variables
 					COUNTER = 0
 					WORDS.clear()
-					BAD_LINKS.clear()
 			elif check_link(TODO[0]):  # If the link is invalid
 				del TODO[0]
 			# Crawl the page
@@ -851,15 +860,18 @@ def main():
 			write_log('[INFO]: An error was raised trying to process {0}'.format(link))
 			err_mro = type(e).mro()
 
-			if OSError in err_mro:
+			if SizeError in err_mro:
+				KNOWN_ERROR_COUNT += 1
+				write_log('[ERROR]: Document too large.')
+				err_log(link, 'SizeError', e)
+
+			elif OSError in err_mro:
 				KNOWN_ERROR_COUNT += 1
 				write_log('[ERROR]: An OSError occurred.')
 				err_log(link, 'OSError', e)
-				BAD_LINKS.add(link)
 
 			elif str(e) == 'HTTP Error 403: Forbidden':
 				write_log('[ERROR]: HTTP 403: Access Forbidden.')
-				BAD_LINKS.add(link)
 
 			elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
 				KNOWN_ERROR_COUNT += 1
@@ -870,7 +882,6 @@ def main():
 				KNOWN_ERROR_COUNT += 1
 				write_log('[ERROR]: An SSLError occurred. Site is using an invalid certificate.')
 				err_log(link, 'SSLError', e)
-				BAD_LINKS.add(link)
 
 			elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
 				KNOWN_ERROR_COUNT += 1
@@ -881,7 +892,6 @@ def main():
 				KNOWN_ERROR_COUNT += 1
 				write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
 				err_log(link, 'TooManyRedirects', e)
-				BAD_LINKS.add(link)
 
 			elif requests.exceptions.ContentDecodingError in err_mro:
 				# Received response with content-encoding: gzip, but failed to decode it.

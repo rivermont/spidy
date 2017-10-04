@@ -6,7 +6,7 @@ Heads up: We have no idea how to do this! If you wish to help please do, just ed
 If you're looking for the plain English, check out the [README](https://github.com/rivermont/spidy).<br>
 See [`CONTRIBUTING.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTING.md) for some guidelines on how
 
---------------------
+***
 
 # Table of Contents
 
@@ -80,7 +80,7 @@ Falconwarriorr's branch.<br>
 He has developed a bunch of features that we are working on merging into master.
 
 
---------------------
+***
 
 Everything that follows is intended to be detailed information on each piece in `crawler.py`. There's a lot of 'TODO's, though!
 
@@ -88,14 +88,17 @@ Everything that follows is intended to be detailed information on each piece in 
 This section lists the custom classes in `crawler.py`.<br>
 Most are Errors or Exceptions that may be raised throughout the code.
 
-## `HeaderError` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L50))
+## `HeaderError` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L69))
 Raised when there is a problem deciphering HTTP headers returned from a website.
+
+## `SizeError` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L76))
+Raised when a file is too large to download in an acceptable time.
 
 
 # Functions
 This section lists the functions in `crawler.py` that are used throughout the code.
 
-## `check_link` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L64))
+## `check_link` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L126))
 Determines whether links should be crawled.<br>
 Types of links that will be pruned:
 
@@ -104,37 +107,34 @@ Types of links that will be pruned:
   - Links that have already been crawled.
   - Links in [`KILL_LIST`](#kill_list--source).
 
-## `check_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L95))
+## `check_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L158))
 Checks whether a file path will cause errors when saving.<br>
 Paths longer than 256 characters cannot be saved (Windows).
 
-## `check_word` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L84))
+## `check_word` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L146))
 Checks whether a word is valid.<br>
 The word-saving feature was originally added to be used for password cracking with hashcat, which is why `check_word` checks for length of less than 16 characters.<br>
 The average password length is around 8 characters.
 
-## `err_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L269))
+## `crawl` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L90))
+Does all of the crawling, scraping, scraping of a single document.
+
+## `err_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L327))
 TODO
 
-## `err_print` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L255))
-TODO
-
-## `err_saved_message` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L262))
-TODO
-
-## `get_mime_type` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L159))
+## `get_mime_type` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L222))
 TODO
 
 ## `get_time` - ([Source](https://github.com/rivermont/spidy/blobl/master/crawler.py#L16))
-Returns the current time in the format `HH:MM::SS`
+Returns the current time in the format `HH:MM::SS`.
 
 ## `get_full_time` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L20))
+Returns the current time in the format `HH:MM:SS, Day, Mon, YYYY`.
+
+## `handle_KeyboardInterrupt` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L311))
 TODO
 
-## `handle_KeyboardInterrupt` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L247))
-TODO
-
-## `info_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L209))
+## `info_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L282))
 Logs important information to the console and log file.<br>
 Example log:
 
@@ -153,16 +153,16 @@ Example log:
 > [23:17:06] [spidy] [LOG]: Saved done list to crawler_done.txt
 > [23:17:06] [spidy] [LOG]: Saved 90 bad links to crawler_bad.txt
 
-## `log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L236))
+## `log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L299))
 TODO
 
-## `make_file_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L147))
+## `make_file_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L209))
 TODO
 
-## `make_words` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L106))
+## `make_words` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L170))
 Returns a list of all the valid words (determined using [`check_word`](#check_word--source)) on a given page.
 
-## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L171))
+## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L233))
 This finds the correct file extension for a MIME type using the [`MIME_TYPES`](#mime_types--source) dictionary.<br>
 If the MIME type is blank it defaults to `.html`, and if the MIME type is not in the dictionary a [`HeaderError`](#headererror--source) is raised.<br>
 Usage:
@@ -171,70 +171,92 @@ Usage:
 
 Where `value` is the MIME type.
 
-## `save_files` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L119))
+## `save_files` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L184))
 Saves the TODO, DONE, word, and bad lists to their respective files.<br>
 The word and bad link lists use the same function to save space.
 
-## `save_page` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L184))
+## `save_page` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L249))
 TODO
 
-## `update_file` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L197))
+## `update_file` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L267))
 TODO
 
-## `zip` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L281))
+## `write_log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L42)
+Writes message to both the console and the log file.<br>
+NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
+
+## `zip_saved_files` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L340))
 TODO
 
 
 # Global Variables
 This section lists the variables in [`crawler.py`](#https://github.om/rivermont/spidy/blob/master/crawler.py) that are used throughout the code.
 
-## `BAD_LINKS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L412))
-TODO
-
-## `COUNTER` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L418))
+## `COUNTER` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L511))
 Incremented each time a link is crawled.<br>
 TODO
 
-## `CRAWLER_DIR` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L24))
+## `CRAWLER_DIR` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L30))
 The directory that `crawler.py` is located in.
 
-## `ERR_LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L367))
+## `DOMAIN` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L527))
 TODO
 
-## `ERR_LOG_FILE_NAME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L368))
+## `DONE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L533))
 TODO
 
-## `GET_ARGS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L432))
+## `DONE_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L532))
 TODO
 
-## `HEADERS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L371))
+## `ERR_LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L457))
 TODO
 
-## `HTTP_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L421))
+## `ERR_LOG_FILE_NAME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L458))
 TODO
 
-## `KILL_LIST` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L403))
+## `HEADER` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L526))
+
+## `HEADERS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L461))
+TODO
+
+## `HTTP_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L514))
+TODO
+
+## `KILL_LIST` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L496))
 A list of pages that are known to cause problems with the crawler.
 
+  - `bhphotovideo.com/c/search`
   - `scores.usaultimate.org/`: Never responds.
   - `w3.org`: I have never been able to access W3, although it never says it's down. If someone knows of this problem, please let me know.
   - `web.archive.org/web/`: While there is some good content, there are sometimes thousands of copies of the same exact page. Not good for web crawling.
 
-## `KNOWN_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L420))
+## `KNOWN_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L513))
 TODO
 
-## `LOG_END` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L415))
-TODO
+## `LOG_END` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L508))
+Line to print at the end of each `logFile` log
 
-## `LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L27))
+## `LOG_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L38))
 The file that the command line logs are written to.<br>
 Kept open until the crawler stops for whatever reason so that it can be written to.
 
-## `LOG_FILE_NAME`  - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L28))
+## `LOG_FILE_NAME`  - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L39))
 The actual file name of [`LOG_FILE`](#log_file--source).<br>
 Used in [`info_log`](#info_log--source).
 
-## `MIME_TYPES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L298))
+## `MAX_HTTP_ERRORS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L527))
+TODO
+
+## `MAX_KNOWN_ERRORS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L527))
+TODO
+
+## `MAX_NEW_ERRORS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L527))
+TODO
+
+## `MAX_NEW_MIMES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L528))
+TODO
+
+## `MIME_TYPES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L358))
 A dictionary of [MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) encountered by the crawler.<br>
 While there are [thousands of other types](https://www.iana.org/assignments/media-types/media-types.xhtml) that are not listed, to list them all would be impractical:
   - The size of the list would be huge, using memory, space, etc.
@@ -253,22 +275,63 @@ Where `value` is the MIME type.<br>
 This will return the extension associated with the MIME type if it exists, however this will throw an [`IndexError`](https://docs.python.org/2/library/exceptions.html#exceptions.IndexError) if the MIME type is not in the dictionary.<br>
 Because of this, it is recommended to use the [`mime_lookup`](#mime_lookup--source) function.
 
-## `NEW_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L419))
+## `NEW_ERROR_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L512))
 TODO
 
-## `NEW_MIME_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L422))
+## `NEW_MIME_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L515))
 TODO
 
-## `START_TIME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L15))
+## `OVERRIDE_SIZE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L530))
+TODO
+
+## `OVERWRITE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L530))
+TODO
+
+## `RAISE_ERRORS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L530))
+TODO
+
+## `RESTRICT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L529))
+TODO
+
+## `SAVE_COUNT` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L527))
+TODO
+
+## `SAVE_PAGES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L531))
+TODO
+
+## `SAVE_WORDS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L531))
+TODO
+
+## `START` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L505))
+Links to start crawling if the TODO list is empty
+
+## `START_TIME` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L24))
 The time that `crawler.py` was started, in seconds from the epoch.<br>
 More information can be found on the page for the Python [time](https://docs.python.org/3/library/time.html) library.
 
-## `START_TIME_LONG` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L18))
+## `START_TIME_LONG` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L25))
 The time that `crawler.py` was started, in the format `HH:MM:SS, Date Month Year`.<br>
 Used in `info_log`.
+
+## `TODO` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L533))
+TODO
+
+## `TODO_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L532))
+TODO
+
+## `USE_CONFIG` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L527))
+TODO
 
 ## `VERSION` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L5))
 The current version of the crawler.
 
-## `WORDS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L425))
+## `WORD_FILE` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L532))
 TODO
+
+## `WORDS` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L518))
+TODO
+
+## `ZIP_FILES` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L530))
+TODO
+
+***
