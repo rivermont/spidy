@@ -9,18 +9,21 @@ Looking for technical documentation? Check out [docs.md](https://github.com/rive
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
 ![Version: 1.4.0](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)
-[![Release: 1.3.0](https://img.shields.io/badge/release-1.3.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
+[![Release: 1.4.0](https://img.shields.io/badge/release-1.4.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
-![Lines of Code: 1178](https://img.shields.io/badge/lines%20of%20code-1178-green.svg)
-![Lines of Docs: 544](https://img.shields.io/badge/lines%20of%20docs-544-orange.svg)
+![Lines of Code: 1178](https://img.shields.io/badge/lines%20of%20code-1178-brightgreen.svg)
+![Lines of Docs: 547](https://img.shields.io/badge/lines%20of%20docs-547-green.svg)
 
 ***
 
 # New Features!
+
+### Release v1.4.0 - #[31663d3](https://github.com/rivermont/spidy/commit/31663d34ceeba66ea9de9819b6da555492ed6a80)
+[spidy Web Crawler Release 1.4](https://github.com/rivermont/spidy/releases/tag/1.4)
 
 ### Domain Limiting - #[e229b01](https://github.com/rivermont/spidy/commit/e229b01eed7e1f95530d06afc671e40dbf4dac53)
 Scrape only a single site instead of the whole internet. May use slightly less space on your disk.<br>
@@ -76,7 +79,8 @@ Here are some features we figure are worth noting.
 
   - Error Handling: We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each. There is a set cap so that after accumulating too many errors the crawler will stop itself.
   - Frequent Timestamp Logging: Spidy logs almost every action it takes to both the console and one of two log files.
-  -  Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off.
+  - Browser Spoofing: Make requests using User Agents from 4 popular web browsers, use a custom spidy bot one, or create your own!
+  - Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off.
   - User-Friendly Logs: Both the console and log file messages are simple and easy to interpret, but packed with information.
   - Webpage saving: Spidy downloads each page that it runs into, regardless of file type. The crawler uses the HTTP `Content-Type` header returned with most files to determine the file type.
   - File Zipping: When autosaving, spidy can archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
