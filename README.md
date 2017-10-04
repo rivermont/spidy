@@ -13,13 +13,12 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
 [![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
-![Windows](https://img.shields.io/badge/Windows-%20%20-brightgreen.svg)
-![Linux, OS/X](https://img.shields.io/badge/Linux,%20OS/X-%20%20-red.svg)
+![Windows](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20brightgreen.svg)
 <br>
 ![Lines of Code: 1168](https://img.shields.io/badge/lines%20of%20code-1168-green.svg)
 ![Lines of Docs: 460](https://img.shields.io/badge/lines%20of%20docs-460-orange.svg)
 
---------------------
+***
 
 # New Features!
 
@@ -38,20 +37,21 @@ See `config/wsj.cfg` for an example.
 Now uses the `Content-Type` header to determine how to save files.<br>
 Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
 
-# Table of Contents
+# Contents
 
-  - [spidy](#spidy-web-crawler)
+  - [spidy Web Crawler](#spidy-web-crawler)
   - [New Features!](#new-features)
-  - [Table of Contents](#table-of-contents)
+  - [Contents](#contents)
   - [How it Works](#how-it-works)
   - [Features](#features)
   - [Tutorial](#tutorial)
-    - [Windows and Mac](#windows)
-      - [Python Installation](#python-installation)
+    - [Python Installation](#python-installation)
+      - [Windows and Mac](#windows-and-mac)
         - [Anaconda](#anaconda)
         - [Python Base](#python-base)
-      - [Launching](#launching)
-        - [Command Line](#command-line)
+      - [Linux](#linux)
+    - [Crawler Installation](#crawler-installation)
+    - [Launching](#launching)
     - [Running](#running)
       - [Config](#config)
       - [Start](#start)
@@ -85,9 +85,10 @@ Here are some features we figure are worth noting.
 The way that you will run spidy depends on the way you have Python installed.<br>
 Spidy can be run from the command line (on Mac systems), a Python IDE, or (on Windows systems) by launching the `.bat` file.
 
-## Windows and Mac
+## Python Installation
 
-### Python Installation
+### Windows and Mac
+
 There are many different versions of [Python](https://www.python.org/about/), and hundreds of different installations for each them.<br>
 Spidy is developed for Python v3.5.2, but should run without errors in other versions of Python 3.
 
@@ -96,26 +97,37 @@ We recommend the [Anaconda distribution](https://www.continuum.io/downloads).<br
 It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python package.
 
 #### Python Base
-You can also just install [default Python](https://www.python.org/downloads/), and install `lxml` separately.<br>
+You can also just install [default Python](https://www.python.org/downloads/), and install the external libraries separately.<br>
 This can be done with `pip`:
 
 > pip install lxml
+> pip install requests
+
+### Linux
+Python 3 should come preinstalled with most flavors of Linux, but if not, simply run
+
+> sudo apt update
+> sudo apt install python3 python3-lxml python3-requests
+
+Then `cd` into the crawler's directory and run `python3 crawler.py`.
+
+## Crawler Installation
+If you have git or GitHub Desktop installed, you can clone the repository [from here](https://github.com/rivermont/spidy.git). If not, download [the latest source code](https://github.com/rivermont/spidy/archive/master.zip) or grab the [latest release](https://github.com/rivermont/spidy/releases).
 
 ### Launching
 
-![](/media/run.gif?raw=true)
-
-#### Command Line
 Use `cd` to navigate to the directory that spidy is located in, then run:
 
 > python crawler.py
 
-## Running
+![](/media/run.gif?raw=true)
+
+### Running
 Spidy logs a lot of information to the command line throughout its life.<br>
 Once started, a bunch of `[INIT]` lines will print.<br>
 These announce where spidy is in its initialization process.<br>
 
-### Config
+#### Config
 On running, spidy asks for input regarding certain parameters it will run off of.<br>
 However, you can also use one of the configuration files, or even create your own.
 
@@ -152,10 +164,9 @@ Sample log after crawler visits all links in TODO.
 ![](/media/end.png?raw=true)
 
 
-
 # License
-We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE.md](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
+We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
 Honestly, if you link to this repo and credit `rivermont` and `FalconWarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.<br>
 Thanks!
 
---------------------
+***
