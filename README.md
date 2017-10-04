@@ -16,14 +16,14 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
 ![Lines of Code: 1178](https://img.shields.io/badge/lines%20of%20code-1178-brightgreen.svg)
-![Lines of Docs: 547](https://img.shields.io/badge/lines%20of%20docs-547-green.svg)
+![Lines of Docs: 543](https://img.shields.io/badge/lines%20of%20docs-543-green.svg)
 
 ***
 
 # New Features!
 
 ### Release v1.4.0 - #[31663d3](https://github.com/rivermont/spidy/commit/31663d34ceeba66ea9de9819b6da555492ed6a80)
-[spidy Web Crawler Release 1.4](https://github.com/rivermont/spidy/releases/tag/1.4)
+[spidy Web Crawler Release 1.4](https://github.com/rivermont/spidy/releases/tag/1.4.0)
 
 ### Domain Limiting - #[e229b01](https://github.com/rivermont/spidy/commit/e229b01eed7e1f95530d06afc671e40dbf4dac53)
 Scrape only a single site instead of the whole internet. May use slightly less space on your disk.<br>
@@ -35,10 +35,6 @@ See `config/wsj.cfg` for an example.
 ### PEP 8 Compliance - #[133dcdc](https://github.com/rivermont/spidy/commit/133dcdc02a0d63d94725cb86c089b7fdb3eba2d4)
 98% of code now obeys the PEP 8 standard.<br>
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) is the Style Guide for all Python code.
-
-### Better File Saving - #[8c0dcd4](https://github.com/rivermont/spidy/commit/8c0dcd4d637eadde4326065cbed74eafcb381dbe)
-Now uses the `Content-Type` header to determine how to save files.<br>
-Also cut the number of requests to sites in half, effectively killing HTTP 429 Errors.
 
 
 # Contents
