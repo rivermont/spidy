@@ -4,19 +4,19 @@ Given a list of web links, it uses the Python [`requests`](http://docs.python-re
 Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
 Pretty simple!
 
-Developed by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
+Started by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
 Looking for technical documentation? Check out [docs.md](https://github.com/rivermont/spidy/blob/master/docs.md)<br>
-Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
+Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTE.md), then check out the docs.
 
-![Version: 1.4.0](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)
+![Version: 1.4.1](https://img.shields.io/badge/version-1.4.0-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/badge/release-1.4.0-brightgreen.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Python: 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
-[![Python: 3](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
+[![Python 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
+[![Python 3?](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
-![Lines of Code: 1178](https://img.shields.io/badge/lines%20of%20code-1178-brightgreen.svg)
-![Lines of Docs: 543](https://img.shields.io/badge/lines%20of%20docs-543-green.svg)
+![Lines of Code: 1270](https://img.shields.io/badge/lines%20of%20code-1270-brightgreen.svg)
+![Lines of Docs: 546](https://img.shields.io/badge/lines%20of%20docs-546-green.svg)
 
 ***
 

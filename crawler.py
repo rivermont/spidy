@@ -2,7 +2,7 @@
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
 """
-VERSION = '1.4.0'
+VERSION = '1.4.1'
 
 ##########
 # IMPORT #
@@ -215,7 +215,7 @@ def make_file_path(url, ext):
 		url = url.replace(char, '-')
 	for char in """|:?&<>""":
 		url = url.replace(char, '')
-	url = url[:255]  # Truncate to valid file length
+	url = url[:255] + ext  # Truncate to valid file length
 	return url
 
 
@@ -253,7 +253,7 @@ def save_page(url, page):
 	# Make file path
 	ext = mime_lookup(get_mime_type(page))
 	cropped_url = make_file_path(url, ext)
-	file_path = path.join(CRAWLER_DIR, 'saved', '{0}{1}'.format(cropped_url, ext))
+	file_path = path.join(CRAWLER_DIR, 'saved', '{0}'.format(cropped_url))
 
 	# Save file
 	with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
@@ -936,4 +936,4 @@ if __name__ == '__main__':
 	main()
 else:
 	write_log('[INIT]: Successfully imported spidy Web Crawler.')
-	write_log('[INIT]: Call `spidy.main()` to start crawling, or refer to docs.md to see use of specific functions.')
+	write_log('[INIT]: Call `crawler.main()` to start crawling, or refer to docs.md to see use of specific functions.')

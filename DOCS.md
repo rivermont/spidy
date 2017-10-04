@@ -4,7 +4,7 @@ This is the very technical documentation file.<br>
 Heads up: We have no idea how to do this! If you wish to help please do, just edit and make a Pull Request!<br>
 
 If you're looking for the plain English, check out the [README](https://github.com/rivermont/spidy).<br>
-See [`CONTRIBUTING.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTING.md) for some guidelines on how
+See [`CONTRIBUTE.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTE.md) for some guidelines on how
 
 ***
 
