@@ -101,14 +101,14 @@ It comes pre-packaged with lots of goodies, including `lxml`, which is required 
 You can also just install [default Python](https://www.python.org/downloads/), and install the external libraries separately.<br>
 This can be done with `pip`:
 
-> pip install lxml
-> pip install requests
+    pip install lxml
+    pip install requests
 
 ### Linux
 Python 3 should come preinstalled with most flavors of Linux, but if not, simply run
 
-> sudo apt update
-> sudo apt install python3 python3-lxml python3-requests
+    sudo apt update
+    sudo apt install python3 python3-lxml python3-requests
 
 Then `cd` into the crawler's directory and run `python3 crawler.py`.
 
