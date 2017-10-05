@@ -63,10 +63,10 @@ class CrawlerTestCase(unittest.TestCase):
 		expected_result = ".atom"
 		self.assertEqual(mime_lookup(value), expected_result)
 
-	# def test_mime_lookup_given_unknown_type(self):
-	# 	value = "this_mime_doesn't_exist"
-	# 	expected_result = HeaderError
-	# 	self.assertRaises(expected_result, mime_lookup(value))
+	def test_mime_lookup_given_unknown_type(self):
+		value = "this_mime_doesn't_exist"
+		with self.assertRaises(HeaderError):
+			mime_lookup(value)
 
 	# Check make_file_path
 
