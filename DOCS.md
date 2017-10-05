@@ -4,7 +4,10 @@ This is the very technical documentation file.<br>
 Heads up: We have no idea how to do this! If you wish to help please do, just edit and make a Pull Request!<br>
 
 If you're looking for the plain English, check out the [README](https://github.com/rivermont/spidy).<br>
-See [`CONTRIBUTE.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTE.md) for some guidelines on how
+See [`CONTRIBUTE.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTE.md) for some guidelines on how to get started.
+
+[![GitHub issues](https://img.shields.io/github/issues/rivermont/spidy.svg)](https://github.com/rivermont/spidy/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/rivermont/spidy.svg)](https://github.com/rivermont/spidy/pulls)
 
 ***
 
