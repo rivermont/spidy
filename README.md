@@ -13,7 +13,7 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg)](https://github.com/rivermont/spidy)
+![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 <br>
 ![Lines of Code: 1321](https://img.shields.io/badge/lines%20of%20code-1321-brightgreen.svg)
 ![Lines of Docs: 559](https://img.shields.io/badge/lines%20of%20docs-559-green.svg)

@@ -16,7 +16,7 @@ install:
 
 # Run all tests
 script:
-  - make ./Makefile
+  - make
   - python3 tests.py
 
 branches:
