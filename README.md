@@ -13,11 +13,12 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg)](https://github.com/rivermont/spidy)
 <br>
 ![Lines of Code: 1321](https://img.shields.io/badge/lines%20of%20code-1321-brightgreen.svg)
-![Lines of Docs: 558](https://img.shields.io/badge/lines%20of%20docs-558-green.svg)
+![Lines of Docs: 559](https://img.shields.io/badge/lines%20of%20docs-559-green.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
-![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)
+[![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
 <br>
 [![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
