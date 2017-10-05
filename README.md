@@ -6,7 +6,7 @@ Pretty simple!
 
 Started by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
-Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTE.md), then check out the docs.
+Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
 ![Version: 1.4.2](https://img.shields.io/badge/version-1.4.2-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
