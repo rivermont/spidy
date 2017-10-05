@@ -20,6 +20,7 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://
 [![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 
 ***
 
