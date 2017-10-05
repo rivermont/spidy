@@ -17,6 +17,7 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://
 ![Lines of Code: 1270](https://img.shields.io/badge/lines%20of%20code-1270-brightgreen.svg)
 ![Lines of Docs: 546](https://img.shields.io/badge/lines%20of%20docs-546-green.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
+![Travis branch](https://img.shields.io/travis/rivermont/spidy/master.svg)]
 <br>
 [![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)

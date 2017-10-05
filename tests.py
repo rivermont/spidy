@@ -55,7 +55,7 @@ class CrawlerTestCase(unittest.TestCase):
     def test_make_words_given_string(self):
         from requests.models import Response
         input_string = Response()
-        input_string._content = bytearray("This is a supercalifragilistic test string!", 'utf-8')
+        input_string._content = bytes("This is a supercalifragilistic test string!", 'utf-8')
         expected_result = "This is a test string!".split()
         self.assertEqual(make_words(input_string).sort(), expected_result.sort(), "woo")
 
