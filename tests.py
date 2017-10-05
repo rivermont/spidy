@@ -44,10 +44,12 @@ class CrawlerTestCase(unittest.TestCase):
 
 	# Test make_words
 
-	# def test_make_words_given_string(self):
-	# 	input_string = "This is a supercalifragilistic test string!"
-	# 	expected_result = "This is a test string!"
-	# 	self.assertEqual(make_words(input_string), expected_result, "woo")
+	def test_make_words_given_string(self):
+		from requests.models import Response
+		input_string = Response()
+		input_string._content = bytearray("This is a supercalifragilistic test string!", 'utf-8')
+		expected_result = "This is a test string!".split()
+		self.assertEqual(make_words(input_string).sort(), expected_result.sort(), "woo")
 
 	# Test mime_lookup
 
