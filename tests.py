@@ -44,10 +44,12 @@ class CrawlerTestCase(unittest.TestCase):
 
 	# Test make_words
 
-	# def test_make_words_given_string(self):
-	# 	input_string = "This is a supercalifragilistic test string!"
-	# 	expected_result = "This is a test string!"
-	# 	self.assertEqual(make_words(input_string), expected_result, "woo")
+	def test_make_words_given_string(self):
+		from requests.models import Response
+		input_string = Response()
+		input_string._content = bytearray("This is a supercalifragilistic test string!", 'utf-8')
+		expected_result = "This is a test string!".split()
+		self.assertEqual(make_words(input_string).sort(), expected_result.sort(), "woo")
 
 	# Test mime_lookup
 
@@ -61,10 +63,10 @@ class CrawlerTestCase(unittest.TestCase):
 		expected_result = ".atom"
 		self.assertEqual(mime_lookup(value), expected_result)
 
-	# def test_mime_lookup_given_unknown_type(self):
-	# 	value = "this_mime_doesn't_exist"
-	# 	expected_result = HeaderError
-	# 	self.assertRaises(expected_result, mime_lookup(value))
+	def test_mime_lookup_given_unknown_type(self):
+		value = "this_mime_doesn't_exist"
+		with self.assertRaises(HeaderError):
+			mime_lookup(value)
 
 	# Check make_file_path
 
