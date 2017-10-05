@@ -16,11 +16,11 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://
 <br>
 ![Lines of Code: 1270](https://img.shields.io/badge/lines%20of%20code-1270-brightgreen.svg)
 ![Lines of Docs: 546](https://img.shields.io/badge/lines%20of%20docs-546-green.svg)
+[![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 <br>
 [![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 
 ***
 
@@ -77,6 +77,7 @@ We built a lot of the functionality in spidy by watching the console scroll by a
 Here are some features we figure are worth noting.
 
   - Error Handling: We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each. There is a set cap so that after accumulating too many errors the crawler will stop itself.
+  - Cross-Platform compatability: spidy will work on all three major operatin systems, Windows, Mac OS/X, and Linux!
   - Frequent Timestamp Logging: Spidy logs almost every action it takes to both the console and one of two log files.
   - Browser Spoofing: Make requests using User Agents from 4 popular web browsers, use a custom spidy bot one, or create your own!
   - Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off.
