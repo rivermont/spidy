@@ -15,7 +15,8 @@ install:
   - pip install -r requirements.txt
 
 # Run all tests
-script: 
+script:
+  - make ./Makefile
   - python3 tests.py
 
 branches:
