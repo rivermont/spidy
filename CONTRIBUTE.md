@@ -1,7 +1,8 @@
 # Contributing
 We would love your help with anything!<br>
-If you find a bug raise an issue, and if you have a suggestion go ahead and fork it.<br>
-We will happily look at anything that you build off of spidy; we're not very creative people and we know that there are more/better ideas out there!
+If you find a bug raise an issue, and if you have a suggestion go ahead and fork it - but be sure to open an issue first. That helps with management and organization.
+
+I also use [ZenHub](https://www.zenhub.com/), an project management platform hat integrates with GitHub. If you use it you can see the boards we organize with. If you don't, you simply won't see anything!
 
 ***
 
