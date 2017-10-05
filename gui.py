@@ -1,6 +1,6 @@
 from tkinter import (
     BooleanVar,
-    StringVar,
+    # StringVar,
     IntVar,
 
     Tk,
@@ -14,6 +14,11 @@ from tkinter import (
 
 from tkinter import ttk
 from tkinter import filedialog
+
+from crawler import (
+    CRAWLER_DIR,
+    main
+)
 
 
 #############
@@ -40,10 +45,10 @@ def setup_window():
     save_pages = BooleanVar()
     zip_files_ = BooleanVar()
     save_words = BooleanVar()
-    todo_file = StringVar()
-    done_file = StringVar()
-    bad_file = StringVar()
-    word_file = StringVar()
+    # todo_file = StringVar()
+    # done_file = StringVar()
+    # bad_file = StringVar()
+    # word_file = StringVar()
     save_count = IntVar()
     max_new_errors = IntVar()
     max_http_errors = IntVar()
@@ -94,7 +99,7 @@ def setup_window():
     pause_button.rowconfigure(0, weight=1)
 
     # Button to start the crawler
-    go_button = ttk.Button(control_box, command=start_crawler, padding='4', text='Go')
+    go_button = ttk.Button(control_box, command=main(), padding='4', text='Go')
     go_button.grid(column=1, row=0, sticky=(N, S))
     go_button.columnconfigure(1, weight=1)
     go_button.rowconfigure(0, weight=1)
