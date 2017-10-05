@@ -15,9 +15,9 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
 ![Lines of Code: 1270](https://img.shields.io/badge/lines%20of%20code-1270-brightgreen.svg)
-![Lines of Docs: 546](https://img.shields.io/badge/lines%20of%20docs-546-green.svg)
+![Lines of Docs: 545](https://img.shields.io/badge/lines%20of%20docs-545-green.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
-![Travis branch](https://img.shields.io/travis/rivermont/spidy/master.svg)]
+![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)
 <br>
 [![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
@@ -26,6 +26,8 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://
 ***
 
 # New Features!
+
+### Automatic Testing with Travis CI
 
 ### Release v1.4.0 - #[31663d3](https://github.com/rivermont/spidy/commit/31663d34ceeba66ea9de9819b6da555492ed6a80)
 [spidy Web Crawler Release 1.4](https://github.com/rivermont/spidy/releases/tag/1.4.0)
@@ -36,10 +38,6 @@ See `config/wsj.cfg` for an example.
 
 ### Release v1.0!
 [spidy Web Crawler Release 1.0](https://github.com/rivermont/spidy/releases/tag/1.0)
-
-### PEP 8 Compliance - #[133dcdc](https://github.com/rivermont/spidy/commit/133dcdc02a0d63d94725cb86c089b7fdb3eba2d4)
-98% of code now obeys the PEP 8 standard.<br>
-[PEP 8](https://www.python.org/dev/peps/pep-0008/) is the Style Guide for all Python code.
 
 
 # Contents
