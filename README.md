@@ -12,11 +12,14 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
-[![Python 3?](https://img.shields.io/badge/python-3-lightgrey.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
 ![Lines of Code: 1270](https://img.shields.io/badge/lines%20of%20code-1270-brightgreen.svg)
-![Lines of Docs: 549](https://img.shields.io/badge/lines%20of%20docs-549-green.svg)
+![Lines of Docs: 546](https://img.shields.io/badge/lines%20of%20docs-546-green.svg)
+<br>
+[![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
+[![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
+[![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
 
 ***
 
@@ -56,8 +59,7 @@ See `config/wsj.cfg` for an example.
       - [Config](#config)
       - [Start](#start)
       - [Autosave](#autosave)
-      - [Force Quit](#force-quit)
-      - [End](#end)
+      - [Force Quit](#force-quit)=
   - [License](#license)
 
 
@@ -158,11 +160,6 @@ Sample log after hitting the autosave cap.
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 ![](/media/keyboardinterrupt.png?raw=true)
-
-### End
-Sample log after crawler visits all links in TODO.
-
-![](/media/end.png?raw=true)
 
 
 # License
