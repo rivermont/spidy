@@ -6,8 +6,11 @@ Heads up: We have no idea how to do this! If you wish to help please do, just ed
 If you're looking for the plain English, check out the [README](https://github.com/rivermont/spidy).<br>
 See [`CONTRIBUTE.md`](https://github.com/rivermomnt/spidy/blob/master/CONTRIBUTE.md) for some guidelines on how to get started.
 
-[![GitHub issues](https://img.shields.io/github/issues/rivermont/spidy.svg)](https://github.com/rivermont/spidy/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/rivermont/spidy.svg)](https://github.com/rivermont/spidy/pulls)
+Bad Stuff: [![Open Issues](https://img.shields.io/github/issues/rivermont/spidy.svg)](https://github.com/rivermont/spidy/issues)
+[![Open Pull Requests](https://img.shields.io/github/issues-pr/rivermont/spidy.svg)](https://github.com/rivermont/spidy/pulls)
+<br>
+Good Stuff: [![Closed Issues](https://img.shields.io/github/issues-closed/rivermont/spidy.svg)](https://github.com/rivermont/spidy/issues?q=is%3Aissue+is%3Aclosed)
+[![Closed Pull Requests](https://img.shields.io/github/issues-pr-closed/rivermont/spidy.svg)](https://github.com/rivermont/spidy/pulls?q=is%3Apr+is%3Aclosed)
 
 ***
 
@@ -35,7 +38,7 @@ It helped me understand how a web crawler should run, and is just a good article
 
 The original plan for a spidy GUI was an interface for those who prefer clicky things other command line.<br>
 Users would select options from dropdowns, checkboxes, and text fields instead of using a config file or entering them in the console. A textbox would hold the console output, and there would be counters for errors, pages crawled, etc.<br>
-Eventually an exe created with something like [py2exe](http://py2exe.org/) would be great.
+Eventually having the crawler and GUI bundled into an exe - created with something like [py2exe](http://py2exe.org/) - would be great.
 
 [Here](https://raw.githubusercontent.com/rivermont/spidy/master/media/frame.png) is a rough wireframe of the original idea.
 
@@ -71,6 +74,9 @@ Because the internet is so big, this will practically never end.
 
 ### gui.py
 The development file for the GUI.
+
+### spidy.bat
+Windows Batch file for running the crawler.
 
 
 # Branches
