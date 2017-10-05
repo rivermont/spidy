@@ -8,14 +8,14 @@ Started by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [Fal
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTE.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTE.md), then check out the docs.
 
-![Version: 1.4.1](https://img.shields.io/badge/version-1.4.1-brightgreen.svg)
+![Version: 1.4.2](https://img.shields.io/badge/version-1.4.2-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Python 3.5](https://img.shields.io/badge/python-3.5-brightgreen.svg)](https://docs.python.org/3/)
+[![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 <br>
-![Lines of Code: 1270](https://img.shields.io/badge/lines%20of%20code-1270-brightgreen.svg)
-![Lines of Docs: 545](https://img.shields.io/badge/lines%20of%20docs-545-green.svg)
+![Lines of Code: 1321](https://img.shields.io/badge/lines%20of%20code-1321-brightgreen.svg)
+![Lines of Docs: 558](https://img.shields.io/badge/lines%20of%20docs-558-green.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 ![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)
 <br>

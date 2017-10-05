@@ -1,6 +1,7 @@
 import unittest
 
 from crawler import (
+    crawl,
     check_link,
     check_word,
     check_path,
@@ -25,6 +26,10 @@ class CrawlerTestCase(unittest.TestCase):
 
     def test_check_link_given_invalid_url2(self):
         url = "github.com"
+        self.assertTrue(check_link(url))
+
+    def test_check_link_given_short_url(self):
+        url = "http://a"
         self.assertTrue(check_link(url))
 
     # Tests for check_word
@@ -95,6 +100,35 @@ class CrawlerTestCase(unittest.TestCase):
         extension = ".php"
         expected_result = "http--reallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlreallylongurlen.php"
         self.assertEqual(make_file_path(value, extension), expected_result)
+
+    # Test crawl
+
+    def test_crawl_given_valid_url(self):
+        value = "https://github.com"
+        raised = False
+        try:
+            crawl(value)
+        except Exception:
+            raised = True
+        self.assertFalse(raised)
+
+    def test_crawl_given_invalid_url(self):
+        value = "https://example.reee"
+        raised = False
+        try:
+            crawl(value)
+        except Exception:
+            raised = True
+        self.assertTrue(raised)
+
+    def test_crawl_given_invalid_schema(self):
+        value = "foo://github.com"
+        raised = False
+        try:
+            crawl(value)
+        except Exception:
+            raised = True
+        self.assertTrue(raised)
 
 
 if __name__ == '__main__':

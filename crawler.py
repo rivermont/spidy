@@ -10,7 +10,7 @@ from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 
-VERSION = '1.4.1'
+VERSION = '1.4.2'
 
 
 # Time statements.
@@ -204,7 +204,7 @@ def save_files():
 
 def make_file_path(url, ext):
     """
-    Makes a valid Windows file path for a url.
+    Makes a valid Windows file path for a given url.
     """
     url = url.replace(ext, '')  # Remove extension from path
     for char in """/\\ *""":  # Remove illegal characters from path
