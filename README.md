@@ -1,4 +1,6 @@
-# spidy Web Crawler
+---
+![spidy web crawler](https://github.com/Cutwell/spidy/blob/master/spidy_logo.png?raw=true "spidy web crawler")
+---
 Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses the Python [`requests`](http://docs.python-requests.org) library to query the webpages.<br>
 Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
