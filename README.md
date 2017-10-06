@@ -4,7 +4,7 @@ Given a list of web links, it uses the Python [`requests`](http://docs.python-re
 Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
 Pretty simple!
 
-Started by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](#contributors).<br>
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
@@ -61,6 +61,7 @@ See `config/wsj.cfg` for an example.
       - [Start](#start)
       - [Autosave](#autosave)
       - [Force Quit](#force-quit)
+  - [Contributors](#contributors)
   - [License](#license)
 
 
@@ -161,6 +162,17 @@ Sample log after hitting the autosave cap.
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 ![](/media/keyboardinterrupt.png?raw=true)
+
+
+# Contributors
+
+* [3onyc](https://github.com/3onyc) - PEP8 Compliance
+* [DeKaN](https://github.com/DeKaN) - Getting PyPI packaging to work.
+* [esouthren](https://github.com/esouthren) - Unit testing.
+* [j-setiawan](https://github.com/j-setiawan) - Paths that work on all OS's.
+* [michellemorales](https://github.com/michellemorales) - Confirmed OS/X support.
+* [quatroka](https://github.com/quatroka) - Fixed testing bugs.
+* [stevelle](https://github.com/stevelle) - Respect robots.txt
 
 
 # License
