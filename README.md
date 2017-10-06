@@ -60,12 +60,12 @@ See `config/wsj.cfg` for an example.
       - [Config](#config)
       - [Start](#start)
       - [Autosave](#autosave)
-      - [Force Quit](#force-quit)=
+      - [Force Quit](#force-quit)
   - [License](#license)
 
 
 # How it Works
-Spidy has two working lists, `TODO` and `done`.<br>
+Spidy has two working lists, `TODO` and `DONE`.<br>
 TODO is the list of URLs it hasn't yet visited.<br>
 Done is the list of URLs it has already been to.<br>
 The crawler visits each page in TODO, scrapes the DOM of the page for links, and adds those back into TODO.<br>
@@ -105,8 +105,7 @@ It comes pre-packaged with lots of goodies, including `lxml`, which is required 
 You can also just install [default Python](https://www.python.org/downloads/), and install the external libraries separately.<br>
 This can be done with `pip`:
 
-    pip install lxml
-    pip install requests
+    pip install -r requirements.txt
 
 ### Linux
 Python 3 should come preinstalled with most flavors of Linux, but if not, simply run
@@ -123,7 +122,7 @@ If you have git or GitHub Desktop installed, you can clone the repository [from 
 
 Use `cd` to navigate to the directory that spidy is located in, then run:
 
-> python crawler.py
+    python crawler.py
 
 ![](/media/run.gif?raw=true)
 
