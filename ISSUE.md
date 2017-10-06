@@ -9,6 +9,8 @@
 
 
 
-##### System information
+##### Specifications
+- Crawler Version:
+- Platform:
+- Dependency Versions:
 
-<!-- Paste the output of "spidy --version" here. -->
