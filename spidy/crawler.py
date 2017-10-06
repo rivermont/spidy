@@ -9,8 +9,10 @@ import requests
 from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
+from spidy import __version__
 
-VERSION = '1.4.2'
+
+VERSION = __version__
 
 
 # Time statements.
@@ -27,15 +29,16 @@ START_TIME = int(time.time())
 START_TIME_LONG = get_time()
 
 # Get current working directory of spidy
-CRAWLER_DIR = path.dirname(path.realpath(__file__))
+WORKING_DIR = path.realpath('.')
+PACKAGE_DIR = path.dirname(path.realpath(__file__))
 
 # Open log file for logging
 try:
-    makedirs(CRAWLER_DIR + '/logs')  # Attempts to make the logs directory
+    makedirs(WORKING_DIR + '/logs')  # Attempts to make the logs directory
 except OSError:
     pass  # Assumes only OSError wil complain if /logs already exists
 
-LOG_FILE = open(path.join(CRAWLER_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
+LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
 
 
@@ -249,7 +252,7 @@ def save_page(url, page):
     # Make file path
     ext = mime_lookup(get_mime_type(page))
     cropped_url = make_file_path(url, ext)
-    file_path = path.join(CRAWLER_DIR, 'saved', '{0}'.format(cropped_url))
+    file_path = path.join(WORKING_DIR, 'saved', '{0}'.format(cropped_url))
 
     # Save file
     with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
@@ -450,7 +453,7 @@ MIME_TYPES = {
 }
 
 # Error log location
-ERR_LOG_FILE = path.join(CRAWLER_DIR, 'logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
+ERR_LOG_FILE = path.join(WORKING_DIR, 'logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
 ERR_LOG_FILE_NAME = path.join('logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
 
 # User-Agent Header Strings
@@ -537,7 +540,7 @@ def init():
     # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-    global HEADER, CRAWLER_DIR, KILL_LIST, LOG_END
+    global HEADER, PACKAGE_DIR, WORKING_DIR, KILL_LIST, LOG_END
     global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
@@ -547,7 +550,7 @@ def init():
 
     # Getting Arguments
 
-    if not path.exists('config'):
+    if not path.exists(path.join(PACKAGE_DIR, 'config')):
         write_log('[INFO]: No config folder available.')
         USE_CONFIG = False
     else:
@@ -567,9 +570,9 @@ def init():
             write_log('[INPUT]: Config file name:')
             input_ = input()
             if input_[-4:] == '.cfg':
-                file_path = path.join('config', input_)
+                file_path = path.join(PACKAGE_DIR, 'config', input_)
             else:
-                file_path = path.join('config', '{0}.cfg'.format(input_))
+                file_path = path.join(PACKAGE_DIR, 'config', '{0}.cfg'.format(input_))
             write_log('[INFO]: Loading configuration settings from {0}'.format(file_path))
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
                 for line in file.readlines():
@@ -794,7 +797,7 @@ def main():
     # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-    global HEADER, CRAWLER_DIR, KILL_LIST, LOG_END
+    global HEADER, WORKING_DIR, KILL_LIST, LOG_END
     global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT

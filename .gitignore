@@ -4,3 +4,7 @@ logs/
 *.zip
 *.pyc
 .idea
+build/
+dist/
+sdist/
+*.egg-info/

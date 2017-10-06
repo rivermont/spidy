@@ -125,7 +125,7 @@ Use `cd` to navigate to the directory that spidy is located in, then run:
 
 > python crawler.py
 
-![](/media/run.gif?raw=true)
+![](/spidy/media/run.gif?raw=true)
 
 ### Running
 Spidy logs a lot of information to the command line throughout its life.<br>
@@ -151,17 +151,17 @@ The config files included with spidy are:
 ### Start
 Sample start log.
 
-![](/media/start.png?raw=true)
+![](/spidy/media/start.png?raw=true)
 
 ### Autosave
 Sample log after hitting the autosave cap.
 
-![](/media/log.png?raw=true)
+![](/spidy/media/log.png?raw=true)
 
 ### Force Quit
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
-![](/media/keyboardinterrupt.png?raw=true)
+![](/spidy/media/keyboardinterrupt.png?raw=true)
 
 
 # License

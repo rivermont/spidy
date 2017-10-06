@@ -16,9 +16,8 @@ from tkinter import ttk
 from tkinter import filedialog
 
 from spidy.crawler import (
-    CRAWLER_DIR,
-    main
-)
+    PACKAGE_DIR,
+    main)
 
 
 #############
@@ -38,7 +37,7 @@ def setup_window():
     global window
     # Main window
     window.title('spidy Web Crawler - by rivermont')
-    window.iconbitmap('{0}\\media\\favicon.ico'.format(CRAWLER_DIR))
+    window.iconbitmap('{0}\\media\\favicon.ico'.format(PACKAGE_DIR))
 
     overwrite = BooleanVar()
     raise_errors = BooleanVar()
