@@ -122,7 +122,7 @@ def crawl(url):
 
 
 def allow_all(ignore_url):
-    return False
+    return True
 
 
 def check_link(item, robots_allowed=allow_all):
