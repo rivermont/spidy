@@ -22,6 +22,9 @@ RESTRICT = <True/False>
 # The domain within which to restrict crawling.
 DOMAIN = ''
 
+# Whether to respect sites' robots.txt or not
+RESPECT_ROBOTS = <True/False>
+
 # Location of the TODO save file.
 TODO_FILE = ''
 

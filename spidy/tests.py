@@ -1,10 +1,11 @@
 import unittest
 
-from spidy.crawler import (
+from crawler import (
     crawl,
     check_link,
     check_word,
     check_path,
+    init_robot_checker,
     make_words,
     make_file_path,
     mime_lookup,
@@ -31,6 +32,36 @@ class CrawlerTestCase(unittest.TestCase):
     def test_check_link_given_short_url(self):
         url = "http://a"
         self.assertTrue(check_link(url))
+
+    # Tests for check_link respecting robots.txt
+
+    def test_robots_given_allowed_url(self):
+        # allowed expliticly
+        url = "http://www.google.com/m/finance"
+        checker = init_robot_checker(True, 'duckduckbot', url)
+
+        self.assertFalse(check_link(url, checker))
+
+    def test_robots_given_asterisk_path_allowed_url(self):
+        # allowed by /*/*/tree/master
+        url = "http://github.com/rivermont/spidy/tree/master"
+        checker = init_robot_checker(True, 'duckduckbot', url)
+
+        self.assertFalse(check_link(url, checker))
+
+    def test_robots_given_lower_path_allowed_url(self):
+        # allowed by /search/about after /search is forbidden
+        url = "http://google.com/search/about"
+        checker = init_robot_checker(True, 'duckduckbot', url)
+
+        self.assertFalse(check_link(url, checker))
+
+    def test_robots_given_forbidden_url(self):
+        # prohibited explicitly
+        url = "http://github.com/search"
+        checker = init_robot_checker(True, 'duckduckbot', url)
+
+        self.assertTrue(check_link(url, checker))
 
     # Tests for check_word
 

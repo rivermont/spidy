@@ -5,11 +5,13 @@ Built by rivermont and FalconWarriorr
 import time
 import shutil
 import requests
+import urllib
 
 from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
-from spidy import __version__
+from reppy.robots import Robots
+from __init__ import __version__
 
 
 VERSION = __version__
@@ -122,13 +124,31 @@ def crawl(url):
         write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), url))
 
 
-def check_link(item):
+def allow_all(ignore_url):
+    return True
+
+
+def init_robot_checker(respect_robots, user_agent, start_url):
+    if respect_robots:
+        start_path = urllib.parse.urlparse(start_url).path
+        robots_url = start_url.replace(start_path, '/robots.txt')
+        write_log('[INFO]: Reading robots file: {0}'.format(robots_url))
+        robots = Robots.fetch(robots_url)
+        checker = robots.agent(user_agent)
+        return checker.allowed
+    else:
+        return allow_all
+
+
+def check_link(item, robots_allowed=allow_all):
     """
     Returns True if item is not a valid url.
     Returns False if item passes all inspections (is valid url).
     """
     # Shortest possible url being 'http://a.b', and
     # Links longer than 255 characters are usually too long for the filesystem to handle.
+    if not robots_allowed(item):
+        return True
     if RESTRICT:
         if DOMAIN not in item:
             return True
@@ -522,10 +542,10 @@ yes = ['y', 'yes', 'Y', 'Yes', 'True', 'true']
 no = ['n', 'no', 'N', 'No', 'False', 'false']
 
 # Initialize variables as empty that will be needed in the global scope
-HEADER = ''
+HEADER = {}
 SAVE_COUNT, MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS = 0, 0, 0, 0
 MAX_NEW_MIMES = 0
-RESTRICT, DOMAIN = False, ''
+RESPECT_ROBOTS, RESTRICT, DOMAIN = False, False, ''
 USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE = False, False, False, False, False
 SAVE_PAGES, SAVE_WORDS = False, False
 TODO_FILE, DONE_FILE, WORD_FILE = '', '', ''
@@ -545,7 +565,7 @@ def init():
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
-    global RESTRICT, DOMAIN
+    global RESPECT_ROBOTS, RESTRICT, DOMAIN
     global WORDS, TODO, DONE
 
     # Getting Arguments
@@ -671,6 +691,17 @@ def init():
                 DOMAIN = input_
             except KeyError:
                 handle_invalid_input('string')
+
+        write_log('[INPUT]: Should spidy respect sites\' robots.txt? (y/n) (Default: Yes):')
+        input_ = input()
+        if not bool(input_):
+            RESPECT_ROBOTS = True
+        elif input_ in yes:
+            RESPECT_ROBOTS = True
+        elif input_ in no:
+            RESPECT_ROBOTS = False
+        else:
+            handle_invalid_input()
 
         write_log('[INPUT]: What HTTP browser headers should spidy imitate?')
         write_log('[INPUT]: Choices: spidy (default), Chrome, Firefox, IE, Edge, Custom:')
@@ -802,7 +833,7 @@ def main():
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
-    global RESTRICT, DOMAIN
+    global RESPECT_ROBOTS, RESTRICT, DOMAIN
     global WORDS, TODO, DONE
 
     init()
@@ -819,6 +850,8 @@ def main():
 
     write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
     log('LOG: Successfully started crawler.')
+
+    robots_allowed = init_robot_checker(RESPECT_ROBOTS, HEADER['User-Agent'], TODO[0])
 
     write_log('[INFO]: TODO first value: {0}'.format(TODO[0]))
 
@@ -842,7 +875,7 @@ def main():
                     # Reset variables
                     COUNTER = 0
                     WORDS.clear()
-            elif check_link(TODO[0]):  # If the link is invalid
+            elif check_link(TODO[0], robots_allowed):  # If the link is invalid
                 del TODO[0]
             # Crawl the page
             else:
