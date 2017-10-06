@@ -11,4 +11,4 @@
 
 ##### System information
 
-<!-- Paste the output of "mitmproxy --version" here. -->
+<!-- Paste the output of "spidy --version" here. -->
