@@ -5,6 +5,7 @@ Built by rivermont and FalconWarriorr
 import time
 import shutil
 import requests
+import urllib
 
 from os import path, makedirs
 from lxml import etree
@@ -807,7 +808,7 @@ def init():
 
 def init_robot_checker(respect_robots, user_agent, start_url):
     if respect_robots:
-        start_path = parse.urlparse(start_url).path
+        start_path = urllib.parse.urlparse(start_url).path
         robots_url = start_url.replace(start_path, '/robots.txt')
         write_log('[INFO]: Reading robots file: {0}'.format(robots_url))
         robots = Robots.fetch(robots_url)
@@ -852,7 +853,6 @@ def main():
     write_log('[INFO]: TODO first value: {0}'.format(TODO[0]))
 
     write_log('[INFO]: Using headers: {0}'.format(HEADER))
-
 
     while len(TODO) != 0:  # While there are links to check
         try:

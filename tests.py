@@ -5,7 +5,6 @@ from crawler import (
     check_link,
     check_word,
     check_path,
-    HEADERS,
     init_robot_checker,
     make_words,
     make_file_path,
