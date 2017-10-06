@@ -4,7 +4,7 @@ Given a list of web links, it uses the Python [`requests`](http://docs.python-re
 Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
 Pretty simple!
 
-Started by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/).<br>
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](#contributors).<br>
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
@@ -60,12 +60,13 @@ See `config/wsj.cfg` for an example.
       - [Config](#config)
       - [Start](#start)
       - [Autosave](#autosave)
-      - [Force Quit](#force-quit)=
+      - [Force Quit](#force-quit)
+  - [Contributors](#contributors)
   - [License](#license)
 
 
 # How it Works
-Spidy has two working lists, `TODO` and `done`.<br>
+Spidy has two working lists, `TODO` and `DONE`.<br>
 TODO is the list of URLs it hasn't yet visited.<br>
 Done is the list of URLs it has already been to.<br>
 The crawler visits each page in TODO, scrapes the DOM of the page for links, and adds those back into TODO.<br>
@@ -105,8 +106,7 @@ It comes pre-packaged with lots of goodies, including `lxml`, which is required 
 You can also just install [default Python](https://www.python.org/downloads/), and install the external libraries separately.<br>
 This can be done with `pip`:
 
-    pip install lxml
-    pip install requests
+    pip install -r requirements.txt
 
 ### Linux
 Python 3 should come preinstalled with most flavors of Linux, but if not, simply run
@@ -123,9 +123,9 @@ If you have git or GitHub Desktop installed, you can clone the repository [from 
 
 Use `cd` to navigate to the directory that spidy is located in, then run:
 
-> python crawler.py
+    python crawler.py
 
-![](/spidy/media/run.gif?raw=true)
+![](/media/run.gif?raw=true)
 
 ### Running
 Spidy logs a lot of information to the command line throughout its life.<br>
@@ -151,17 +151,28 @@ The config files included with spidy are:
 ### Start
 Sample start log.
 
-![](/spidy/media/start.png?raw=true)
+![](/media/start.png?raw=true)
 
 ### Autosave
 Sample log after hitting the autosave cap.
 
-![](/spidy/media/log.png?raw=true)
+![](/media/log.png?raw=true)
 
 ### Force Quit
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
-![](/spidy/media/keyboardinterrupt.png?raw=true)
+![](/media/keyboardinterrupt.png?raw=true)
+
+
+# Contributors
+
+* [3onyc](https://github.com/3onyc) - PEP8 Compliance
+* [DeKaN](https://github.com/DeKaN) - Getting PyPI packaging to work.
+* [esouthren](https://github.com/esouthren) - Unit testing.
+* [j-setiawan](https://github.com/j-setiawan) - Paths that work on all OS's.
+* [michellemorales](https://github.com/michellemorales) - Confirmed OS/X support.
+* [quatroka](https://github.com/quatroka) - Fixed testing bugs.
+* [stevelle](https://github.com/stevelle) - Respect robots.txt
 
 
 # License
