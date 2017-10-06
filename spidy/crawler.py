@@ -31,9 +31,9 @@ CRAWLER_DIR = path.dirname(path.realpath(__file__))
 
 # Open log file for logging
 try:
-    makedirs('logs')  # Attempts to make the logs directory
+    makedirs(CRAWLER_DIR + '/logs')  # Attempts to make the logs directory
 except OSError:
-    pass  # Assumes only OSError wil complain if logs/ already exists
+    pass  # Assumes only OSError wil complain if /logs already exists
 
 LOG_FILE = open(path.join(CRAWLER_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))

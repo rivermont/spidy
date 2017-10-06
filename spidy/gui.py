@@ -15,7 +15,7 @@ from tkinter import (
 from tkinter import ttk
 from tkinter import filedialog
 
-from crawler import (
+from spidy.crawler import (
     CRAWLER_DIR,
     main
 )

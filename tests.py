@@ -1,6 +1,6 @@
 import unittest
 
-from crawler import (
+from spidy.crawler import (
     crawl,
     check_link,
     check_word,
