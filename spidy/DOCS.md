@@ -149,20 +149,20 @@ Shuts down the crawler when a `KeyboardInterrupt` is performed.
 Logs important information to the console and log file.<br>
 Example log:
 
-> [23:17:06] [spidy] [INFO]: Queried 100 links.
-> [23:17:06] [spidy] [INFO]: Started at 23:15:33.
-> [23:17:06] [spidy] [INFO]: Log location: logs/spidy_log_1499483733
-> [23:17:06] [spidy] [INFO]: Error log location: logs/spidy_error_log_1499483733.txt
-> [23:17:06] [spidy] [INFO]: 1901 links in TODO.
-> [23:17:06] [spidy] [INFO]: 110446 links in done.
-> [23:17:06] [spidy] [INFO]: 0/5 new errors caught.
-> [23:17:06] [spidy] [INFO]: 0/20 HTTP errors encountered.
-> [23:17:06] [spidy] [INFO]: 1/10 new MIMEs found.
-> [23:17:06] [spidy] [INFO]: 3/20 known errors caught.
-> [23:17:06] [spidy] [INFO]: Saving files...
-> [23:17:06] [spidy] [LOG]: Saved TODO list to crawler_todo.txt
-> [23:17:06] [spidy] [LOG]: Saved done list to crawler_done.txt
-> [23:17:06] [spidy] [LOG]: Saved 90 bad links to crawler_bad.txt
+    [23:17:06] [spidy] [INFO]: Queried 100 links.
+    [23:17:06] [spidy] [INFO]: Started at 23:15:33.
+    [23:17:06] [spidy] [INFO]: Log location: logs/spidy_log_1499483733
+    [23:17:06] [spidy] [INFO]: Error log location: logs/spidy_error_log_1499483733.txt
+    [23:17:06] [spidy] [INFO]: 1901 links in TODO.
+    [23:17:06] [spidy] [INFO]: 110446 links in done.
+    [23:17:06] [spidy] [INFO]: 0/5 new errors caught.
+    [23:17:06] [spidy] [INFO]: 0/20 HTTP errors encountered.
+    [23:17:06] [spidy] [INFO]: 1/10 new MIMEs found.
+    [23:17:06] [spidy] [INFO]: 3/20 known errors caught.
+    [23:17:06] [spidy] [INFO]: Saving files...
+    [23:17:06] [spidy] [LOG]: Saved TODO list to crawler_todo.txt
+    [23:17:06] [spidy] [LOG]: Saved done list to crawler_done.txt
+    [23:17:06] [spidy] [LOG]: Saved 90 bad links to crawler_bad.txt
 
 ## `log` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L295))
 Logs a single message to the error log file.
@@ -179,7 +179,7 @@ This finds the correct file extension for a MIME type using the [`MIME_TYPES`](#
 If the MIME type is blank it defaults to `.html`, and if the MIME type is not in the dictionary a [`HeaderError`](#headererror--source) is raised.<br>
 Usage:
 
-> mime_lookup(value)
+    mime_lookup(value)
 
 Where `value` is the MIME type.
 
@@ -282,7 +282,7 @@ However there are many incorrect usages out there, as the list shows.
 The extension for a MIME type can be found using the dictionary itself or by calling `mime_lookup(value)`<br>
 To use the dictionary, use:
 
-> MIME_TYPES[value]
+    MIME_TYPES[value]
 
 Where `value` is the MIME type.<br>
 This will return the extension associated with the MIME type if it exists, however this will throw an [`IndexError`](https://docs.python.org/2/library/exceptions.html#exceptions.IndexError) if the MIME type is not in the dictionary.<br>
