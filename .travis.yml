@@ -17,7 +17,7 @@ install:
 # Run all tests
 script:
   - make
-  - python3 tests.py
+  - python3 spidy/tests.py
 
 branches:
   only:
