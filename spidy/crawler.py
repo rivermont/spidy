@@ -6,6 +6,7 @@ import time
 import shutil
 import requests
 import urllib
+import sys
 
 from os import path, makedirs
 from lxml import etree
@@ -595,8 +596,11 @@ def init():
                 for line in file.readlines():
                     exec(line, globals())
         except FileNotFoundError:
-            LOG_FILE.write('\n[{0}] [spidy] [ERROR]: Please use a valid .cfg file.'.format(get_time()))
-            raise FileNotFoundError('[{0}] [spidy] [ERROR]: Please use a valid .cfg file.'.format(get_time()))
+            write_log('[ERROR]: Config file not found.')
+            raise FileNotFoundError()
+        except Exception:
+            write_log('[ERROR]: Please use a valid .cfg file.')
+            raise Exception()
 
     else:
         write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
@@ -833,7 +837,10 @@ def main():
     global RESPECT_ROBOTS, RESTRICT, DOMAIN
     global WORDS, TODO, DONE
 
-    init()
+    try:
+        init()
+    except Exception as error:
+        sys.exit(1)
 
     # Create required saved/ folder
     try:
