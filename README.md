@@ -4,21 +4,21 @@ Given a list of web links, it uses the Python [`requests`](http://docs.python-re
 Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
 Pretty simple!
 
-![spidy Logo](/media/spidy_logo.png?raw=true)
+[![spidy Logo](/media/spidy_logo.png?raw=true)](https://github.com/rivermont/spidy/README.md#contributors)
 
-Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](#contributors).<br>
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy/README.md#contributors).<br>
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
-![Version: 1.4.2](https://img.shields.io/badge/version-1.4.2-brightgreen.svg)
+![Version: 1.5.0.1](https://img.shields.io/badge/version-1.5.0.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 <br>
-![Lines of Code: 1321](https://img.shields.io/badge/lines%20of%20code-1321-brightgreen.svg)
-![Lines of Docs: 559](https://img.shields.io/badge/lines%20of%20docs-559-green.svg)
+![Lines of Code: 1437](https://img.shields.io/badge/lines%20of%20code-1437-brightgreen.svg)
+![Lines of Docs: 563](https://img.shields.io/badge/lines%20of%20docs-563-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 [![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
 <br>
@@ -28,7 +28,10 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 
 ***
 
-# New Features!
+# 🎉 New Features!
+
+### PyPI
+Install spidy with one line: `pip3 install spidy-web-crawler`!
 
 ### Automatic Testing with Travis CI
 
@@ -39,32 +42,29 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 Scrape only a single site instead of the whole internet. May use slightly less space on your disk.<br>
 See `config/wsj.cfg` for an example.
 
-### Release v1.0!
-[spidy Web Crawler Release 1.0](https://github.com/rivermont/spidy/releases/tag/1.0)
-
 
 # Contents
 
-  - [spidy Web Crawler](#spidy-web-crawler)
-  - [New Features!](#new-features)
-  - [Contents](#contents)
-  - [How it Works](#how-it-works)
-  - [Features](#features)
-  - [Tutorial](#tutorial)
-    - [Python Installation](#python-installation)
-      - [Windows and Mac](#windows-and-mac)
-        - [Anaconda](#anaconda)
-        - [Python Base](#python-base)
-      - [Linux](#linux)
-    - [Crawler Installation](#crawler-installation)
-    - [Launching](#launching)
-    - [Running](#running)
-      - [Config](#config)
-      - [Start](#start)
-      - [Autosave](#autosave)
-      - [Force Quit](#force-quit)
-  - [Contributors](#contributors)
-  - [License](#license)
+  - [spidy Web Crawler](https://github.com/rivermont/spidy/README.md#spidy-web-crawler)
+  - [New Features!](https://github.com/rivermont/spidy/README.md#new-features)
+  - [Contents](https://github.com/rivermont/spidy/README.md#contents)
+  - [How it Works](https://github.com/rivermont/spidy/README.md#how-it-works)
+  - [Features](https://github.com/rivermont/spidy/README.md#features)
+  - [Tutorial](https://github.com/rivermont/spidy/README.md#tutorial)
+    - [Python Installation](https://github.com/rivermont/spidy/README.md#python-installation)
+      - [Windows and Mac](https://github.com/rivermont/spidy/README.md#windows-and-mac)
+        - [Anaconda](https://github.com/rivermont/spidy/README.md#anaconda)
+        - [Python Base](https://github.com/rivermont/spidy/README.md#python-base)
+      - [Linux](https://github.com/rivermont/spidy/README.md#linux)
+    - [Crawler Installation](https://github.com/rivermont/spidy/README.md#crawler-installation)
+    - [Launching](https://github.com/rivermont/spidy/README.md#launching)
+    - [Running](https://github.com/rivermont/spidy/README.md#running)
+      - [Config](https://github.com/rivermont/spidy/README.md#config)
+      - [Start](https://github.com/rivermont/spidy/README.md#start)
+      - [Autosave](https://github.com/rivermont/spidy/README.md#autosave)
+      - [Force Quit](https://github.com/rivermont/spidy/README.md#force-quit)
+  - [Contributors](https://github.com/rivermont/spidy/README.md#contributors)
+  - [License](https://github.com/rivermont/spidy/README.md#license)
 
 
 # How it Works
@@ -167,6 +167,8 @@ Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 
 # Contributors
+
+* Our logo was designed by [Cutwell](https://github.com/Cutwell)
 
 * [3onyc](https://github.com/3onyc) - PEP8 Compliance
 * [DeKaN](https://github.com/DeKaN) - Getting PyPI packaging to work.

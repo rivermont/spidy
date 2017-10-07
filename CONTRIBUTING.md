@@ -11,7 +11,7 @@ I also use [ZenHub](https://www.zenhub.com/), an project management platform hat
 * If you make any changes please update the version as well as the badges on README lines [18 and 19](https://github.com/rivermont/spidy/blob/master/README.md#L18).
 
 * `Lines of Code` is calculated: `len(crawler.py) + len(gui.py) + len(tests.py)`
-* `Lines of Docs` is calculated: `len(README.md) + len(DOCS.md) + len(CONTRIBUTE.md) + len(TODO.md)`
+* `Lines of Docs` is calculated: `len(README.md) + len(DOCS.md) + len(CONTRIBUTE.md)`
 
 
 ## Guidelines

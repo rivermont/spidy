@@ -92,7 +92,8 @@ def crawl(url):
     global TODO
     if not OVERRIDE_SIZE:
         try:
-            length = int(requests.head(url).headers['Content-Length'])  # Attempt to get the size in bytes of the document
+            # Attempt to get the size in bytes of the document
+            length = int(requests.head(url).headers['Content-Length'])
         except KeyError:  # Sometimes no Content-Length header is returned...
             length = 1
         if length > 524288000:  # If the page is larger than 500 MB
@@ -124,10 +125,6 @@ def crawl(url):
         write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), url))
 
 
-def allow_all(ignore_url):
-    return True
-
-
 def init_robot_checker(respect_robots, user_agent, start_url):
     if respect_robots:
         start_path = urllib.parse.urlparse(start_url).path
@@ -137,17 +134,17 @@ def init_robot_checker(respect_robots, user_agent, start_url):
         checker = robots.agent(user_agent)
         return checker.allowed
     else:
-        return allow_all
+        return True
 
 
-def check_link(item, robots_allowed=allow_all):
+def check_link(item, robots_allowed=True):
     """
     Returns True if item is not a valid url.
     Returns False if item passes all inspections (is valid url).
     """
     # Shortest possible url being 'http://a.b', and
     # Links longer than 255 characters are usually too long for the filesystem to handle.
-    if not robots_allowed(item):
+    if not robots_allowed:
         return True
     if RESTRICT:
         if DOMAIN not in item:
@@ -859,7 +856,10 @@ def main():
 
     while len(TODO) != 0:  # While there are links to check
         try:
-            if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
+            if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or \
+               KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or \
+               HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or \
+               NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
                 write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
                 save_files()
                 exit()

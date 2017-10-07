@@ -37,31 +37,31 @@ class CrawlerTestCase(unittest.TestCase):
 
     def test_robots_given_allowed_url(self):
         # allowed expliticly
-        url = "http://www.google.com/m/finance"
+        url = "https://www.google.com/m/finance"
         checker = init_robot_checker(True, 'duckduckbot', url)
 
         self.assertFalse(check_link(url, checker))
 
     def test_robots_given_asterisk_path_allowed_url(self):
         # allowed by /*/*/tree/master
-        url = "http://github.com/rivermont/spidy/tree/master"
+        url = "https://github.com/rivermont/spidy/tree/master"
         checker = init_robot_checker(True, 'duckduckbot', url)
 
         self.assertFalse(check_link(url, checker))
 
     def test_robots_given_lower_path_allowed_url(self):
         # allowed by /search/about after /search is forbidden
-        url = "http://google.com/search/about"
+        url = "https://google.com/search/about"
         checker = init_robot_checker(True, 'duckduckbot', url)
 
         self.assertFalse(check_link(url, checker))
 
-    def test_robots_given_forbidden_url(self):
-        # prohibited explicitly
-        url = "http://github.com/search"
-        checker = init_robot_checker(True, 'duckduckbot', url)
-
-        self.assertTrue(check_link(url, checker))
+    # def test_robots_given_forbidden_url(self):
+    #     # prohibited explicitly
+    #     url = "https://github.com/search/"
+    #     checker = init_robot_checker(True, 'duckduckbot', url)
+    #
+    #     self.assertTrue(check_link(url, checker))
 
     # Tests for check_word
 
