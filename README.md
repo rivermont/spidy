@@ -46,7 +46,7 @@ See `config/wsj.cfg` for an example.
 # Contents
 
   - [spidy Web Crawler](https://github.com/rivermont/spidy#spidy-web-crawler)
-  - [New Features!](https://github.com/rivermont/spidy#new-features)
+  - [New Features!](https://github.com/rivermont/spidy#-new-features)
   - [Contents](https://github.com/rivermont/spidy#contents)
   - [How it Works](https://github.com/rivermont/spidy#how-it-works)
   - [Features](https://github.com/rivermont/spidy#features)
