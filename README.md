@@ -4,9 +4,9 @@ Given a list of web links, it uses the Python [`requests`](http://docs.python-re
 Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
 Pretty simple!
 
-[![spidy Logo](/media/spidy_logo.png?raw=true)](https://github.com/rivermont/spidy/README.md#contributors)
+[![spidy Logo](/media/spidy_logo.png?raw=true)](https://github.com/rivermont/spidy#contributors)
 
-Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy/README.md#contributors).<br>
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
@@ -45,26 +45,26 @@ See `config/wsj.cfg` for an example.
 
 # Contents
 
-  - [spidy Web Crawler](https://github.com/rivermont/spidy/README.md#spidy-web-crawler)
-  - [New Features!](https://github.com/rivermont/spidy/README.md#new-features)
-  - [Contents](https://github.com/rivermont/spidy/README.md#contents)
-  - [How it Works](https://github.com/rivermont/spidy/README.md#how-it-works)
-  - [Features](https://github.com/rivermont/spidy/README.md#features)
-  - [Tutorial](https://github.com/rivermont/spidy/README.md#tutorial)
-    - [Python Installation](https://github.com/rivermont/spidy/README.md#python-installation)
-      - [Windows and Mac](https://github.com/rivermont/spidy/README.md#windows-and-mac)
-        - [Anaconda](https://github.com/rivermont/spidy/README.md#anaconda)
-        - [Python Base](https://github.com/rivermont/spidy/README.md#python-base)
-      - [Linux](https://github.com/rivermont/spidy/README.md#linux)
-    - [Crawler Installation](https://github.com/rivermont/spidy/README.md#crawler-installation)
-    - [Launching](https://github.com/rivermont/spidy/README.md#launching)
-    - [Running](https://github.com/rivermont/spidy/README.md#running)
-      - [Config](https://github.com/rivermont/spidy/README.md#config)
-      - [Start](https://github.com/rivermont/spidy/README.md#start)
-      - [Autosave](https://github.com/rivermont/spidy/README.md#autosave)
-      - [Force Quit](https://github.com/rivermont/spidy/README.md#force-quit)
-  - [Contributors](https://github.com/rivermont/spidy/README.md#contributors)
-  - [License](https://github.com/rivermont/spidy/README.md#license)
+  - [spidy Web Crawler](https://github.com/rivermont/spidy#spidy-web-crawler)
+  - [New Features!](https://github.com/rivermont/spidy#new-features)
+  - [Contents](https://github.com/rivermont/spidy#contents)
+  - [How it Works](https://github.com/rivermont/spidy#how-it-works)
+  - [Features](https://github.com/rivermont/spidy#features)
+  - [Tutorial](https://github.com/rivermont/spidy#tutorial)
+    - [Python Installation](https://github.com/rivermont/spidy#python-installation)
+      - [Windows and Mac](https://github.com/rivermont/spidy#windows-and-mac)
+        - [Anaconda](https://github.com/rivermont/spidy#anaconda)
+        - [Python Base](https://github.com/rivermont/spidy#python-base)
+      - [Linux](https://github.com/rivermont/spidy#linux)
+    - [Crawler Installation](https://github.com/rivermont/spidy#crawler-installation)
+    - [Launching](https://github.com/rivermont/spidy#launching)
+    - [Running](https://github.com/rivermont/spidy#running)
+      - [Config](https://github.com/rivermont/spidy#config)
+      - [Start](https://github.com/rivermont/spidy#start)
+      - [Autosave](https://github.com/rivermont/spidy#autosave)
+      - [Force Quit](https://github.com/rivermont/spidy#force-quit)
+  - [Contributors](https://github.com/rivermont/spidy#contributors)
+  - [License](https://github.com/rivermont/spidy#license)
 
 
 # How it Works
@@ -170,14 +170,14 @@ Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 * Our logo was designed by [Cutwell](https://github.com/Cutwell)
 
-* [3onyc](https://github.com/3onyc) - PEP8 Compliance
+* [3onyc](https://github.com/3onyc) - PEP8 Compliance.
 * [DeKaN](https://github.com/DeKaN) - Getting PyPI packaging to work.
 * [esouthren](https://github.com/esouthren) - Unit testing.
 * [j-setiawan](https://github.com/j-setiawan) - Paths that work on all OS's.
 * [michellemorales](https://github.com/michellemorales) - Confirmed OS/X support.
 * [quatroka](https://github.com/quatroka) - Fixed testing bugs.
-* [stevelle](https://github.com/stevelle) - Respect robots.txt
-
+* [stevelle](https://github.com/stevelle) - Respect robots.txt.
+* [thatguywiththatname](https://github.com/thatguywiththatname) - Fixed README
 
 # License
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
