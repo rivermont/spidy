@@ -168,7 +168,7 @@ Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 # Contributors
 
-* Our logo was designed by [Cutwell](https://github.com/Cutwell)
+* The logo was designed by [Cutwell](https://github.com/Cutwell)
 
 * [3onyc](https://github.com/3onyc) - PEP8 Compliance.
 * [DeKaN](https://github.com/DeKaN) - Getting PyPI packaging to work.
@@ -177,7 +177,7 @@ Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 * [michellemorales](https://github.com/michellemorales) - Confirmed OS/X support.
 * [quatroka](https://github.com/quatroka) - Fixed testing bugs.
 * [stevelle](https://github.com/stevelle) - Respect robots.txt.
-* [thatguywiththatname](https://github.com/thatguywiththatname) - Fixed README
+* [thatguywiththatname](https://github.com/thatguywiththatname) - README link corrections
 
 # License
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>

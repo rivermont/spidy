@@ -16,17 +16,17 @@ Good Stuff: [![Closed Issues](https://img.shields.io/github/issues-closed/riverm
 
 # Table of Contents
 
-  - [spidy](https://github.com/rivermont/spidy/DOCS.md#spidy-web-crawler)
-  - [Table of Contents](https://github.com/rivermont/spidy/DOCS.md#table-of-contents)
-  - [Info](https://github.com/rivermont/spidy/DOCS.md#info)
-  - [GUI](https://github.com/rivermont/spidy/DOCS.md#gui)
-  - [Files](https://github.com/rivermont/spidy/DOCS.md#files)
-    - [Save Files](https://github.com/rivermont/spidy/DOCS.md#save-files)
-    - [Run Files](https://github.com/rivermont/spidy/DOCS.md#run-files)
-  - [Branches](https://github.com/rivermont/spidy/DOCS.md#branches)
-  - [Classes](https://github.com/rivermont/spidy/DOCS.md#Classes)
-  - [Functions](https://github.com/rivermont/spidy/DOCS.md#functions)
-  - [Global Variables](https://github.com/rivermont/spidy/DOCS.md#global-variables)
+  - [spidy](https://github.com/rivermont/spidy/blob/master/DOCS.md#spidy-web-crawler)
+  - [Table of Contents](https://github.com/rivermont/spidy/blob/master/DOCS.md#table-of-contents)
+  - [Info](https://github.com/rivermont/spidy/blob/master/DOCS.md#info)
+  - [GUI](https://github.com/rivermont/spidy/blob/master/DOCS.md#gui)
+  - [Files](https://github.com/rivermont/spidy/blob/master/DOCS.md#files)
+    - [Save Files](https://github.com/rivermont/spidy/blob/master/DOCS.md#save-files)
+    - [Run Files](https://github.com/rivermont/spidy/blob/master/DOCS.md#run-files)
+  - [Branches](https://github.com/rivermont/spidy/blob/master/DOCS.md#branches)
+  - [Classes](https://github.com/rivermont/spidy/blob/master/DOCS.md#Classes)
+  - [Functions](https://github.com/rivermont/spidy/blob/master/DOCS.md#functions)
+  - [Global Variables](https://github.com/rivermont/spidy/blob/master/DOCS.md#global-variables)
 
 
 # Info
@@ -116,7 +116,7 @@ Types of links that will be pruned:
   - Links that are too long or short.
   - Links that don't start with `http(s)`.
   - Links that have already been crawled.
-  - Links in [`KILL_LIST`](https://github.com/rivermont/spidy/DOCS.md#kill_list--source).
+  - Links in [`KILL_LIST`](https://github.com/rivermont/spidy/blob/master/DOCS.md#kill_list--source).
 
 ## `check_path` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L154))
 Checks whether a file path will cause errors when saving.<br>
@@ -172,11 +172,11 @@ Prints message verbatim, so message must be formatted correctly in the function 
 Makes a valid Windows file path for a given url.
 
 ## `make_words` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L166))
-Returns a list of all the valid words (determined using [`check_word`](https://github.com/rivermont/spidy/DOCS.md#check_word--source)) on a given page.
+Returns a list of all the valid words (determined using [`check_word`](https://github.com/rivermont/spidy/blob/master/DOCS.md#check_word--source)) on a given page.
 
 ## `mime_lookup` - ([Source](https://github.com/rivermont/spidy/blob/master/crawler.py#L229))
-This finds the correct file extension for a MIME type using the [`MIME_TYPES`](https://github.com/rivermont/spidy/DOCS.md#mime_types--source) dictionary.<br>
-If the MIME type is blank it defaults to `.html`, and if the MIME type is not in the dictionary a [`HeaderError`](https://github.com/rivermont/spidy/DOCS.md#headererror--source) is raised.<br>
+This finds the correct file extension for a MIME type using the [`MIME_TYPES`](https://github.com/rivermont/spidy/blob/master/DOCS.md#mime_types--source) dictionary.<br>
+If the MIME type is blank it defaults to `.html`, and if the MIME type is not in the dictionary a [`HeaderError`](https://github.com/rivermont/spidy/blob/master/DOCS.md#headererror--source) is raised.<br>
 Usage:
 
     mime_lookup(value)
