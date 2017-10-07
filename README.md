@@ -10,7 +10,7 @@ Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [Fal
 Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
-![Version: 1.5.0.1](https://img.shields.io/badge/version-1.5.0.1-brightgreen.svg)
+![Version: 1.5.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
