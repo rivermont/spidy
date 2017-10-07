@@ -8,7 +8,7 @@ I also use [ZenHub](https://www.zenhub.com/), an project management platform hat
 
 ## Rules
 * If you make changed to `crawler.py`, please adjust the line values in `docs.md`. That way links won't break.
-* If you make any changes please update the version as well as the badges on README lines [18 and 19](https://github.com/rivermont/spidy/blob/master/README.md#L18).
+* If you make any changes please update the version as well as the badges on README lines [20 and 21](https://github.com/rivermont/spidy/blob/master/README.md#L20).
 
 * `Lines of Code` is calculated: `len(crawler.py) + len(gui.py) + len(tests.py)`
 * `Lines of Docs` is calculated: `len(README.md) + len(DOCS.md) + len(CONTRIBUTE.md)`

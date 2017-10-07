@@ -5,6 +5,10 @@ These will eventually be the default templates that GitHub presents when creatin
     <!-- Uncomment the section that is applicable to your issue. -->
     
     <!-- Feature Suggestion
+    ## Checklist
+
+    - [ ] This feature does not already exist.
+    - [ ] This feature has not been requested before.
     
     -->
 
@@ -23,7 +27,10 @@ These will eventually be the default templates that GitHub presents when creatin
 
       1. 
       2. 
-      3. 
+      3.
+
+    ## What I've tried so far:
+
 
     ## Specifications
 
@@ -33,9 +40,16 @@ These will eventually be the default templates that GitHub presents when creatin
     -->
 
 ## PR Template
-    <!-- Please double-check that this entire form was filled out before submitted your PR. -->
+    <!-- Please double-check that this entire form is filled out before submitting your PR. -->
+    <!-- Uncomment sections applicable to your Pull. -->
     
     ## Checklist
     
     - [ ] This Pull will not add the same thing as another currently-open request.
     - [ ] Your Pull was made against the `rivermont:dev` branch and not `rivermont:master`.
+    - [ ] This Pull does not commit any keys, passwords, personal data, or other private information.
+    - [ ] I updated lines 20 and 21 in the README to reflect any changed I made.
+
+    <!-- New feature:
+    - [ ] I wrote at least some documentation for this feature.
+    -->
