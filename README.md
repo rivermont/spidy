@@ -3,7 +3,7 @@ Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses Python [`requests`](http://docs.python-requests.org) to query the webpages, and [`lxml`](http://lxml.de/index.html) to extract all links from the page.<br>
 Pretty simple!
 
-[![spidy Logo](/media/spidy_logo.png?raw=true)](https://github.com/rivermont/spidy#contributors)
+[![spidy Logo](https://raw.githubusercontent.com/rivermont/spidy/master/media/spidy_logo.png)](https://github.com/rivermont/spidy#contributors)
 
 ![Version: 1.5.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
@@ -22,7 +22,7 @@ Pretty simple!
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
 
 Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
-Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/docs/DOCS.md)<br>
+Looking for technical documentation? Check out [`DOCS.md`](https://github.com/rivermont/spidy/blob/master/docs/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/docs/CONTRIBUTING.md), then check out the docs.
 
 ***
@@ -30,7 +30,7 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 # 🎉 New Features!
 
 ### PyPI
-Install spidy with one line: `pip3 install spidy-web-crawler`!
+Install spidy with one line: `pip install spidy-web-crawler`!
 
 ### Automatic Testing with Travis CI
 
@@ -82,34 +82,41 @@ Here are some features we figure are worth noting.
   - Cross-Platform compatability: spidy will work on all three major operatin systems, Windows, Mac OS/X, and Linux!
   - Frequent Timestamp Logging: Spidy logs almost every action it takes to both the console and one of two log files.
   - Browser Spoofing: Make requests using User Agents from 4 popular web browsers, use a custom spidy bot one, or create your own!
-  - Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off.
+  - Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off. *Note*: This only works if you run it from source code.
   - User-Friendly Logs: Both the console and log file messages are simple and easy to interpret, but packed with information.
   - Webpage saving: Spidy downloads each page that it runs into, regardless of file type. The crawler uses the HTTP `Content-Type` header returned with most files to determine the file type.
   - File Zipping: When autosaving, spidy can archive the contents of the `saved/` directory to a `.zip` file, and then clear `saved/`.
 
 
 # Tutorial
+
+## Installing from PyPI
+Spidy can be found on the Python Package Index as `spidy-web-crawler`.<br>
+You can install it from your package manager of choice and simple run the `spidy` command.<br>
+The working files will be found in your home directory.
+
+## Installing from Source Code
+Alternatively, you can download the source code and run it.
+
+### Python Installation
 The way that you will run spidy depends on the way you have Python installed.<br>
-Spidy can be run from the command line (on Mac systems), a Python IDE, or (on Windows systems) by launching the `.bat` file.
 
-## Python Installation
-
-### Windows and Mac
+#### Windows and Mac
 
 There are many different versions of [Python](https://www.python.org/about/), and hundreds of different installations for each them.<br>
 Spidy is developed for Python v3.5.2, but should run without errors in other versions of Python 3.
 
-#### Anaconda
+##### Anaconda
 We recommend the [Anaconda distribution](https://www.continuum.io/downloads).<br>
 It comes pre-packaged with lots of goodies, including `lxml`, which is required for spidy to run and not including in the standard Python package.
 
-#### Python Base
+##### Python Base
 You can also just install [default Python](https://www.python.org/downloads/), and install the external libraries separately.<br>
 This can be done with `pip`:
 
     pip install -r requirements.txt
 
-### Linux
+#### Linux
 Python 3 should come preinstalled with most flavors of Linux, but if not, simply run
 
     sudo apt update
@@ -117,10 +124,10 @@ Python 3 should come preinstalled with most flavors of Linux, but if not, simply
 
 Then `cd` into the crawler's directory and run `python3 crawler.py`.
 
-## Crawler Installation
+### Crawler Installation
 If you have git or GitHub Desktop installed, you can clone the repository [from here](https://github.com/rivermont/spidy.git). If not, download [the latest source code](https://github.com/rivermont/spidy/archive/master.zip) or grab the [latest release](https://github.com/rivermont/spidy/releases).
 
-### Launching
+#### Launching
 
 Use `cd` to navigate to the directory that spidy is located in, then run:
 
@@ -128,12 +135,12 @@ Use `cd` to navigate to the directory that spidy is located in, then run:
 
 ![](/media/run.gif?raw=true)
 
-### Running
+#### Running
 Spidy logs a lot of information to the command line throughout its life.<br>
 Once started, a bunch of `[INIT]` lines will print.<br>
 These announce where spidy is in its initialization process.<br>
 
-#### Config
+##### Config
 On running, spidy asks for input regarding certain parameters it will run off of.<br>
 However, you can also use one of the configuration files, or even create your own.
 
@@ -149,17 +156,17 @@ The config files included with spidy are:
   - `rivermont.cfg`: My personal favorite settings.
   - `rivermont-infinite.cfg`: My favorite, never-ending configuration.
 
-### Start
+#### Start
 Sample start log.
 
 ![](/media/start.png?raw=true)
 
-### Autosave
+#### Autosave
 Sample log after hitting the autosave cap.
 
 ![](/media/log.png?raw=true)
 
-### Force Quit
+#### Force Quit
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 ![](/media/keyboardinterrupt.png?raw=true)
