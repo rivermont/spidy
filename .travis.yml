@@ -7,8 +7,8 @@ python:
   - "3.5-dev"
   - "3.6"
   - "3.6-dev"
-#  - "3.7-dev"
-#  - "nightly"
+  - "3.7-dev"
+  - "nightly"
 
 # Install dependencies
 install:
@@ -18,6 +18,9 @@ install:
 script:
   - make
   - python3 spidy/tests.py
+  # Test PyPI package
+  - pip install spidy-web-crawler
+  - pip show spidy-web-crawler | grep Version
 
 branches:
   only:

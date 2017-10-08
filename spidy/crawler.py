@@ -11,7 +11,7 @@ from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
-from __init__ import __version__
+from spidy import __version__
 
 
 VERSION = __version__
@@ -40,7 +40,8 @@ try:
 except OSError:
     pass  # Assumes only OSError wil complain if /logs already exists
 
-LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
+LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)),
+                'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
 
 
@@ -108,7 +109,7 @@ def crawl(url):
     try:
         # Pull out all links after resolving them using any <base> tags found in the document.
         links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(page.content))]
-    except (etree.XMLSyntaxError, etree.ParserError):
+    except etree.ParseError:
         # If the document is not HTML content this will return an empty list.
         links = []
     links = list(set(links))
@@ -905,7 +906,7 @@ def main():
             elif str(e) == 'HTTP Error 403: Forbidden':
                 write_log('[ERROR]: HTTP 403: Access Forbidden.')
 
-            elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
+            elif etree.ParserError in err_mro:  # Error processing html/xml
                 KNOWN_ERROR_COUNT += 1
                 write_log('[ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.')
                 err_log(link, 'XMLSyntaxError', e)
