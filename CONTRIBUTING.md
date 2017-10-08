@@ -7,6 +7,7 @@ I also use [ZenHub](https://www.zenhub.com/), an project management platform hat
 ***
 
 ## Rules
+* **Make changes on the `rivermont:master` branch but make a PR against `rivermont:dev`.**
 * If you make changed to `crawler.py`, please adjust the line values in `docs.md`. That way links won't break.
 * If you make any changes please update the version as well as the badges on README lines [20 and 21](https://github.com/rivermont/spidy/blob/master/README.md#L20).
 
