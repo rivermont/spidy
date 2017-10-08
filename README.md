@@ -1,14 +1,9 @@
 # spidy Web Crawler
 Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
-Given a list of web links, it uses the Python [`requests`](http://docs.python-requests.org) library to query the webpages.<br>
-Spidy then uses [`lxml`](http://lxml.de/index.html) to extract all links from the page and adds them to its list.<br>
+Given a list of web links, it uses Python [`requests`](http://docs.python-requests.org) to query the webpages, and [`lxml`](http://lxml.de/index.html) to extract all links from the page.<br>
 Pretty simple!
 
 [![spidy Logo](/media/spidy_logo.png?raw=true)](https://github.com/rivermont/spidy#contributors)
-
-Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
-Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
-Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
 ![Version: 1.5.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
@@ -25,6 +20,10 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 [![Contributors](https://img.shields.io/github/contributors/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
+
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
+Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
+Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
 
 ***
 
