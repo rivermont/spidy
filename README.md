@@ -48,6 +48,7 @@ See `config/wsj.cfg` for an example.
   - [New Features!](https://github.com/rivermont/spidy#-new-features)
   - [Contents](https://github.com/rivermont/spidy#contents)
   - [How it Works](https://github.com/rivermont/spidy#how-it-works)
+  - [Why It's Different](https://github.com/rivermont/spidy#why-it-s-different)
   - [Features](https://github.com/rivermont/spidy#features)
   - [Tutorial](https://github.com/rivermont/spidy#tutorial)
     - [Python Installation](https://github.com/rivermont/spidy#python-installation)
@@ -68,10 +69,16 @@ See `config/wsj.cfg` for an example.
 
 # How it Works
 Spidy has two working lists, `TODO` and `DONE`.<br>
-TODO is the list of URLs it hasn't yet visited.<br>
-Done is the list of URLs it has already been to.<br>
+'TODO' is the list of URLs it hasn't yet visited.<br>
+'DONE' is the list of URLs it has already been to.<br>
 The crawler visits each page in TODO, scrapes the DOM of the page for links, and adds those back into TODO.<br>
 It can also save each page, because datahoarding 😜.
+
+
+# Why It's Different
+What sets spidy apart from other web crawling solutions written in Python?<br>
+Most of the other options out there are not web crawlers themselves, simply frameworks and libraries through which one can create and deploy a web spider.<br>
+With spidy, everything runs right out of the box.
 
 
 # Features
