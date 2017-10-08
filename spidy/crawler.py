@@ -11,7 +11,7 @@ from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
-from spidy import __version__
+from __init__ import __version__
 
 
 VERSION = __version__
