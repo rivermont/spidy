@@ -7,8 +7,8 @@ Pretty simple!
 [![spidy Logo](/media/spidy_logo.png?raw=true)](https://github.com/rivermont/spidy#contributors)
 
 Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
-Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/DOCS.md)<br>
-Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/CONTRIBUTING.md), then check out the docs.
+Looking for technical documentation? Check out [DOCS.md](https://github.com/rivermont/spidy/blob/master/docs/DOCS.md)<br>
+Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/docs/CONTRIBUTING.md), then check out the docs.
 
 ![Version: 1.5.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
