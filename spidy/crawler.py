@@ -6,7 +6,6 @@ import time
 import shutil
 import requests
 import urllib
-import sys
 
 from os import path, makedirs
 from lxml import etree
@@ -840,7 +839,7 @@ def main():
     try:
         init()
     except Exception as error:
-        sys.exit(1)
+        raise SystemExit(1) 
 
     # Create required saved/ folder
     try:
