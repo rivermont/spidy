@@ -48,21 +48,23 @@ See `config/wsj.cfg` for an example.
   - [New Features!](https://github.com/rivermont/spidy#-new-features)
   - [Contents](https://github.com/rivermont/spidy#contents)
   - [How it Works](https://github.com/rivermont/spidy#how-it-works)
-  - [Why It's Different](https://github.com/rivermont/spidy#why-it-s-different)
+  - [Why It's Different](https://github.com/rivermont/spidy#why-its-different)
   - [Features](https://github.com/rivermont/spidy#features)
   - [Tutorial](https://github.com/rivermont/spidy#tutorial)
-    - [Python Installation](https://github.com/rivermont/spidy#python-installation)
-      - [Windows and Mac](https://github.com/rivermont/spidy#windows-and-mac)
-        - [Anaconda](https://github.com/rivermont/spidy#anaconda)
-        - [Python Base](https://github.com/rivermont/spidy#python-base)
-      - [Linux](https://github.com/rivermont/spidy#linux)
-    - [Crawler Installation](https://github.com/rivermont/spidy#crawler-installation)
-    - [Launching](https://github.com/rivermont/spidy#launching)
-    - [Running](https://github.com/rivermont/spidy#running)
-      - [Config](https://github.com/rivermont/spidy#config)
-      - [Start](https://github.com/rivermont/spidy#start)
-      - [Autosave](https://github.com/rivermont/spidy#autosave)
-      - [Force Quit](https://github.com/rivermont/spidy#force-quit)
+    - [Installing from PyPI](https://github.com/rivermont/spidy#installing-from-pypi)
+    - [Installing from Source Code](https://github.com/rivermont/spidy#installing-from-source-code)
+      - [Python Installation](https://github.com/rivermont/spidy#python-installation)
+        - [Windows and Mac](https://github.com/rivermont/spidy#windows-and-mac)
+          - [Anaconda](https://github.com/rivermont/spidy#anaconda)
+          - [Python Base](https://github.com/rivermont/spidy#python-base)
+        - [Linux](https://github.com/rivermont/spidy#linux)
+      - [Crawler Installation](https://github.com/rivermont/spidy#crawler-installation)
+      - [Launching](https://github.com/rivermont/spidy#launching)
+      - [Running](https://github.com/rivermont/spidy#running)
+        - [Config](https://github.com/rivermont/spidy#config)
+        - [Start](https://github.com/rivermont/spidy#start)
+        - [Autosave](https://github.com/rivermont/spidy#autosave)
+        - [Force Quit](https://github.com/rivermont/spidy#force-quit)
   - [Contributors](https://github.com/rivermont/spidy#contributors)
   - [License](https://github.com/rivermont/spidy#license)
 
@@ -134,20 +136,20 @@ Then `cd` into the crawler's directory and run `python3 crawler.py`.
 ### Crawler Installation
 If you have git or GitHub Desktop installed, you can clone the repository [from here](https://github.com/rivermont/spidy.git). If not, download [the latest source code](https://github.com/rivermont/spidy/archive/master.zip) or grab the [latest release](https://github.com/rivermont/spidy/releases).
 
-#### Launching
+### Launching
 
 Use `cd` to navigate to the directory that spidy is located in, then run:
 
     python crawler.py
 
-![](/media/run.gif?raw=true)
+![](https://raw.githubusercontent.com/rivermont/spidy/master/media/run.gif)
 
-#### Running
+### Running
 Spidy logs a lot of information to the command line throughout its life.<br>
 Once started, a bunch of `[INIT]` lines will print.<br>
 These announce where spidy is in its initialization process.<br>
 
-##### Config
+#### Config
 On running, spidy asks for input regarding certain parameters it will run off of.<br>
 However, you can also use one of the configuration files, or even create your own.
 
@@ -166,20 +168,21 @@ The config files included with spidy are:
 #### Start
 Sample start log.
 
-![](/media/start.png?raw=true)
+![](https://raw.githubusercontent.com/rivermont/spidy/master/media/start.png)
 
 #### Autosave
 Sample log after hitting the autosave cap.
 
-![](/media/log.png?raw=true)
+![](https://raw.githubusercontent.com/rivermont/spidy/master/media/log.png)
 
 #### Force Quit
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
-![](/media/keyboardinterrupt.png?raw=true)
+![](https://raw.githubusercontent.com/rivermont/spidy/master/media/keyboardinterrupt.png)
 
 
 # Contributors
+See the [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/docs/CONTRIBUTING.md)
 
 * The logo was designed by [Cutwell](https://github.com/Cutwell)
 
@@ -193,7 +196,7 @@ Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 * [thatguywiththatname](https://github.com/thatguywiththatname) - README link corrections
 
 # License
-We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [LICENSE](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
+We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [`LICENSE`](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
 Honestly, if you link to this repo and credit `rivermont` and `FalconWarriorr`, and you aren't selling spidy in any way, then we would love for you to distribute it.<br>
 Thanks!
 
