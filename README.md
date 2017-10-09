@@ -22,8 +22,8 @@ Pretty simple!
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
 
 Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
-Looking for technical documentation? Check out [`DOCS.md`](https://github.com/rivermont/spidy/blob/master/docs/DOCS.md)<br>
-Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/docs/CONTRIBUTING.md), then check out the docs.
+Looking for technical documentation? Check out [`DOCS.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/DOCS.md)<br>
+Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/CONTRIBUTING.md), then check out the docs.
 
 ***
 
@@ -182,7 +182,7 @@ Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 
 # Contributors
-See the [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/docs/CONTRIBUTING.md)
+See the [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/CONTRIBUTING.md)
 
 * The logo was designed by [Cutwell](https://github.com/Cutwell)
 

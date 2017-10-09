@@ -11,7 +11,7 @@ setup(
     name='spidy-web-crawler',
     version=__version__,
     packages=['spidy'],
-    package_data={'spidy': ['config/*']},
+    package_data={'spidy': ['config/*', 'docs/*']},
     url='https://github.com/rivermont/spidy',
     license='GPLv3',
     classifiers=[
