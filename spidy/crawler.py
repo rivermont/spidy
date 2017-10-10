@@ -11,7 +11,7 @@ from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
-from __init__ import __version__
+from spidy import __version__
 
 
 VERSION = __version__
@@ -274,7 +274,8 @@ def save_page(url, page):
 
     # Save file
     with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
-        file.write('''<!-- "{0}" -->
+        if ext == '.html':
+            file.write('''<!-- "{0}" -->
 <!-- Downloaded with the spidy Web Crawler -->
 <!-- https://github.com/rivermont/spidy -->
 '''.format(url))
