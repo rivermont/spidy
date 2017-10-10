@@ -97,7 +97,7 @@ def crawl(url):
     if not OVERRIDE_SIZE:
         try:
             # Attempt to get the size in bytes of the document
-            length = int(requests.head(url).headers['Content-Length'])
+            length = int(requests.head(url, headers=HEADER).headers['Content-Length'])
         except KeyError:  # Sometimes no Content-Length header is returned...
             length = 1
         if length > 524288000:  # If the page is larger than 500 MB
