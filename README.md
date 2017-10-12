@@ -53,6 +53,7 @@ See `config/wsj.cfg` for an example.
   - [Why It's Different](https://github.com/rivermont/spidy#why-its-different)
   - [Features](https://github.com/rivermont/spidy#features)
   - [Tutorial](https://github.com/rivermont/spidy#tutorial)
+    - [Using with Docker](https://github.com/rivermont/spidy#using-with-docker)
     - [Installing from PyPI](https://github.com/rivermont/spidy#installing-from-pypi)
     - [Installing from Source Code](https://github.com/rivermont/spidy#installing-from-source-code)
       - [Python Installation](https://github.com/rivermont/spidy#python-installation)
@@ -101,6 +102,21 @@ Here are some features we figure are worth noting.
 
 
 # Tutorial
+
+## Using with Docker
+Spidy can be easily run in a Docker container.<br>
+
+- First, build the [`Dockerfile`](dockerfile): `docker build -t spidy .`
+  - Verify that the Docker image has been created: `docker images`
+- Then, run it: `docker run --rm -it -v $PWD:/data spidy`
+  - `--rm` tells Docker to clean up after itself by removing stopped containers.
+  - `-it` tells Docker to run the container interactively and allocate a pseudo-TTY.
+  - `-v $PWD:/data` tells Docker to mount the current working directory as `/data` directory inside the container. This is needed if you want Spidy's files (e.g. `crawler_done.txt`, `crawler_words.txt`, `crawler_todo.txt`) written back to your host filesystem.
+
+### Spidy Docker Demo
+
+![Spidy Docker Demo](media/spidy_docker_demo.gif)
+
 
 ## Installing from PyPI
 Spidy can be found on the Python Package Index as `spidy-web-crawler`.<br>
