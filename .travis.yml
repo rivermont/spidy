@@ -20,7 +20,3 @@ script:
   # Test PyPI package
   - pip install spidy-web-crawler
   - pip show spidy-web-crawler | grep Version
-
-branches:
-  only:
-    - master
