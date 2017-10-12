@@ -67,6 +67,7 @@ See `config/wsj.cfg` for an example.
         - [Start](https://github.com/rivermont/spidy#start)
         - [Autosave](https://github.com/rivermont/spidy#autosave)
         - [Force Quit](https://github.com/rivermont/spidy#force-quit)
+  - [How Can I Support This?](https://github.com/rivermont/spidy#how-can-i-support-this-)
   - [Contributors](https://github.com/rivermont/spidy#contributors)
   - [License](https://github.com/rivermont/spidy#license)
 
@@ -181,6 +182,11 @@ Sample log after hitting the autosave cap.
 Sample log after performing a `^C` (CONTROL + C) to force quit the crawler.
 
 ![](https://raw.githubusercontent.com/rivermont/spidy/master/media/keyboardinterrupt.png)
+
+
+# How Can I Support This?
+The easiest thing you can do is Star spidy if you think it's cool, or Watch it if you would like to get updates.<br>
+If you have a suggestion, [create an Issue](https://github.com/rivermont/spidy/issues/new) or Fork the `master` branch and open a Pull Request.
 
 
 # Contributors
