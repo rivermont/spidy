@@ -1,3 +1,6 @@
+# To run spidy in a container and write all files back to the host filesystem:
+#   docker run --rm -it -v $PWD:/data spidy
+
 FROM python:3.6
 LABEL maintainer "Peter Benjamin <petermbenjamin@gmail.com>"
 WORKDIR /src/app/
