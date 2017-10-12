@@ -12,7 +12,7 @@ Pretty simple!
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 <br>
-![Lines of Code: 1437](https://img.shields.io/badge/lines%20of%20code-1437-brightgreen.svg)
+![Lines of Code: 1553](https://img.shields.io/badge/lines%20of%20code-1553-brightgreen.svg)
 ![Lines of Docs: 564](https://img.shields.io/badge/lines%20of%20docs-564-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 [![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
@@ -53,6 +53,7 @@ See `config/wsj.cfg` for an example.
   - [Why It's Different](https://github.com/rivermont/spidy#why-its-different)
   - [Features](https://github.com/rivermont/spidy#features)
   - [Tutorial](https://github.com/rivermont/spidy#tutorial)
+    - [Using with Docker](https://github.com/rivermont/spidy#using-with-docker)
     - [Installing from PyPI](https://github.com/rivermont/spidy#installing-from-pypi)
     - [Installing from Source Code](https://github.com/rivermont/spidy#installing-from-source-code)
       - [Python Installation](https://github.com/rivermont/spidy#python-installation)
@@ -101,6 +102,20 @@ Here are some features we figure are worth noting.
 
 
 # Tutorial
+
+## Using with Docker
+Spidy can be easily run in a Docker container.<br>
+
+- First, build the [`Dockerfile`](dockerfile): `docker build -t spidy .`
+  - Verify that the Docker image has been created: `docker images`
+- Then, run it: `docker run --rm -it -v $PWD:/data spidy`
+  - `--rm` tells Docker to clean up after itself by removing stopped containers.
+  - `-it` tells Docker to run the container interactively and allocate a pseudo-TTY.
+  - `-v $PWD:/data` tells Docker to mount the current working directory as `/data` directory inside the container. This is needed if you want Spidy's files (e.g. `crawler_done.txt`, `crawler_words.txt`, `crawler_todo.txt`) written back to your host filesystem.
+
+### Spidy Docker Demo
+
+![Spidy Docker Demo](media/spidy_docker_demo.gif)
 
 ## Installing from PyPI
 Spidy can be found on the Python Package Index as `spidy-web-crawler`.<br>
