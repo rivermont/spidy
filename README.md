@@ -67,7 +67,7 @@ See `config/wsj.cfg` for an example.
         - [Start](https://github.com/rivermont/spidy#start)
         - [Autosave](https://github.com/rivermont/spidy#autosave)
         - [Force Quit](https://github.com/rivermont/spidy#force-quit)
-  - [How Can I Support This?](https://github.com/rivermont/spidy#how-can-i-support-this-)
+  - [How Can I Support This?](https://github.com/rivermont/spidy#how-can-i-support-this)
   - [Contributors](https://github.com/rivermont/spidy#contributors)
   - [License](https://github.com/rivermont/spidy#license)
 
