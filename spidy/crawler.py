@@ -146,7 +146,7 @@ class ThreadSafeSet(list):
 write_log('[INIT]: Creating functions...')
 
 
-def crawl(thread_id, url):
+def crawl(url, thread_id=0):
     global WORDS, OVERRIDE_SIZE, HEADER, SAVE_PAGES, SAVE_WORDS
     if not OVERRIDE_SIZE:
         try:
@@ -252,7 +252,7 @@ def crawl_worker(thread_id):
                     if check_link(url, robots_allowed):  # If the link is invalid
                         write_log("[CRAWL WORKER #{0}] [INFO]: Skipping invalid url {1}".format(thread_id, url))
                         continue
-                    links = crawl(thread_id, url)
+                    links = crawl(url, thread_id)
                     for link in links:
                         if link[0] == '/':
                             link = url + link
