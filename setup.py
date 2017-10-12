@@ -11,7 +11,7 @@ setup(
     name='spidy-web-crawler',
     version=__version__,
     packages=['spidy'],
-    package_data={'spidy': ['config/*']},
+    package_data={'spidy': ['config/*', 'docs/*']},
     url='https://github.com/rivermont/spidy',
     license='GPLv3',
     classifiers=[
@@ -37,7 +37,7 @@ setup(
     author_email=__email__,
     description='Spidy is the simple, easy to use command line web crawler.',
     long_description=long_description,
-    keywords=["spider", "crawler", "web crawler", "scraping"],
+    keywords=['crawler', 'web crawler', 'spider', 'web-spider'],
     python_requires='>=3.3',
     entry_points={
         'console_scripts': [

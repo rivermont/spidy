@@ -6,5 +6,4 @@ logs/
 .idea
 build/
 dist/
-sdist/
 *.egg-info/

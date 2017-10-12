@@ -11,7 +11,10 @@ from os import path, makedirs
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
-from __init__ import __version__
+try:
+	from spidy import __version__
+except ImportError:
+	from __init__ import __version__
 
 
 VERSION = __version__
@@ -40,7 +43,8 @@ try:
 except OSError:
     pass  # Assumes only OSError wil complain if /logs already exists
 
-LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)), 'w+', encoding='utf-8', errors='ignore')
+LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)),
+                'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
 
 
@@ -93,7 +97,7 @@ def crawl(url):
     if not OVERRIDE_SIZE:
         try:
             # Attempt to get the size in bytes of the document
-            length = int(requests.head(url).headers['Content-Length'])
+            length = int(requests.head(url, headers=HEADER).headers['Content-Length'])
         except KeyError:  # Sometimes no Content-Length header is returned...
             length = 1
         if length > 524288000:  # If the page is larger than 500 MB
@@ -108,7 +112,7 @@ def crawl(url):
     try:
         # Pull out all links after resolving them using any <base> tags found in the document.
         links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(page.content))]
-    except (etree.XMLSyntaxError, etree.ParserError):
+    except etree.ParseError:
         # If the document is not HTML content this will return an empty list.
         links = []
     links = list(set(links))
@@ -273,7 +277,8 @@ def save_page(url, page):
 
     # Save file
     with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
-        file.write('''<!-- "{0}" -->
+        if ext == '.html':
+            file.write('''<!-- "{0}" -->
 <!-- Downloaded with the spidy Web Crawler -->
 <!-- https://github.com/rivermont/spidy -->
 '''.format(url))
@@ -595,8 +600,11 @@ def init():
                 for line in file.readlines():
                     exec(line, globals())
         except FileNotFoundError:
-            LOG_FILE.write('\n[{0}] [spidy] [ERROR]: Please use a valid .cfg file.'.format(get_time()))
-            raise FileNotFoundError('[{0}] [spidy] [ERROR]: Please use a valid .cfg file.'.format(get_time()))
+            write_log('[ERROR]: Config file not found.')
+            raise FileNotFoundError()
+        except Exception:
+            write_log('[ERROR]: Please use a valid .cfg file.')
+            raise Exception()
 
     else:
         write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
@@ -833,7 +841,10 @@ def main():
     global RESPECT_ROBOTS, RESTRICT, DOMAIN
     global WORDS, TODO, DONE
 
-    init()
+    try:
+        init()
+    except Exception as error:
+        raise SystemExit(1) 
 
     # Create required saved/ folder
     try:
@@ -905,7 +916,7 @@ def main():
             elif str(e) == 'HTTP Error 403: Forbidden':
                 write_log('[ERROR]: HTTP 403: Access Forbidden.')
 
-            elif etree.XMLSyntaxError in err_mro or etree.ParserError in err_mro:  # Error processing html/xml
+            elif etree.ParserError in err_mro:  # Error processing html/xml
                 KNOWN_ERROR_COUNT += 1
                 write_log('[ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.')
                 err_log(link, 'XMLSyntaxError', e)

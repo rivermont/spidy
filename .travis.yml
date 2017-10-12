@@ -17,8 +17,6 @@ install:
 # Run all tests
 script:
   - make
-  - python3 spidy/tests.py
-
-branches:
-  only:
-    - master
+  # Test PyPI package
+  - pip install spidy-web-crawler
+  - pip show spidy-web-crawler | grep Version

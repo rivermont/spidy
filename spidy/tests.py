@@ -57,11 +57,11 @@ class CrawlerTestCase(unittest.TestCase):
         self.assertFalse(check_link(url, checker))
 
     # def test_robots_given_forbidden_url(self):
-    #     # prohibited explicitly
-    #     url = "https://github.com/search/"
-    #     checker = init_robot_checker(True, 'duckduckbot', url)
-    #
-    #     self.assertTrue(check_link(url, checker))
+        # # prohibited explicitly
+        # url = "https://github.com/search/"
+        # checker = init_robot_checker(True, 'duckduckbot', url)
+        #
+        # self.assertTrue(check_link(url, checker))
 
     # Tests for check_word
 
