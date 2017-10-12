@@ -6,6 +6,8 @@ import time
 import shutil
 import requests
 import urllib
+import threading
+import queue
 
 from os import path, makedirs
 from lxml import etree
@@ -46,6 +48,7 @@ except OSError:
 LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)),
                 'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
+log_mutex = threading.Lock()
 
 
 def write_log(message):
@@ -53,9 +56,12 @@ def write_log(message):
     Writes message to both the console and the log file.
     NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
     """
-    message = '[{0}] [spidy] '.format(get_time()) + message
-    print(message)
-    LOG_FILE.write('\n' + message)
+    global LOG_FILE, log_mutex
+    with log_mutex:
+        message = '[{0}] [spidy] '.format(get_time()) + message
+        print(message)
+        if not LOG_FILE.closed:
+            LOG_FILE.write('\n' + message)
 
 
 write_log('[INIT]: Starting spidy Web Crawler version {0}'.format(VERSION))
@@ -84,6 +90,54 @@ class SizeError(Exception):
     """
     pass
 
+class Counter(object):
+    """
+    Thread safe Counter
+    """
+
+    def __init__(self, value=0):
+        # RawValue because we don't need it to create a Lock:
+        self.val = value
+        self.lock = threading.Lock()
+
+    def increment(self):
+        with self.lock:
+            self.val += 1
+    
+    def decrement(self):
+        with self.lock:
+            self.val -= 1
+
+    def value(self):
+        with self.lock:
+            return self.val
+
+class ThreadSafeSet(list):
+    """
+    Thread Sage set
+    """
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self._set = set()
+
+    def get(self):
+        with self.lock:
+            return self._set.pop()
+
+    def put(self, o):
+        with self.lock:
+            self._set.add(o)
+
+    def getAll(self):
+        with self.lock:
+            return self._set
+
+    def clear(self):
+        with self.lock:
+            self._set.clear()
+
+
 
 #############
 # FUNCTIONS #
@@ -92,8 +146,8 @@ class SizeError(Exception):
 write_log('[INIT]: Creating functions...')
 
 
-def crawl(url):
-    global TODO
+def crawl(url, thread_id=0):
+    global WORDS, OVERRIDE_SIZE, HEADER, SAVE_PAGES, SAVE_WORDS
     if not OVERRIDE_SIZE:
         try:
             # Attempt to get the size in bytes of the document
@@ -108,7 +162,8 @@ def crawl(url):
     word_list = []
     if SAVE_WORDS:
         word_list = make_words(page)
-        WORDS.update(word_list)
+        for word in word_list:
+            WORDS.put(word)
     try:
         # Pull out all links after resolving them using any <base> tags found in the document.
         links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(page.content))]
@@ -116,17 +171,163 @@ def crawl(url):
         # If the document is not HTML content this will return an empty list.
         links = []
     links = list(set(links))
-    TODO += links
-    DONE.append(url)
     if SAVE_PAGES:
         save_page(url, page)
     if SAVE_WORDS:
         # Announce which link was crawled
         write_log(
-            '[CRAWL]: Found {0} links and {1} words on {2}'.format(len(word_list), len(links), url))
+            '[CRAWL WORKER #{0}] [INFO]: Found {1} links and {2} words on {3}'.format(thread_id, len(word_list), len(links), url))
     else:
         # Announce which link was crawled
-        write_log('[CRAWL]: Found {0} links on {1}'.format(len(links), url))
+        write_log('[CRAWL WORKER #{0}] [INFO]: Found {1} links on {2}'.format(thread_id, len(links), url))
+    return links
+
+def crawl_worker(thread_id):
+    """
+    Crawler worker thread method
+    """
+
+     # Declare global variables
+    global VERSION, START_TIME, START_TIME_LONG
+    global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
+    global HEADER, WORKING_DIR, KILL_LIST, LOG_END
+    global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
+    global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
+    global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
+    global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
+    global RESPECT_ROBOTS, RESTRICT, DOMAIN
+    global WORDS, TODO, DONE, THREAD_RUNNING
+
+    while THREAD_RUNNING:
+        # Check if there are more urls to crawl
+        if TODO.empty():
+            # Increement empty counter
+            EMPTY_COUNTER.increment()
+            # Check if other threads are producing links
+            # by waiting till queue is empty
+            while TODO.empty():
+                # If all threads hit empty counter
+                if EMPTY_COUNTER.val == THREAD_COUNT:
+                    # Finish crawling
+                    done_crawling()
+                    return
+                time.sleep(1)
+            # Got a url in queue
+            # Decrement counter
+            EMPTY_COUNTER.decrement()
+        # Queue not empty
+        url = None
+        try:
+            if NEW_ERROR_COUNT.val >= MAX_NEW_ERRORS or \
+               KNOWN_ERROR_COUNT.val >= MAX_KNOWN_ERRORS or \
+               HTTP_ERROR_COUNT.val >= MAX_HTTP_ERRORS or \
+               NEW_MIME_COUNT.val >= MAX_NEW_MIMES:  # If too many errors have occurred
+                write_log('[CRAWL WORKER #{0}] [INFO]: Too many errors have accumulated, stopping crawler.'.format(thread_id))
+                done_crawling()
+                break
+            elif COUNTER.val >= SAVE_COUNT:  # If it's time for an autosave
+                # Make sure only one thread saves files
+                with save_mutex:
+                    if COUNTER > 0:
+                        try:
+                            write_log('[CRAWL WORKER #{0}] [INFO]: Queried {1} links.'.format(thread_id, str(COUNTER)))
+                            info_log()
+                            write_log('[INFO]: Saving files...')
+                            save_files()
+                            if ZIP_FILES:
+                                zip_saved_files(time.time(), 'saved')
+                        finally:
+                            # Reset variables
+                            COUNTER = 0
+                            WORDS.clear()
+            # Crawl the page
+            else:
+                try:
+                    url = TODO.get(block=False)
+                except queue.Empty:
+                    continue
+                else:
+                    robots_allowed = init_robot_checker(
+                        RESPECT_ROBOTS, HEADER['User-Agent'], url)
+                    if check_link(url, robots_allowed):  # If the link is invalid
+                        write_log("[CRAWL WORKER #{0}] [INFO]: Skipping invalid url {1}".format(thread_id, url))
+                        continue
+                    links = crawl(url, thread_id)
+                    for link in links:
+                        if link[0] == '/':
+                            link = url + link
+                        TODO.put(link)
+                    DONE.put(url)
+                    COUNTER.increment()
+                    TODO.task_done()
+
+        # ERROR HANDLING
+        except KeyboardInterrupt:  # If the user does ^C
+            handle_keyboard_interrupt()
+
+        except Exception as e:
+            link = url
+            write_log('[CRAWL WORKER #{0}] [INFO]: An error was raised trying to process {1}'.format(thread_id, link))
+            err_mro = type(e).mro()
+
+            if SizeError in err_mro:
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: Document too large.'.format(thread_id))
+                err_log(link, 'SizeError', e)
+
+            elif OSError in err_mro:
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An OSError occurred.'.format(thread_id))
+                err_log(link, 'OSError', e)
+
+            elif str(e) == 'HTTP Error 403: Forbidden':
+                write_log('[CRAWL WORKER #{0}] [ERROR]: HTTP 403: Access Forbidden.'.format(thread_id))
+
+            elif etree.ParserError in err_mro:  # Error processing html/xml
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.'.format(thread_id))
+                err_log(link, 'XMLSyntaxError', e)
+
+            elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An SSLError occurred. Site is using an invalid certificate.'.format(thread_id))
+                err_log(link, 'SSLError', e)
+
+            elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(thread_id))
+                err_log(link, 'ConnectionError', e)
+
+            elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(thread_id))
+                err_log(link, 'TooManyRedirects', e)
+
+            elif requests.exceptions.ContentDecodingError in err_mro:
+                # Received response with content-encoding: gzip, but failed to decode it.
+                KNOWN_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(thread_id))
+                err_log(link, 'ContentDecodingError', e)
+
+            elif 'Unknown MIME type' in str(e):
+                NEW_MIME_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: Unknown MIME type: {0}'.format(thread_id, str(e)[18:]))
+                err_log(link, 'Unknown MIME', e)
+
+            else:  # Any other error
+                NEW_ERROR_COUNT.increment()
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'.format(thread_id))
+                print(e)
+                err_log(link, 'Unknown', e)
+                if RAISE_ERRORS:
+                    done_crawling()
+                    raise e
+                else:
+                    continue
+
+            write_log('[LOG]: Saved error message and timestamp to error log file.')
+    
+    write_log("[CRAWL WORKER #{0}] [INFO]: Stopped".format(thread_id))
 
 
 def init_robot_checker(respect_robots, user_agent, start_url):
@@ -158,7 +359,7 @@ def check_link(item, robots_allowed=True):
     # Must be an http(s) link
     elif item[0:4] != 'http':
         return True
-    elif item in DONE:
+    elif item in DONE.queue:
         return True
     return False
 
@@ -206,8 +407,11 @@ def save_files():
     Saves the TODO, done, and word lists into their respective files.
     Also logs the action to the console.
     """
+
+    global TODO, DONE
+
     with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
-        for site in TODO:
+        for site in TODO.queue:
             try:
                 todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
@@ -215,7 +419,7 @@ def save_files():
     write_log('[LOG]: Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
-        for site in DONE:
+        for site in DONE.queue:
             try:
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
@@ -223,7 +427,7 @@ def save_files():
     write_log('[LOG]: Saved done list to {0}'.format(DONE_FILE))
 
     if SAVE_WORDS:
-        update_file(WORD_FILE, WORDS, 'words')
+        update_file(WORD_FILE, WORDS.getAll(), 'words')
 
 
 def make_file_path(url, ext):
@@ -308,9 +512,9 @@ def info_log():
     write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
     write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
     write_log('[INFO]: Error log location: {0}'.format(ERR_LOG_FILE_NAME))
-    write_log('[INFO]: {0} links in TODO.'.format(len(TODO)))
-    write_log('[INFO]: {0} links in done.'.format(len(DONE)))
-    write_log('[INFO]: Todo/Done: {0}'.format(len(TODO) / len(DONE)))
+    write_log('[INFO]: {0} links in TODO.'.format(TODO.qsize()))
+    write_log('[INFO]: {0} links in done.'.format(DONE.qsize()))
+    write_log('[INFO]: Todo/Done: {0}'.format(TODO.qsize() / DONE.qsize()))
     write_log('[INFO]: {0}/{1} new errors caught.'.format(NEW_ERROR_COUNT, MAX_NEW_ERRORS))
     write_log('[INFO]: {0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
     write_log('[INFO]: {0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT, MAX_NEW_MIMES))
@@ -327,14 +531,6 @@ def log(message):
         open_file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
         open_file.write(message)  # Write message
         open_file.write(LOG_END)  # Write closing line
-
-
-def handle_keyboard_interrupt():
-    write_log('[ERROR]: User performed a KeyboardInterrupt, stopping crawler...')
-    log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
-    save_files()
-    LOG_FILE.close()
-    exit()
 
 
 def handle_invalid_input(type_='input'):
@@ -529,14 +725,16 @@ START = ['https://en.wikipedia.org/wiki/Main_Page']
 LOG_END = '\n======END======'
 
 # Counter variables
-COUNTER = 0
-NEW_ERROR_COUNT = 0
-KNOWN_ERROR_COUNT = 0
-HTTP_ERROR_COUNT = 0
-NEW_MIME_COUNT = 0
+COUNTER = Counter(0)
+NEW_ERROR_COUNT = Counter(0)
+KNOWN_ERROR_COUNT = Counter(0)
+HTTP_ERROR_COUNT = Counter(0)
+NEW_MIME_COUNT = Counter(0)
+EMPTY_COUNTER = Counter(0)
 
 # Empty set for word scraping
-WORDS = set([])
+WORDS = ThreadSafeSet()
+words_mutex = threading.Lock()
 
 # Getting arguments
 
@@ -551,7 +749,12 @@ RESPECT_ROBOTS, RESTRICT, DOMAIN = False, False, ''
 USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE = False, False, False, False, False
 SAVE_PAGES, SAVE_WORDS = False, False
 TODO_FILE, DONE_FILE, WORD_FILE = '', '', ''
-TODO, DONE = [], []
+TODO, DONE = queue.Queue(), queue.Queue()
+THREAD_COUNT = 1
+THREAD_LIST = []
+save_mutex = threading.Lock()
+FINISHED = False
+THREAD_RUNNING = True
 
 
 def init():
@@ -568,7 +771,7 @@ def init():
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
     global RESPECT_ROBOTS, RESTRICT, DOMAIN
-    global WORDS, TODO, DONE
+    global WORDS, TODO, DONE, THREAD_COUNT
 
     # Getting Arguments
 
@@ -608,6 +811,15 @@ def init():
 
     else:
         write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
+
+        write_log('[INPUT]: How many parellel threads to use? (Default: 1):')
+        input_ = input()
+        if not bool(input_):  # Use default value
+            THREAD_COUNT = 1
+        elif input_.isdigit():
+            THREAD_COUNT = int(input_)
+        else:  # Invalid input
+            handle_invalid_input()
 
         write_log('[INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes):')
         input_ = input()
@@ -799,8 +1011,9 @@ def init():
 
     if OVERWRITE:
         write_log('[INIT]: Creating save files...')
-        TODO = START
-        DONE = []
+        for start in START:
+            TODO.put(start)
+        DONE = queue.Queue()
     else:
         write_log('[INIT]: Loading save files...')
         # Import saved TODO file data
@@ -810,7 +1023,7 @@ def init():
         except FileNotFoundError:  # If no TODO file is present
             contents = []
         for line in contents:
-            TODO.append(line.strip())
+            TODO.put(line.strip())
         # Import saved done file data
         try:
             with open(DONE_FILE, 'r', encoding='utf-8', errors='ignore') as f:
@@ -818,13 +1031,62 @@ def init():
         except FileNotFoundError:  # If no DONE file is present
             contents = []
         for line in contents:
-            DONE.append(line.strip())
+            DONE.put(line.strip())
         del contents
 
         # If TODO list is empty, add default starting pages
-    if len(TODO) == 0:
-        TODO += START
+    if TODO.qsize() == 0:
+        for start in START:
+            TODO.put(start)
 
+
+def spawn_threads():
+    """
+    Spawn the crawler threads
+    """
+    try:
+        write_log("[INFO]: Spawning {0} threads".format(THREAD_COUNT))
+        for i in range(THREAD_COUNT):
+            t = threading.Thread(target=crawl_worker, args=(i+1,))
+            write_log("[INFO]: Starting CRAWL WORKER #{0}".format(i+1))
+            t.daemon = True
+            t.start()
+            THREAD_LIST.append(t)
+        for t in THREAD_LIST:
+            t.join()
+    except KeyboardInterrupt:
+        handle_keyboard_interrupt()
+
+
+def kill_threads():
+    """
+    Will terminate all running threads
+    """
+    global THREAD_RUNNING
+    write_log("[INFO]: Stopping all threads...")
+    THREAD_RUNNING = False
+
+
+def done_crawling(keyboard_interrupt=False):
+    # Make sure only one thread calls this
+    with save_mutex:
+        global FINISHED
+        if FINISHED:
+            return
+        kill_threads()
+        FINISHED = True
+        if keyboard_interrupt:
+            write_log('[ERROR]: User performed a KeyboardInterrupt, stopping crawler.')
+            log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
+        else:
+            write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
+        save_files()
+        LOG_FILE.close()
+
+
+def handle_keyboard_interrupt():
+    kill_threads()
+    done_crawling(True)
 
 def main():
     """
@@ -859,120 +1121,11 @@ def main():
     write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
     log('LOG: Successfully started crawler.')
 
-    robots_allowed = init_robot_checker(RESPECT_ROBOTS, HEADER['User-Agent'], TODO[0])
-
-    write_log('[INFO]: TODO first value: {0}'.format(TODO[0]))
-
     write_log('[INFO]: Using headers: {0}'.format(HEADER))
 
-    while len(TODO) != 0:  # While there are links to check
-        try:
-            if NEW_ERROR_COUNT >= MAX_NEW_ERRORS or \
-               KNOWN_ERROR_COUNT >= MAX_KNOWN_ERRORS or \
-               HTTP_ERROR_COUNT >= MAX_HTTP_ERRORS or \
-               NEW_MIME_COUNT >= MAX_NEW_MIMES:  # If too many errors have occurred
-                write_log('[INFO]: Too many errors have accumulated, stopping crawler.')
-                save_files()
-                exit()
-            elif COUNTER >= SAVE_COUNT:  # If it's time for an autosave
-                try:
-                    write_log('[INFO]: Queried {0} links.'.format(str(COUNTER)))
-                    info_log()
-                    write_log('[INFO]: Saving files...')
-                    save_files()
-                    if ZIP_FILES:
-                        zip_saved_files(time.time(), 'saved')
-                finally:
-                    # Reset variables
-                    COUNTER = 0
-                    WORDS.clear()
-            elif check_link(TODO[0], robots_allowed):  # If the link is invalid
-                del TODO[0]
-            # Crawl the page
-            else:
-                crawl(TODO[0])
-                del TODO[0]  # Remove crawled link from TODO list
-                COUNTER += 1
+    # Spawn threads here
+    spawn_threads()
 
-        # ERROR HANDLING
-        except KeyboardInterrupt:  # If the user does ^C
-            handle_keyboard_interrupt()
-
-        except Exception as e:
-            link = TODO[0].encode('utf-8', 'ignore')
-            write_log('[INFO]: An error was raised trying to process {0}'.format(link))
-            err_mro = type(e).mro()
-
-            if SizeError in err_mro:
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: Document too large.')
-                err_log(link, 'SizeError', e)
-
-            elif OSError in err_mro:
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: An OSError occurred.')
-                err_log(link, 'OSError', e)
-
-            elif str(e) == 'HTTP Error 403: Forbidden':
-                write_log('[ERROR]: HTTP 403: Access Forbidden.')
-
-            elif etree.ParserError in err_mro:  # Error processing html/xml
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.')
-                err_log(link, 'XMLSyntaxError', e)
-
-            elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: An SSLError occurred. Site is using an invalid certificate.')
-                err_log(link, 'SSLError', e)
-
-            elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.')
-                err_log(link, 'ConnectionError', e)
-
-            elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.')
-                err_log(link, 'TooManyRedirects', e)
-
-            elif requests.exceptions.ContentDecodingError in err_mro:
-                # Received response with content-encoding: gzip, but failed to decode it.
-                KNOWN_ERROR_COUNT += 1
-                write_log('[ERROR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.')
-                err_log(link, 'ContentDecodingError', e)
-
-            elif 'Unknown MIME type' in str(e):
-                NEW_MIME_COUNT += 1
-                write_log('[ERROR]: Unknown MIME type: {0}'.format(str(e)[18:]))
-                err_log(link, 'Unknown MIME', e)
-
-            else:  # Any other error
-                NEW_ERROR_COUNT += 1
-                write_log('[ERROR]: An unknown error happened. New debugging material!')
-                err_log(link, 'Unknown', e)
-                if RAISE_ERRORS:
-                    LOG_FILE.close()
-                    save_files()
-                    raise e
-                else:
-                    continue
-
-            write_log('[LOG]: Saved error message and timestamp to error log file.')
-            del TODO[0]
-            COUNTER += 1
-        finally:
-            try:
-                TODO = list(set(TODO))  # Removes duplicates and shuffles links so trees don't form.
-                # For debugging purposes; uncomment to check one link and then stop:
-                # handle_keyboard_interrupt()
-                # exit()
-            except KeyboardInterrupt:
-                handle_keyboard_interrupt()
-
-    write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
-    save_files()
-    LOG_FILE.close()
 
 
 if __name__ == '__main__':
