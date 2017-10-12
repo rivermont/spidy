@@ -12,7 +12,7 @@ Pretty simple!
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 <br>
-![Lines of Code: 1437](https://img.shields.io/badge/lines%20of%20code-1437-brightgreen.svg)
+![Lines of Code: 1553](https://img.shields.io/badge/lines%20of%20code-1553-brightgreen.svg)
 ![Lines of Docs: 564](https://img.shields.io/badge/lines%20of%20docs-564-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 [![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
