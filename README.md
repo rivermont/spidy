@@ -117,7 +117,6 @@ Spidy can be easily run in a Docker container.<br>
 
 ![Spidy Docker Demo](media/spidy_docker_demo.gif)
 
-
 ## Installing from PyPI
 Spidy can be found on the Python Package Index as `spidy-web-crawler`.<br>
 You can install it from your package manager of choice and simple run the `spidy` command.<br>
