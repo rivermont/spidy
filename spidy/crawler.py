@@ -323,6 +323,7 @@ def crawl_worker(thread_id):
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
+                raise
                 NEW_ERROR_COUNT.increment()
                 write_log('[CRAWL] [WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'
                           .format(thread_id))
