@@ -5,7 +5,7 @@ Pretty simple!
 
 [![spidy Logo](https://raw.githubusercontent.com/rivermont/spidy/master/media/spidy_logo.png)](https://github.com/rivermont/spidy#contributors)
 
-![Version: 1.6.0](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
+![Version: 1.6.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
