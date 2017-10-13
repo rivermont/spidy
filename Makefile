@@ -1,4 +1,4 @@
-all_targets: lint test clean-pyc clean-build clean-spidy
+all_targets: lint test clean-pyc clean-build clean-crawler
 
 lint:
 	flake8 --ignore=E501 *.py
@@ -15,9 +15,10 @@ clean-build:
 	-rm -rf dist
 	-rm -rf *.egg-info
 
-clean-spidy:
+clean-crawler:
 	-rm -rf ./spidy/logs
 	-rm -rf ./spidy/saved
+	find . -name "*.txt" -delete
 
 help:
 	@echo "    lint"
@@ -28,5 +29,5 @@ help:
 	@echo "        Remove Python artifacts."
 	@echo "    clean-build"
 	@echo "        Remove build artifacts."
-	@echo "    clean-spidy"
+	@echo "    clean-crawler"
 	@echo "        Remove crawler artifacts."
