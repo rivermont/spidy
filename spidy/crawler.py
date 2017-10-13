@@ -316,7 +316,7 @@ def crawl_worker(thread_id):
 
             elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'
                           .format(thread_id))
                 err_log(link, 'TooManyRedirects', e)
 
