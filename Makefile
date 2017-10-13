@@ -1,7 +1,7 @@
 all_targets: lint test clean-pyc clean-build clean-crawler
 
 lint:
-	flake8 --ignore=E501 *.py
+	flake8 *.py
 
 test:
 	python3 ./spidy/tests.py

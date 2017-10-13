@@ -5,15 +5,15 @@ Pretty simple!
 
 [![spidy Logo](https://raw.githubusercontent.com/rivermont/spidy/master/media/spidy_logo.png)](https://github.com/rivermont/spidy#contributors)
 
-![Version: 1.5.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
+![Version: 1.6.0](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 <br>
-![Lines of Code: 1553](https://img.shields.io/badge/lines%20of%20code-1553-brightgreen.svg)
-![Lines of Docs: 564](https://img.shields.io/badge/lines%20of%20docs-564-orange.svg)
+![Lines of Code: 1567](https://img.shields.io/badge/lines%20of%20code-1567-brightgreen.svg)
+![Lines of Docs: 605](https://img.shields.io/badge/lines%20of%20docs-605-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 [![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
 [![PyPI Wheel](https://img.shields.io/pypi/wheel/spidy-web-crawler.svg)](https://pypi.org/project/spidy-web-crawler/)
@@ -31,6 +31,10 @@ Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https:
 
 # 🎉 New Features!
 
+### Multithreading
+Crawl all the things! Run separate threads to work on multiple pages at the same time.<br>
+Such fast. Very wow.
+
 ### PyPI
 Install spidy with one line: `pip install spidy-web-crawler`!
 
@@ -38,10 +42,6 @@ Install spidy with one line: `pip install spidy-web-crawler`!
 
 ### Release v1.4.0 - #[31663d3](https://github.com/rivermont/spidy/commit/31663d34ceeba66ea9de9819b6da555492ed6a80)
 [spidy Web Crawler Release 1.4](https://github.com/rivermont/spidy/releases/tag/1.4.0)
-
-### Domain Limiting - #[e229b01](https://github.com/rivermont/spidy/commit/e229b01eed7e1f95530d06afc671e40dbf4dac53)
-Scrape only a single site instead of the whole internet. May use slightly less space on your disk.<br>
-See `config/wsj.cfg` for an example.
 
 
 # Contents
@@ -212,11 +212,13 @@ See the [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/spidy
 * [3onyc](https://github.com/3onyc) - PEP8 Compliance.
 * [DeKaN](https://github.com/DeKaN) - Getting PyPI packaging to work.
 * [esouthren](https://github.com/esouthren) - Unit testing.
+* [Hrily](https://github.com/Hrily) - Multithreading.
 * [j-setiawan](https://github.com/j-setiawan) - Paths that work on all OS's.
 * [michellemorales](https://github.com/michellemorales) - Confirmed OS/X support.
+* [petermbenjamin](https://github.com/petermbenjamin) - Docker support.
 * [quatroka](https://github.com/quatroka) - Fixed testing bugs.
 * [stevelle](https://github.com/stevelle) - Respect robots.txt.
-* [thatguywiththatname](https://github.com/thatguywiththatname) - README link corrections
+* [thatguywiththatname](https://github.com/thatguywiththatname) - README link corrections.
 
 # License
 We used the [Gnu General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) (see [`LICENSE`](https://github.com/rivermont/spidy/blob/master/LICENSE)) as it was the license that best suited our needs.<br>
