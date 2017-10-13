@@ -1,6 +1,7 @@
 saved/
 logs/
 *.txt
+!requirements.txt
 *.zip
 *.pyc
 .idea

@@ -8,6 +8,7 @@ import requests
 import urllib
 import threading
 import queue
+import copy
 
 from os import path, makedirs
 from lxml import etree
@@ -42,6 +43,7 @@ PACKAGE_DIR = path.dirname(path.realpath(__file__))
 # Open log file for logging
 try:
     makedirs(WORKING_DIR + '/logs')  # Attempts to make the logs directory
+    makedirs(WORKING_DIR + '/saved')  # Attempts to make the saved directory
 except OSError:
     pass  # Assumes only OSError wil complain if /logs already exists
 
@@ -131,7 +133,7 @@ class ThreadSafeSet(list):
         with self.lock:
             self._set.add(o)
 
-    def getAll(self):
+    def get_all(self):
         with self.lock:
             return self._set
 
@@ -177,11 +179,11 @@ def crawl(url, thread_id=0):
     if SAVE_WORDS:
         # Announce which link was crawled
         write_log(
-            '[CRAWL WORKER #{0}] [INFO]: Found {1} links and {2} words on {3}'
+            '[CRAWL] [WORKER #{0}] [INFO]: Found {1} links and {2} words on {3}'
                 .format(thread_id, len(word_list), len(links), url))
     else:
         # Announce which link was crawled
-        write_log('[CRAWL WORKER #{0}] [INFO]: Found {1} links on {2}'.format(thread_id, len(links), url))
+        write_log('[CRAWL] [WORKER #{0}] [INFO]: Found {1} links on {2}'.format(thread_id, len(links), url))
     return links
 
 
@@ -225,16 +227,16 @@ def crawl_worker(thread_id):
                KNOWN_ERROR_COUNT.val >= MAX_KNOWN_ERRORS or \
                HTTP_ERROR_COUNT.val >= MAX_HTTP_ERRORS or \
                NEW_MIME_COUNT.val >= MAX_NEW_MIMES:  # If too many errors have occurred
-                write_log('[CRAWL WORKER #{0}] [INFO]: Too many errors have accumulated, stopping crawler.'
+                write_log('[CRAWL] [WORKER #{0}] [INFO]: Too many errors have accumulated, stopping crawler.'
                           .format(thread_id))
                 done_crawling()
                 break
             elif COUNTER.val >= SAVE_COUNT:  # If it's time for an autosave
                 # Make sure only one thread saves files
                 with save_mutex:
-                    if COUNTER > 0:
+                    if COUNTER.val > 0:
                         try:
-                            write_log('[CRAWL WORKER #{0}] [INFO]: Queried {1} links.'.format(thread_id, str(COUNTER)))
+                            write_log('[CRAWL WORKER #{0}] [INFO]: Queried {1} links.'.format(thread_id, str(COUNTER.val)))
                             info_log()
                             write_log('[INFO]: Saving files...')
                             save_files()
@@ -242,7 +244,7 @@ def crawl_worker(thread_id):
                                 zip_saved_files(time.time(), 'saved')
                         finally:
                             # Reset variables
-                            COUNTER = 0
+                            COUNTER = Counter(0)
                             WORDS.clear()
             # Crawl the page
             else:
@@ -254,12 +256,19 @@ def crawl_worker(thread_id):
                     robots_allowed = init_robot_checker(
                         RESPECT_ROBOTS, HEADER['User-Agent'], url)
                     if check_link(url, robots_allowed):  # If the link is invalid
-                        write_log("[CRAWL WORKER #{0}] [INFO]: Skipping invalid url {1}".format(thread_id, url))
+                        write_log("[CRAWL WORKER #{0}] [INFO]: Skipping url {1}".format(thread_id, url))
                         continue
                     links = crawl(url, thread_id)
                     for link in links:
+                        # Skip empty links
+                        if len(link) <= 0 or link == "/":
+                            continue
+                        # If link is relative, make it absolute
                         if link[0] == '/':
-                            link = url + link
+                            if url[-1] == '/':
+                                link = url[:-1] + link
+                            else:
+                                link = url + link
                         TODO.put(link)
                     DONE.put(url)
                     COUNTER.increment()
@@ -271,63 +280,61 @@ def crawl_worker(thread_id):
 
         except Exception as e:
             link = url
-            write_log('[CRAWL WORKER #{0}] [INFO]: An error was raised trying to process {1}'.format(thread_id, link))
+            write_log('[CRAWL] [WORKER #{0}] [INFO]: An error was raised trying to process {1}'.format(thread_id, link))
             err_mro = type(e).mro()
 
             if SizeError in err_mro:
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: Document too large.'.format(thread_id))
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: Document too large.'.format(thread_id))
                 err_log(link, 'SizeError', e)
 
             elif OSError in err_mro:
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An OSError occurred.'.format(thread_id))
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An OSError occurred.'.format(thread_id))
                 err_log(link, 'OSError', e)
 
             elif str(e) == 'HTTP Error 403: Forbidden':
-                write_log('[CRAWL WORKER #{0}] [ERROR]: HTTP 403: Access Forbidden.'.format(thread_id))
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: HTTP 403: Access Forbidden.'.format(thread_id))
 
             elif etree.ParserError in err_mro:  # Error processing html/xml
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.'
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.'
                           .format(thread_id))
                 err_log(link, 'XMLSyntaxError', e)
 
             elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An SSLError occurred. Site is using an invalid certificate.'
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An SSLError occurred. Site is using an invalid certificate.'
                           .format(thread_id))
                 err_log(link, 'SSLError', e)
 
             elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: A ConnectionError occurred.'
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: A ConnectionError occurred.'
                           'There\'s something wrong with somebody\'s network.'.format(thread_id))
                 err_log(link, 'ConnectionError', e)
 
             elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'
                           .format(thread_id))
                 err_log(link, 'TooManyRedirects', e)
 
             elif requests.exceptions.ContentDecodingError in err_mro:
                 # Received response with content-encoding: gzip, but failed to decode it.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: A ContentDecodingError occurred.'
+                write_log('[CRAWL] [WORKER #{0}] [ERROR]: A ContentDecodingError occurred.'
                           'Probably just a zip bomb, nothing to worry about.'.format(thread_id))
                 err_log(link, 'ContentDecodingError', e)
 
             elif 'Unknown MIME type' in str(e):
                 NEW_MIME_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: Unknown MIME type: {0}'.format(thread_id, str(e)[18:]))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: Unknown MIME type: {1}'.format(thread_id, str(e)[18:]))
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
                 NEW_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'
-                          .format(thread_id))
-                print(e)
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'.format(thread_id))
                 err_log(link, 'Unknown', e)
                 if RAISE_ERRORS:
                     done_crawling()
@@ -337,7 +344,7 @@ def crawl_worker(thread_id):
 
             write_log('[LOG]: Saved error message and timestamp to error log file.')
     
-    write_log("[CRAWL WORKER #{0}] [INFO]: Stopped".format(thread_id))
+    write_log("[CRAWL] [WORKER #{0}] [INFO]: Stopped".format(thread_id))
 
 
 def init_robot_checker(respect_robots, user_agent, start_url):
@@ -369,7 +376,7 @@ def check_link(item, robots_allowed=True):
     # Must be an http(s) link
     elif item[0:4] != 'http':
         return True
-    elif item in DONE.queue:
+    elif item in copy.copy(DONE.queue):
         return True
     return False
 
@@ -421,7 +428,7 @@ def save_files():
     global TODO, DONE
 
     with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
-        for site in TODO.queue:
+        for site in copy.copy(TODO.queue):
             try:
                 todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
@@ -429,7 +436,7 @@ def save_files():
     write_log('[LOG]: Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
-        for site in DONE.queue:
+        for site in copy.copy(DONE.queue):
             try:
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
@@ -437,7 +444,7 @@ def save_files():
     write_log('[LOG]: Saved done list to {0}'.format(DONE_FILE))
 
     if SAVE_WORDS:
-        update_file(WORD_FILE, WORDS.getAll(), 'words')
+        update_file(WORD_FILE, WORDS.get_all(), 'words')
 
 
 def make_file_path(url, ext):
@@ -525,10 +532,10 @@ def info_log():
     write_log('[INFO]: {0} links in TODO.'.format(TODO.qsize()))
     write_log('[INFO]: {0} links in done.'.format(DONE.qsize()))
     write_log('[INFO]: Todo/Done: {0}'.format(TODO.qsize() / DONE.qsize()))
-    write_log('[INFO]: {0}/{1} new errors caught.'.format(NEW_ERROR_COUNT, MAX_NEW_ERRORS))
-    write_log('[INFO]: {0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT, MAX_HTTP_ERRORS))
-    write_log('[INFO]: {0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT, MAX_NEW_MIMES))
-    write_log('[INFO]: {0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT, MAX_KNOWN_ERRORS))
+    write_log('[INFO]: {0}/{1} new errors caught.'.format(NEW_ERROR_COUNT.val, MAX_NEW_ERRORS))
+    write_log('[INFO]: {0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT.val, MAX_HTTP_ERRORS))
+    write_log('[INFO]: {0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT.val, MAX_NEW_MIMES))
+    write_log('[INFO]: {0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT.val, MAX_KNOWN_ERRORS))
 
 
 def log(message):
@@ -570,7 +577,7 @@ def zip_saved_files(out_file_name, directory):
     """
     shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
     shutil.rmtree(directory)  # Deletes folder
-    makedirs(directory[:-1])  # Creates empty folder of same name (minus the '\ ')
+    makedirs(directory)  # Creates empty folder of same name
     write_log('[LOG]: Zipped documents to {0}.zip'.format(out_file_name))
 
 
@@ -1058,7 +1065,7 @@ def spawn_threads():
         write_log("[INFO]: Spawning {0} threads".format(THREAD_COUNT))
         for i in range(THREAD_COUNT):
             t = threading.Thread(target=crawl_worker, args=(i+1,))
-            write_log("[INFO]: Starting CRAWL WORKER #{0}".format(i+1))
+            write_log("[INFO] [WORKER #{0}]: Starting CRAWL".format(i+1))
             t.daemon = True
             t.start()
             THREAD_LIST.append(t)
