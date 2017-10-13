@@ -14,9 +14,9 @@ from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
 try:
-	from spidy import __version__
+    from spidy import __version__
 except ImportError:
-	from __init__ import __version__
+    from __init__ import __version__
 
 
 VERSION = __version__
@@ -90,6 +90,7 @@ class SizeError(Exception):
     """
     pass
 
+
 class Counter(object):
     """
     Thread safe Counter
@@ -111,6 +112,7 @@ class Counter(object):
     def value(self):
         with self.lock:
             return self.val
+
 
 class ThreadSafeSet(list):
     """
@@ -136,7 +138,6 @@ class ThreadSafeSet(list):
     def clear(self):
         with self.lock:
             self._set.clear()
-
 
 
 #############
@@ -176,18 +177,20 @@ def crawl(url, thread_id=0):
     if SAVE_WORDS:
         # Announce which link was crawled
         write_log(
-            '[CRAWL WORKER #{0}] [INFO]: Found {1} links and {2} words on {3}'.format(thread_id, len(word_list), len(links), url))
+            '[CRAWL WORKER #{0}] [INFO]: Found {1} links and {2} words on {3}'
+                .format(thread_id, len(word_list), len(links), url))
     else:
         # Announce which link was crawled
         write_log('[CRAWL WORKER #{0}] [INFO]: Found {1} links on {2}'.format(thread_id, len(links), url))
     return links
+
 
 def crawl_worker(thread_id):
     """
     Crawler worker thread method
     """
 
-     # Declare global variables
+    # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
     global HEADER, WORKING_DIR, KILL_LIST, LOG_END
@@ -201,7 +204,7 @@ def crawl_worker(thread_id):
     while THREAD_RUNNING:
         # Check if there are more urls to crawl
         if TODO.empty():
-            # Increement empty counter
+            # Increment empty counter
             EMPTY_COUNTER.increment()
             # Check if other threads are producing links
             # by waiting till queue is empty
@@ -222,7 +225,8 @@ def crawl_worker(thread_id):
                KNOWN_ERROR_COUNT.val >= MAX_KNOWN_ERRORS or \
                HTTP_ERROR_COUNT.val >= MAX_HTTP_ERRORS or \
                NEW_MIME_COUNT.val >= MAX_NEW_MIMES:  # If too many errors have occurred
-                write_log('[CRAWL WORKER #{0}] [INFO]: Too many errors have accumulated, stopping crawler.'.format(thread_id))
+                write_log('[CRAWL WORKER #{0}] [INFO]: Too many errors have accumulated, stopping crawler.'
+                          .format(thread_id))
                 done_crawling()
                 break
             elif COUNTER.val >= SAVE_COUNT:  # If it's time for an autosave
@@ -285,28 +289,33 @@ def crawl_worker(thread_id):
 
             elif etree.ParserError in err_mro:  # Error processing html/xml
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.'.format(thread_id))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.'
+                          .format(thread_id))
                 err_log(link, 'XMLSyntaxError', e)
 
             elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An SSLError occurred. Site is using an invalid certificate.'.format(thread_id))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An SSLError occurred. Site is using an invalid certificate.'
+                          .format(thread_id))
                 err_log(link, 'SSLError', e)
 
             elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: A ConnectionError occurred. There\'s something wrong with somebody\'s network.'.format(thread_id))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: A ConnectionError occurred.'
+                          'There\'s something wrong with somebody\'s network.'.format(thread_id))
                 err_log(link, 'ConnectionError', e)
 
             elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'.format(thread_id))
+                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'
+                          .format(thread_id))
                 err_log(link, 'TooManyRedirects', e)
 
             elif requests.exceptions.ContentDecodingError in err_mro:
                 # Received response with content-encoding: gzip, but failed to decode it.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: A ContentDecodingError occurred. Probably just a zip bomb, nothing to worry about.'.format(thread_id))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: A ContentDecodingError occurred.'
+                          'Probably just a zip bomb, nothing to worry about.'.format(thread_id))
                 err_log(link, 'ContentDecodingError', e)
 
             elif 'Unknown MIME type' in str(e):
@@ -316,7 +325,8 @@ def crawl_worker(thread_id):
 
             else:  # Any other error
                 NEW_ERROR_COUNT.increment()
-                write_log('[CRAWL WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'.format(thread_id))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'
+                          .format(thread_id))
                 print(e)
                 err_log(link, 'Unknown', e)
                 if RAISE_ERRORS:
@@ -1079,7 +1089,8 @@ def done_crawling(keyboard_interrupt=False):
             write_log('[ERROR]: User performed a KeyboardInterrupt, stopping crawler.')
             log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
         else:
-            write_log('[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
+            write_log(
+                '[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
         save_files()
         LOG_FILE.close()
 
@@ -1087,6 +1098,7 @@ def done_crawling(keyboard_interrupt=False):
 def handle_keyboard_interrupt():
     kill_threads()
     done_crawling(True)
+
 
 def main():
     """
@@ -1105,7 +1117,7 @@ def main():
 
     try:
         init()
-    except Exception as error:
+    except Exception:
         raise SystemExit(1) 
 
     # Create required saved/ folder
@@ -1127,9 +1139,8 @@ def main():
     spawn_threads()
 
 
-
 if __name__ == '__main__':
     main()
 else:
     write_log('[INIT]: Successfully imported spidy Web Crawler.')
-    write_log('[INIT]: Call `crawler.main()` to start crawling, or refer to docs.md to see use of specific functions.')
+    write_log('[INIT]: Call `crawler.main()` to start crawling, or refer to DOCS.md to see use of specific functions.')
