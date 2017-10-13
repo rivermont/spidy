@@ -1,6 +1,9 @@
 <!-- Uncomment the section that is applicable to your issue. -->
 
 <!-- Feature Suggestion
+## Feature Description
+
+
 ## Checklist
 
 - [ ] This feature does not already exist.
@@ -9,10 +12,6 @@
 -->
 
 <!-- Error/Bug in code:
-## Checklist
-
-- [ ] Same issue has not been opened before.
-
 ## Expected Behavior
 
 
@@ -34,4 +33,9 @@
   - Platform: 
   - Python Version: 
   - Dependency Versions: 
+
+## Checklist
+
+- [ ] Same issue has not been opened before.
+
 -->
