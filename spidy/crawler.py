@@ -8,6 +8,7 @@ import requests
 import urllib
 import threading
 import queue
+import copy
 
 from os import path, makedirs
 from lxml import etree
@@ -42,6 +43,7 @@ PACKAGE_DIR = path.dirname(path.realpath(__file__))
 # Open log file for logging
 try:
     makedirs(WORKING_DIR + '/logs')  # Attempts to make the logs directory
+    makedirs(WORKING_DIR + '/saved')  # Attempts to make the saved directory
 except OSError:
     pass  # Assumes only OSError wil complain if /logs already exists
 
@@ -51,30 +53,46 @@ LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
 log_mutex = threading.Lock()
 
 
-def write_log(message):
+def write_log(operation, message, package='spidy', status='INFO', worker=0):
     """
     Writes message to both the console and the log file.
-    NOTE: Automatically adds timestamp and `[spidy]` to message, and formats message for log appropriately.
+
+    Operations:
+      INIT
+      CRAWL
+      SAVE
+      LOG
+      ERROR
+
+    STATUSES:
+      INFO
+      ERROR
+      INPUT
+
+    PACKAGES:
+      spidy
+      reppy
+
+    Worker 0 = Core
     """
     global LOG_FILE, log_mutex
     with log_mutex:
-        message = '[{0}] [spidy] '.format(get_time()) + message
+        now = get_time()
+        message = '[{0}] [{1}] [WORKER #{2}] [{3}] [{4}]: {5}'\
+                  .format(now, package, str(worker), operation, status, message)
         print(message)
         if not LOG_FILE.closed:
             LOG_FILE.write('\n' + message)
 
 
-write_log('[INIT]: Starting spidy Web Crawler version {0}'.format(VERSION))
-write_log('[INIT]: Importing required libraries...')
-
-# Import required libraries
+write_log('INIT', 'Starting spidy Web Crawler version {0}'.format(VERSION))
 
 
 ###########
 # CLASSES #
 ###########
 
-write_log('[INIT]: Creating classes...')
+write_log('INIT', 'Creating classes...')
 
 
 class HeaderError(Exception):
@@ -144,7 +162,7 @@ class ThreadSafeSet(list):
 # FUNCTIONS #
 #############
 
-write_log('[INIT]: Creating functions...')
+write_log('INIT', 'Creating functions...')
 
 
 def crawl(url, thread_id=0):
@@ -176,12 +194,12 @@ def crawl(url, thread_id=0):
         save_page(url, page)
     if SAVE_WORDS:
         # Announce which link was crawled
-        write_log(
-            '[CRAWL] [WORKER #{0}] [INFO]: Found {1} links and {2} words on {3}'
-                .format(thread_id, len(word_list), len(links), url))
+        write_log('CRAWL', 'Found {0} links and {1} words on {2}'.format(len(links), len(word_list), url),
+                  worker=thread_id)
     else:
         # Announce which link was crawled
-        write_log('[CRAWL] [WORKER #{0}] [INFO]: Found {1} links on {2}'.format(thread_id, len(links), url))
+        write_log('CRAWL', 'Found {0} links on {1}'.format(len(links), url),
+                  worker=thread_id)
     return links
 
 
@@ -225,8 +243,7 @@ def crawl_worker(thread_id):
                KNOWN_ERROR_COUNT.val >= MAX_KNOWN_ERRORS or \
                HTTP_ERROR_COUNT.val >= MAX_HTTP_ERRORS or \
                NEW_MIME_COUNT.val >= MAX_NEW_MIMES:  # If too many errors have occurred
-                write_log('[CRAWL] [WORKER #{0}] [INFO]: Too many errors have accumulated, stopping crawler.'
-                          .format(thread_id))
+                write_log('CRAWL', 'Too many errors have accumulated; stopping crawler.')
                 done_crawling()
                 break
             elif COUNTER.val >= SAVE_COUNT:  # If it's time for an autosave
@@ -234,9 +251,9 @@ def crawl_worker(thread_id):
                 with save_mutex:
                     if COUNTER.val > 0:
                         try:
-                            write_log('[CRAWL] [WORKER #{0}] [INFO]: Queried {1} links.'.format(thread_id, str(COUNTER)))
+                            write_log('CRAWL', 'Queried {0} links.'.format(str(COUNTER.val)), worker=thread_id)
                             info_log()
-                            write_log('[INFO]: Saving files...')
+                            write_log('SAVE', 'Saving files...')
                             save_files()
                             if ZIP_FILES:
                                 zip_saved_files(time.time(), 'saved')
@@ -257,8 +274,15 @@ def crawl_worker(thread_id):
                         continue
                     links = crawl(url, thread_id)
                     for link in links:
+                        # Skip empty links
+                        if len(link) <= 0 or link == "/":
+                            continue
+                        # If link is relative, make it absolute
                         if link[0] == '/':
-                            link = url + link
+                            if url[-1] == '/':
+                                link = url[:-1] + link
+                            else:
+                                link = url + link
                         TODO.put(link)
                     DONE.put(url)
                     COUNTER.increment()
@@ -270,64 +294,62 @@ def crawl_worker(thread_id):
 
         except Exception as e:
             link = url
-            write_log('[CRAWL] [WORKER #{0}] [INFO]: An error was raised trying to process {1}'.format(thread_id, link))
+            write_log('CRAWL', 'An error was raised trying to process {0}'.format(link), status='ERROR', worker=thread_id)
             err_mro = type(e).mro()
 
             if SizeError in err_mro:
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: Document too large.'.format(thread_id))
+                write_log('ERROR', 'Document too large.', worker=thread_id)
                 err_log(link, 'SizeError', e)
 
             elif OSError in err_mro:
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An OSError occurred.'.format(thread_id))
+                write_log('ERROR', 'An OSError occurred.', worker=thread_id)
                 err_log(link, 'OSError', e)
 
             elif str(e) == 'HTTP Error 403: Forbidden':
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: HTTP 403: Access Forbidden.'.format(thread_id))
+                write_log('ERROR', 'HTTP 403: Access Forbidden', worker=thread_id)
 
             elif etree.ParserError in err_mro:  # Error processing html/xml
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An XMLSyntaxError occurred. Web dev screwed up somewhere.'
-                          .format(thread_id))
+                write_log('ERROR', 'An XMLSyntaxError occurred. A web dev screwed up somewhere.',
+                          worker=thread_id)
                 err_log(link, 'XMLSyntaxError', e)
 
             elif requests.exceptions.SSLError in err_mro:  # Invalid SSL certificate
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An SSLError occurred. Site is using an invalid certificate.'
-                          .format(thread_id))
+                write_log('ERROR', 'An SSLError occurred. Site is using an invalid certificate',
+                          worker=thread_id)
                 err_log(link, 'SSLError', e)
 
             elif requests.exceptions.ConnectionError in err_mro:  # Error connecting to page
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: A ConnectionError occurred.'
-                          'There\'s something wrong with somebody\'s network.'.format(thread_id))
+                write_log('ERROR', 'A ConnectionError occurred.'
+                                   'There\'s something wrong with somebody\'s network.', worker=thread_id)
                 err_log(link, 'ConnectionError', e)
 
             elif requests.exceptions.TooManyRedirects in err_mro:  # Exceeded 30 redirects.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[ERROR]: A TooManyRedirects error occurred. Page is probably part of a redirect loop.'
-                          .format(thread_id))
+                write_log('ERROR', 'A TooManyRedirects error occurred.'
+                          'Page is probably part of a redirect loop.', worker=thread_id)
                 err_log(link, 'TooManyRedirects', e)
 
             elif requests.exceptions.ContentDecodingError in err_mro:
                 # Received response with content-encoding: gzip, but failed to decode it.
                 KNOWN_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: A ContentDecodingError occurred.'
-                          'Probably just a zip bomb, nothing to worry about.'.format(thread_id))
+                write_log('ERROR', 'A ContentDecodingError occurred.'
+                          'Probably just a zip bomb, nothing to worry about.', worker=thread_id)
                 err_log(link, 'ContentDecodingError', e)
 
             elif 'Unknown MIME type' in str(e):
                 NEW_MIME_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: Unknown MIME type: {0}'.format(thread_id, str(e)[18:]))
+                write_log('ERROR', 'Unknown MIME type: {0}'.format(str(e)[18:]), worker=thread_id)
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
                 raise
                 NEW_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'
-                          .format(thread_id))
-                print(e)
+                write_log('ERROR', 'An unknown error happened. New debugging material!', worker=thread_id)
                 err_log(link, 'Unknown', e)
                 if RAISE_ERRORS:
                     done_crawling()
@@ -335,16 +357,16 @@ def crawl_worker(thread_id):
                 else:
                     continue
 
-            write_log('[LOG]: Saved error message and timestamp to error log file.')
-    
-    write_log("[CRAWL] [WORKER #{0}] [INFO]: Stopped".format(thread_id))
+            write_log('LOG', 'Saved error message and timestamp to error log file', worker=thread_id)
+
+    write_log('CRAWL', 'Thread execution stopped.', worker=thread_id)
 
 
 def init_robot_checker(respect_robots, user_agent, start_url):
     if respect_robots:
         start_path = urllib.parse.urlparse(start_url).path
         robots_url = start_url.replace(start_path, '/robots.txt')
-        write_log('[INFO]: Reading robots file: {0}'.format(robots_url))
+        write_log('ROBOTS', 'Reading robots.txt file at: {0}'.format(robots_url), package='reppy')
         robots = Robots.fetch(robots_url)
         checker = robots.agent(user_agent)
         return checker.allowed
@@ -369,7 +391,7 @@ def check_link(item, robots_allowed=True):
     # Must be an http(s) link
     elif item[0:4] != 'http':
         return True
-    elif item in DONE.queue:
+    elif item in copy.copy(DONE.queue):
         return True
     return False
 
@@ -421,20 +443,20 @@ def save_files():
     global TODO, DONE
 
     with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
-        for site in TODO.queue:
+        for site in copy.copy(TODO.queue):
             try:
                 todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
                 continue
-    write_log('[LOG]: Saved TODO list to {0}'.format(TODO_FILE))
+    write_log('SAVE', 'Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
-        for site in DONE.queue:
+        for site in copy.copy(DONE.queue):
             try:
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
                 continue
-    write_log('[LOG]: Saved done list to {0}'.format(DONE_FILE))
+    write_log('SAVE', 'Saved DONE list to {0}'.format(TODO_FILE))
 
     if SAVE_WORDS:
         update_file(WORD_FILE, WORDS.get_all(), 'words')
@@ -511,7 +533,7 @@ def update_file(file, content, file_type):
         for item in content:
             open_file.write('\n' + str(item))  # Write all words to file
         open_file.truncate()  # Delete everything in file beyond what has been written (old stuff)
-    write_log('[LOG]: Saved {0} {1} to {2}'.format(len(content), file_type, file))
+    write_log('SAVE', 'Saved {0} {1} to {2}'.format(len(content), file_type, file))
 
 
 def info_log():
@@ -519,16 +541,16 @@ def info_log():
     Logs important information to the console and log file.
     """
     # Print to console
-    write_log('[INFO]: Started at {0}.'.format(START_TIME_LONG))
-    write_log('[INFO]: Log location: {0}'.format(LOG_FILE_NAME))
-    write_log('[INFO]: Error log location: {0}'.format(ERR_LOG_FILE_NAME))
-    write_log('[INFO]: {0} links in TODO.'.format(TODO.qsize()))
-    write_log('[INFO]: {0} links in done.'.format(DONE.qsize()))
-    write_log('[INFO]: Todo/Done: {0}'.format(TODO.qsize() / DONE.qsize()))
-    write_log('[INFO]: {0}/{1} new errors caught.'.format(NEW_ERROR_COUNT.val, MAX_NEW_ERRORS))
-    write_log('[INFO]: {0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT.val, MAX_HTTP_ERRORS))
-    write_log('[INFO]: {0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT.val, MAX_NEW_MIMES))
-    write_log('[INFO]: {0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT.val, MAX_KNOWN_ERRORS))
+    write_log('LOG', 'Started at {0}'.format(START_TIME_LONG))
+    write_log('LOG', 'Log location: {0}'.format(LOG_FILE_NAME))
+    write_log('LOG', 'Error log location: {0}'.format(ERR_LOG_FILE_NAME))
+    write_log('LOG', '{0} links in TODO'.format(TODO.qsize()))
+    write_log('LOG', '{0} links in DONE'.format(DONE.qsize()))
+    write_log('LOG', 'TODO/DONE: {0}'.format(TODO.qsize() / DONE.qsize()))
+    write_log('LOG', '{0}/{1} new errors caught.'.format(NEW_ERROR_COUNT.val, MAX_NEW_ERRORS))
+    write_log('LOG', '{0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT.val, MAX_HTTP_ERRORS))
+    write_log('LOG', '{0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT.val, MAX_NEW_MIMES))
+    write_log('LOG', '{0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT.val, MAX_KNOWN_ERRORS))
 
 
 def log(message):
@@ -547,8 +569,8 @@ def handle_invalid_input(type_='input'):
     """
     Handles an invalid user input, usually from the input() function.
     """
-    LOG_FILE.write('\n[{0}] [spidy] [ERROR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
-    raise SyntaxError('[{0}] [spidy] [ERROR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
+    LOG_FILE.write('\n[{0}] [spidy] [INPUT] [ERROR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
+    raise SyntaxError('[{0}] [spidy] [INPUT] [ERROR]: Please enter a valid {1}. (yes/no)'.format(get_time(), type_))
 
 
 def err_log(url, error1, error2):
@@ -570,15 +592,15 @@ def zip_saved_files(out_file_name, directory):
     """
     shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
     shutil.rmtree(directory)  # Deletes folder
-    makedirs(directory[:-1])  # Creates empty folder of same name (minus the '\ ')
-    write_log('[LOG]: Zipped documents to {0}.zip'.format(out_file_name))
+    makedirs(directory)  # Creates empty folder of same name
+    write_log('SAVE', 'Zipped documents to {0}.zip'.format(out_file_name))
 
 
 ########
 # INIT #
 ########
 
-write_log('[INIT]: Creating variables...')
+write_log('INIT', 'Creating variables...')
 
 # Sourced mainly from https://www.iana.org/assignments/media-types/media-types.xhtml
 # Added by hand after being discovered by the crawler to reduce lookup times.
@@ -786,10 +808,10 @@ def init():
     # Getting Arguments
 
     if not path.exists(path.join(PACKAGE_DIR, 'config')):
-        write_log('[INFO]: No config folder available.')
+        write_log('INIT', 'No config folder available.')
         USE_CONFIG = False
     else:
-        write_log('[INIT]: Should spidy load settings from an available config file? (y/n):')
+        write_log('INIT', 'Should spidy load settings from an available config file? (y/n):')
         input_ = input()
         if not bool(input_):
             USE_CONFIG = False
@@ -802,27 +824,27 @@ def init():
 
     if USE_CONFIG:
         try:
-            write_log('[INPUT]: Config file name:')
+            write_log('INIT', 'Config file name:', status='INPUT')
             input_ = input()
             if input_[-4:] == '.cfg':
                 file_path = path.join(PACKAGE_DIR, 'config', input_)
             else:
                 file_path = path.join(PACKAGE_DIR, 'config', '{0}.cfg'.format(input_))
-            write_log('[INFO]: Loading configuration settings from {0}'.format(file_path))
+            write_log('INIT', 'Loading configuration settings from {0}'.format(file_path))
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
                 for line in file.readlines():
                     exec(line, globals())
         except FileNotFoundError:
-            write_log('[ERROR]: Config file not found.')
+            write_log('INPUT', 'Config file not found.', status='ERROR')
             raise FileNotFoundError()
         except Exception:
-            write_log('[ERROR]: Please use a valid .cfg file.')
+            write_log('INPUT', 'Please name a valid .cfg file.', status='ERROR')
             raise Exception()
 
     else:
-        write_log('[INIT]: Please enter the following arguments. Leave blank to use the default values.')
+        write_log('INIT', 'Please enter the following arguments. Leave blank to use the default values.')
 
-        write_log('[INPUT]: How many parellel threads to use? (Default: 1):')
+        write_log('INIT', 'How many parallel threads should be used for crawler? (Default: 1):', status='INPUT')
         input_ = input()
         if not bool(input_):  # Use default value
             THREAD_COUNT = 1
@@ -831,7 +853,7 @@ def init():
         else:  # Invalid input
             handle_invalid_input()
 
-        write_log('[INPUT]: Should spidy load from existing save files? (y/n) (Default: Yes):')
+        write_log('INIT', 'Should spidy load from existing save files? (y/n) (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):  # Use default value
             OVERWRITE = False
@@ -842,7 +864,7 @@ def init():
         else:  # Invalid input
             handle_invalid_input()
 
-        write_log('[INPUT]: Should spidy raise NEW errors and stop crawling? (y/n) (Default: No):')
+        write_log('INIT', 'Should spidy raise NEW errors and stop crawling? (y/n) (Default: No):', status='INPUT')
         input_ = input()
         if not bool(input_):
             RAISE_ERRORS = False
@@ -853,7 +875,7 @@ def init():
         else:
             handle_invalid_input()
 
-        write_log('[INPUT]: Should spidy save the pages it scrapes to the saved folder? (Default: Yes):')
+        write_log('INIT', 'Should spidy save the pages it scrapes to the saved folder? (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):
             SAVE_PAGES = True
@@ -865,7 +887,7 @@ def init():
             handle_invalid_input()
 
         if SAVE_PAGES:
-            write_log('[INPUT]: Should spidy zip saved documents when autosaving? (y/n) (Default: No):')
+            write_log('INIT', 'Should spidy zip saved documents when autosaving? (y/n) (Default: No):', status='INPUT')
             input_ = input()
             if not bool(input_):
                 ZIP_FILES = False
@@ -878,7 +900,7 @@ def init():
         else:
             ZIP_FILES = False
 
-        write_log('[INPUT]: Should spidy download documents larger than 500 MB? (y/n) (Default: No):')
+        write_log('INIT', 'Should spidy download documents larger than 500 MB? (y/n) (Default: No):', status='INPUT')
         input_ = input()
         if not bool(input_):
             OVERRIDE_SIZE = False
@@ -889,7 +911,7 @@ def init():
         else:
             handle_invalid_input()
 
-        write_log('[INPUT]: Should spidy scrape words and save them? (y/n) (Default: Yes):')
+        write_log('INIT', ' Should spidy scrape words and save them? (y/n) (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):
             SAVE_WORDS = True
@@ -900,7 +922,8 @@ def init():
         else:
             handle_invalid_input()
 
-        write_log('[INPUT]: Should spidy restrict crawling to a specific domain only? (y/n) (Default: No):')
+        write_log('INIT', 'Should spidy restrict crawling to a specific domain only? (y/n) (Default: No):',
+                  status='INPUT')
         input_ = input()
         if not bool(input_):
             RESTRICT = False
@@ -912,14 +935,15 @@ def init():
             handle_invalid_input()
 
         if RESTRICT:
-            write_log('[INPUT]: What domain should crawling be limited to? Can be subdomains, http/https, etc.')
+            write_log('INIT', 'What domain should crawling be limited to? Can be subdomains, http/https, etc.',
+                      status='INPUT')
             input_ = input()
             try:
                 DOMAIN = input_
             except KeyError:
                 handle_invalid_input('string')
 
-        write_log('[INPUT]: Should spidy respect sites\' robots.txt? (y/n) (Default: Yes):')
+        write_log('INIT', ' Should spidy respect sites\' robots.txt? (y/n) (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):
             RESPECT_ROBOTS = True
@@ -930,13 +954,13 @@ def init():
         else:
             handle_invalid_input()
 
-        write_log('[INPUT]: What HTTP browser headers should spidy imitate?')
-        write_log('[INPUT]: Choices: spidy (default), Chrome, Firefox, IE, Edge, Custom:')
+        write_log('INIT', 'What HTTP browser headers should spidy imitate?', status='INPUT')
+        write_log('INIT', 'Choices: spidy (default), Chrome, Firefox, IE, Edge, Custom:', status='INPUT')
         input_ = input()
         if not bool(input_):
             HEADER = HEADERS['spidy']
         elif input_.lower() == 'custom':
-            write_log('[INPUT]: Valid HTTP Headers:')
+            write_log('INIT', 'Valid HTTP headers:', status='INPUT')
             HEADER = input()
         else:
             try:
@@ -944,14 +968,14 @@ def init():
             except KeyError:
                 handle_invalid_input('browser name')
 
-        write_log('[INPUT]: Location of the TODO save file (Default: crawler_todo.txt):')
+        write_log('INIT', 'Location of the TODO save file (Default: crawler_todo.txt):', status='INPUT')
         input_ = input()
         if not bool(input_):
             TODO_FILE = 'crawler_todo.txt'
         else:
             TODO_FILE = input_
 
-        write_log('[INPUT]: Location of the done save file (Default: crawler_done.txt):')
+        write_log('INIT', 'Location of the DONE save file (Default: crawler_done.txt):', status='INPUT')
         input_ = input()
         if not bool(input_):
             DONE_FILE = 'crawler_done.txt'
@@ -959,7 +983,7 @@ def init():
             DONE_FILE = input_
 
         if SAVE_WORDS:
-            write_log('[INPUT]: Location of the word save file: (Default: crawler_words.txt):')
+            write_log('INIT', 'Location of the words save file (Default: crawler_words.txt):', status='INPUT')
             input_ = input()
             if not bool(input_):
                 WORD_FILE = 'crawler_words.txt'
@@ -968,7 +992,7 @@ def init():
         else:
             WORD_FILE = 'None'
 
-        write_log('[INPUT]: After how many queried links should spidy autosave? (default 100):')
+        write_log('INIT', 'After how many queried links should the crawler autosave? (Default: 100):', status='INPUT')
         input_ = input()
         if not bool(input_):
             SAVE_COUNT = 100
@@ -978,7 +1002,7 @@ def init():
             SAVE_COUNT = int(input_)
 
         if not RAISE_ERRORS:
-            write_log('[INPUT]: After how many new errors should spidy stop? (default: 5):')
+            write_log('INIT', 'After how many new errors should spidy stop? (Default: 5):', status='INPUT')
             input_ = input()
             if not bool(input_):
                 MAX_NEW_ERRORS = 5
@@ -989,7 +1013,7 @@ def init():
         else:
             MAX_NEW_ERRORS = 1
 
-        write_log('[INPUT]: After how many known errors should spidy stop? (default: 10):')
+        write_log('INIT', 'After how many known errors should spidy stop? (Default: 10):', status='INPUT')
         input_ = input()
         if not bool(input_):
             MAX_KNOWN_ERRORS = 20
@@ -998,7 +1022,7 @@ def init():
         else:
             MAX_KNOWN_ERRORS = int(input_)
 
-        write_log('[INPUT]: After how many HTTP errors should spidy stop? (default: 20):')
+        write_log('INIT', 'After how many HTTP errors should spidy stop? (Default: 20):', status='INPUT')
         input_ = input()
         if not bool(input_):
             MAX_HTTP_ERRORS = 50
@@ -1007,7 +1031,8 @@ def init():
         else:
             MAX_HTTP_ERRORS = int(input_)
 
-        write_log('[INPUT]: After encountering how many MIME types should spidy stop? (default: 20):')
+        write_log('INIT', 'After encountering how many new MIME types should spidy stop? (Default: 20):',
+                  status='INPUT')
         input_ = input()
         if not bool(input_):
             MAX_NEW_MIMES = 10
@@ -1020,12 +1045,12 @@ def init():
         del input_
 
     if OVERWRITE:
-        write_log('[INIT]: Creating save files...')
+        write_log('INIT', 'Creating save files...')
         for start in START:
             TODO.put(start)
         DONE = queue.Queue()
     else:
-        write_log('[INIT]: Loading save files...')
+        write_log('INIT', 'Loading save files...')
         # Import saved TODO file data
         try:
             with open(TODO_FILE, 'r', encoding='utf-8', errors='ignore') as f:
@@ -1055,10 +1080,10 @@ def spawn_threads():
     Spawn the crawler threads
     """
     try:
-        write_log("[INFO]: Spawning {0} threads".format(THREAD_COUNT))
+        write_log('INIT', 'Spawning {0} worker threads...'.format(THREAD_COUNT))
         for i in range(THREAD_COUNT):
             t = threading.Thread(target=crawl_worker, args=(i+1,))
-            write_log("[INFO] [WORKER #{0}]: Starting CRAWL".format(i+1))
+            write_log('INIT', 'Starting crawl...', worker=i+1)
             t.daemon = True
             t.start()
             THREAD_LIST.append(t)
@@ -1073,7 +1098,7 @@ def kill_threads():
     Will terminate all running threads
     """
     global THREAD_RUNNING
-    write_log("[INFO]: Stopping all threads...")
+    write_log('CRAWL', 'Stopping all threads...')
     THREAD_RUNNING = False
 
 
@@ -1086,11 +1111,11 @@ def done_crawling(keyboard_interrupt=False):
         kill_threads()
         FINISHED = True
         if keyboard_interrupt:
-            write_log('[ERROR]: User performed a KeyboardInterrupt, stopping crawler.')
+            write_log('CRAWL', 'User performed a KeyboardInterrupt, stopping crawler.', status='ERROR')
             log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
         else:
-            write_log(
-                '[INFO]: I think you\'ve managed to download the internet. I guess you\'ll want to save your files...')
+            write_log('CRAWL', 'I think you\'ve managed to download the entire internet. '
+                               'I guess you\'ll want to save your files...')
         save_files()
         LOG_FILE.close()
 
@@ -1130,10 +1155,10 @@ def main():
     with open(WORD_FILE, 'w', encoding='utf-8', errors='ignore'):
         pass
 
-    write_log('[INIT]: Successfully started spidy Web Crawler version {0}...'.format(VERSION))
+    write_log('INIT', 'Successfully started spidy Web Crawler version {0}...'.format(VERSION))
     log('LOG: Successfully started crawler.')
 
-    write_log('[INFO]: Using headers: {0}'.format(HEADER))
+    write_log('INIT', 'Using headers: {0}'.format(HEADER))
 
     # Spawn threads here
     spawn_threads()
@@ -1142,5 +1167,6 @@ def main():
 if __name__ == '__main__':
     main()
 else:
-    write_log('[INIT]: Successfully imported spidy Web Crawler.')
-    write_log('[INIT]: Call `crawler.main()` to start crawling, or refer to DOCS.md to see use of specific functions.')
+    write_log('INIT', 'Successfully imported spidy Web Crawler version {0}.'.format(VERSION))
+    write_log('INIT',
+              'Call `crawler.main()` to start crawling, or refer to DOCS.md to see use of specific functions.')

@@ -5,14 +5,14 @@ Pretty simple!
 
 [![spidy Logo](https://raw.githubusercontent.com/rivermont/spidy/master/media/spidy_logo.png)](https://github.com/rivermont/spidy#contributors)
 
-![Version: 1.6.1](https://img.shields.io/badge/version-1.5.1-brightgreen.svg)
+![Version: 1.6.2](https://img.shields.io/badge/version-1.6.2-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
 ![All Platforms!](https://img.shields.io/badge/Windows,%20OS/X,%20Linux-%20%20-brightgreen.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.png?v=103)
 <br>
-![Lines of Code: 1567](https://img.shields.io/badge/lines%20of%20code-1567-brightgreen.svg)
+![Lines of Code: 1553](https://img.shields.io/badge/lines%20of%20code-1553-brightgreen.svg)
 ![Lines of Docs: 605](https://img.shields.io/badge/lines%20of%20docs-605-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
 [![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
