@@ -5,6 +5,7 @@ lint:
 
 test:
 	python3 ./spidy/tests.py
+	rm -rf ./logs ./saved
 
 clean-pyc:
 	find . -name "*.pyc" -delete
@@ -18,7 +19,7 @@ clean-build:
 clean-crawler:
 	-rm -rf ./spidy/logs
 	-rm -rf ./spidy/saved
-	find . -name "*.txt" -delete
+	find . -name "*.txt" -not -name "requirements.txt" -delete
 
 help:
 	@echo "    lint"
