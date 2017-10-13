@@ -8,6 +8,7 @@ import requests
 import urllib
 import threading
 import queue
+import copy
 
 from os import path, makedirs
 from lxml import etree
@@ -42,6 +43,7 @@ PACKAGE_DIR = path.dirname(path.realpath(__file__))
 # Open log file for logging
 try:
     makedirs(WORKING_DIR + '/logs')  # Attempts to make the logs directory
+    makedirs(WORKING_DIR + '/saved')  # Attempts to make the saved directory
 except OSError:
     pass  # Assumes only OSError wil complain if /logs already exists
 
@@ -234,7 +236,7 @@ def crawl_worker(thread_id):
                 with save_mutex:
                     if COUNTER.val > 0:
                         try:
-                            write_log('[CRAWL] [WORKER #{0}] [INFO]: Queried {1} links.'.format(thread_id, str(COUNTER)))
+                            write_log('[CRAWL WORKER #{0}] [INFO]: Queried {1} links.'.format(thread_id, str(COUNTER.val)))
                             info_log()
                             write_log('[INFO]: Saving files...')
                             save_files()
@@ -254,11 +256,19 @@ def crawl_worker(thread_id):
                     robots_allowed = init_robot_checker(
                         RESPECT_ROBOTS, HEADER['User-Agent'], url)
                     if check_link(url, robots_allowed):  # If the link is invalid
+                        write_log("[CRAWL WORKER #{0}] [INFO]: Skipping url {1}".format(thread_id, url))
                         continue
                     links = crawl(url, thread_id)
                     for link in links:
+                        # Skip empty links
+                        if len(link) <= 0 or link == "/":
+                            continue
+                        # If link is relative, make it absolute
                         if link[0] == '/':
-                            link = url + link
+                            if url[-1] == '/':
+                                link = url[:-1] + link
+                            else:
+                                link = url + link
                         TODO.put(link)
                     DONE.put(url)
                     COUNTER.increment()
@@ -319,14 +329,12 @@ def crawl_worker(thread_id):
 
             elif 'Unknown MIME type' in str(e):
                 NEW_MIME_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: Unknown MIME type: {0}'.format(thread_id, str(e)[18:]))
+                write_log('[CRAWL WORKER #{0}] [ERROR]: Unknown MIME type: {1}'.format(thread_id, str(e)[18:]))
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
                 NEW_ERROR_COUNT.increment()
-                write_log('[CRAWL] [WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'
-                          .format(thread_id))
-                print(e)
+                write_log('[CRAWL WORKER #{0}] [ERROR]: An unknown error happened. New debugging material!'.format(thread_id))
                 err_log(link, 'Unknown', e)
                 if RAISE_ERRORS:
                     done_crawling()
@@ -368,7 +376,7 @@ def check_link(item, robots_allowed=True):
     # Must be an http(s) link
     elif item[0:4] != 'http':
         return True
-    elif item in DONE.queue:
+    elif item in copy.copy(DONE.queue):
         return True
     return False
 
@@ -420,7 +428,7 @@ def save_files():
     global TODO, DONE
 
     with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
-        for site in TODO.queue:
+        for site in copy.copy(TODO.queue):
             try:
                 todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
@@ -428,7 +436,7 @@ def save_files():
     write_log('[LOG]: Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
-        for site in DONE.queue:
+        for site in copy.copy(DONE.queue):
             try:
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
@@ -569,7 +577,7 @@ def zip_saved_files(out_file_name, directory):
     """
     shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
     shutil.rmtree(directory)  # Deletes folder
-    makedirs(directory[:-1])  # Creates empty folder of same name (minus the '\ ')
+    makedirs(directory)  # Creates empty folder of same name
     write_log('[LOG]: Zipped documents to {0}.zip'.format(out_file_name))
 
 
