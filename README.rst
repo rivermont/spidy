@@ -36,6 +36,7 @@ Contributors
 -  `esouthren <https://github.com/esouthren>`__ - Unit testing.
 -  `j-setiawan <https://github.com/j-setiawan>`__ - Paths that work on
    all OS's.
+-  `kylesalk <https://github.com/kylesalk>`__ - Logging file handlers
 -  `michellemorales <https://github.com/michellemorales>`__ - Confirmed
    OS/X support.
 -  `quatroka <https://github.com/quatroka>`__ - Fixed testing bugs.

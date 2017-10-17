@@ -9,6 +9,7 @@ import urllib
 import threading
 import queue
 import copy
+import logging
 
 from os import path, makedirs
 from lxml import etree
@@ -50,6 +51,27 @@ except OSError:
 LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)),
                 'w+', encoding='utf-8', errors='ignore')
 LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
+
+# Error log location
+ERR_LOG_FILE = path.join(WORKING_DIR, 'logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
+ERR_LOG_FILE_NAME = path.join('logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
+
+LOGGER = logging.getLogger('SPIDY')
+LOGGER.setLevel(logging.DEBUG)
+
+# create file handler
+handler = logging.FileHandler(ERR_LOG_FILE)
+# minimum level logged: DEBUG (0)
+handler.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# add formatter to handler
+handler.setFormatter(formatter)
+
+# add ch to logger
+LOGGER.addHandler(handler)
+
 log_mutex = threading.Lock()
 
 
@@ -211,7 +233,7 @@ def crawl_worker(thread_id):
     # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-    global HEADER, WORKING_DIR, KILL_LIST, LOG_END
+    global HEADER, WORKING_DIR, KILL_LIST
     global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
@@ -347,6 +369,7 @@ def crawl_worker(thread_id):
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
+                raise
                 NEW_ERROR_COUNT.increment()
                 write_log('ERROR', 'An unknown error happened. New debugging material!', worker=thread_id)
                 err_log(link, 'Unknown', e)
@@ -552,16 +575,19 @@ def info_log():
     write_log('LOG', '{0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT.val, MAX_KNOWN_ERRORS))
 
 
-def log(message):
+def log(message, level=logging.DEBUG):
     """
     Logs a single message to the error log file.
     Prints message verbatim, so message must be formatted correctly in the function call.
+
+    Parameters
+    ----------
+    message : str
+        Message to log
+    level : lvl
+        logging.[DEBUG, INFO, WARNING, ERROR, CRITICAL]
     """
-    with open(ERR_LOG_FILE, 'a', encoding='utf-8', errors='ignore') as open_file:
-        open_file.write('\n\n======LOG======')  # Write opening line
-        open_file.write('\nTIME: {0}'.format(get_full_time()))  # Write current time
-        open_file.write(message)  # Write message
-        open_file.write(LOG_END)  # Write closing line
+    LOGGER.log(level, message)
 
 
 def handle_invalid_input(type_='input'):
@@ -578,11 +604,7 @@ def err_log(url, error1, error2):
     error1 is the trimmed error source.
     error2 is the extended text of the error.
     """
-    current_time = time.strftime('%H:%M:%S, %A %b %Y')  # Get the current time
-    with open(ERR_LOG_FILE, 'a', encoding='utf-8', errors='ignore') as work_log:
-        work_log.write('\n\n=====ERROR=====')  # Write opening line
-        work_log.write('\nTIME: {0}\nURL: {1}\nERROR: {2}\nEXT: {3}'.format(current_time, url, error1, str(error2)))
-        work_log.write(LOG_END)  # Write closing line
+    LOGGER.error("\nURL: {0}\nERROR: {1}\nEXT: {2}\n\n".format(url, error1, str(error2)))
 
 
 def zip_saved_files(out_file_name, directory):
@@ -701,10 +723,6 @@ MIME_TYPES = {
     'vnd.ms-fontobject': '.eot'  # Incorrect
 }
 
-# Error log location
-ERR_LOG_FILE = path.join(WORKING_DIR, 'logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
-ERR_LOG_FILE_NAME = path.join('logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
-
 # User-Agent Header Strings
 HEADERS = {
     'spidy': {
@@ -752,9 +770,6 @@ KILL_LIST = [
 # Links to start crawling if the TODO list is empty
 START = ['https://en.wikipedia.org/wiki/Main_Page']
 
-# Line to print at the end of each logFile log
-LOG_END = '\n======END======'
-
 # Counter variables
 COUNTER = Counter(0)
 NEW_ERROR_COUNT = Counter(0)
@@ -796,7 +811,7 @@ def init():
     # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-    global HEADER, PACKAGE_DIR, WORKING_DIR, KILL_LIST, LOG_END
+    global HEADER, PACKAGE_DIR, WORKING_DIR, KILL_LIST
     global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
@@ -1111,7 +1126,7 @@ def done_crawling(keyboard_interrupt=False):
         FINISHED = True
         if keyboard_interrupt:
             write_log('CRAWL', 'User performed a KeyboardInterrupt, stopping crawler.', status='ERROR')
-            log('\nLOG: User performed a KeyboardInterrupt, stopping crawler.')
+            LOGGER.log(logging.INFO, 'User performed a KeyboardInterrupt, stopping crawler.')
         else:
             write_log('CRAWL', 'I think you\'ve managed to download the entire internet. '
                                'I guess you\'ll want to save your files...')
@@ -1131,7 +1146,7 @@ def main():
     # Declare global variables
     global VERSION, START_TIME, START_TIME_LONG
     global LOG_FILE, LOG_FILE_NAME, ERR_LOG_FILE_NAME
-    global HEADER, WORKING_DIR, KILL_LIST, LOG_END
+    global HEADER, WORKING_DIR, KILL_LIST
     global COUNTER, NEW_ERROR_COUNT, KNOWN_ERROR_COUNT, HTTP_ERROR_COUNT, NEW_MIME_COUNT
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
@@ -1155,7 +1170,7 @@ def main():
         pass
 
     write_log('INIT', 'Successfully started spidy Web Crawler version {0}...'.format(VERSION))
-    log('LOG: Successfully started crawler.')
+    LOGGER.log(logging.INFO, 'Successfully started crawler.')
 
     write_log('INIT', 'Using headers: {0}'.format(HEADER))
 
