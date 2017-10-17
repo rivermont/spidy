@@ -8,10 +8,10 @@ import requests
 import urllib
 import threading
 import queue
-import copy
 import logging
 
 from os import path, makedirs
+from copy import copy
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
@@ -156,7 +156,7 @@ class Counter(object):
 
 class ThreadSafeSet(list):
     """
-    Thread Sage set
+    Thread Safe set
     """
 
     def __init__(self):
@@ -316,7 +316,8 @@ def crawl_worker(thread_id):
 
         except Exception as e:
             link = url
-            write_log('CRAWL', 'An error was raised trying to process {0}'.format(link), status='ERROR', worker=thread_id)
+            write_log('CRAWL', 'An error was raised trying to process {0}'
+                      .format(link), status='ERROR', worker=thread_id)
             err_mro = type(e).mro()
 
             if SizeError in err_mro:
@@ -369,7 +370,6 @@ def crawl_worker(thread_id):
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
-                raise
                 NEW_ERROR_COUNT.increment()
                 write_log('ERROR', 'An unknown error happened. New debugging material!', worker=thread_id)
                 err_log(link, 'Unknown', e)
@@ -413,7 +413,7 @@ def check_link(item, robots_allowed=True):
     # Must be an http(s) link
     elif item[0:4] != 'http':
         return True
-    elif item in copy.copy(DONE.queue):
+    elif item in copy(DONE.queue):
         return True
     return False
 
@@ -465,7 +465,7 @@ def save_files():
     global TODO, DONE
 
     with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
-        for site in copy.copy(TODO.queue):
+        for site in copy(TODO.queue):
             try:
                 todoList.write(site + '\n')  # Save TODO list
             except UnicodeError:
@@ -473,7 +473,7 @@ def save_files():
     write_log('SAVE', 'Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
-        for site in copy.copy(DONE.queue):
+        for site in copy(DONE.queue):
             try:
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
