@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
@@ -889,7 +890,7 @@ def init():
         else:
             handle_invalid_input()
 
-        write_log('INIT', 'Should spidy save the pages it scrapes to the saved folder? (Default: Yes):', status='INPUT')
+        write_log('INIT', 'Should spidy save the pages it scrapes to the saved folder? (y/n) (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):
             SAVE_PAGES = True
