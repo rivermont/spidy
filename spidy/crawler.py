@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
