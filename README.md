@@ -97,7 +97,7 @@ We built a lot of the functionality in spidy by watching the console scroll by a
 Here are some features we figure are worth noting.
 
   - Error Handling: We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each. There is a set cap so that after accumulating too many errors the crawler will stop itself.
-  - Cross-Platform compatability: spidy will work on all three major operating systems, Windows, Mac OS/X, and Linux!
+  - Cross-Platform compatibility: spidy will work on all three major operating systems, Windows, Mac OS/X, and Linux!
   - Frequent Timestamp Logging: Spidy logs almost every action it takes to both the console and one of two log files.
   - Browser Spoofing: Make requests using User Agents from 4 popular web browsers, use a custom spidy bot one, or create your own!
   - Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off. *Note*: This only works if you run it from source code.
