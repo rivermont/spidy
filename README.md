@@ -82,9 +82,14 @@ It can also save each page, because datahoarding 😜.
 
 
 # Why It's Different
-What sets spidy apart from other web crawling solutions written in Python?<br>
-Most of the other options out there are not web crawlers themselves, simply frameworks and libraries through which one can create and deploy a web spider.<br>
-With spidy, everything runs right out of the box.
+What sets spidy apart from other web crawling solutions written in Python?
+
+Most of the other options out there are not web crawlers themselves, simply frameworks and libraries through which one can create and deploy a web spider for example Scrapy and BeautifulSoup.
+Scrapy is a Web crawling framework, written in Python, specifically created for downloading, cleaning and saving data from the web whereas BeautifulSoup is a parsing library that allows a programmer to get specific elements out of a webpage but BeautifulSoup alone is not enough because you have to actually get the webpage in the first place.
+
+But with Spidy, everything runs right out of the box.
+Spidy is a Web Crawler which is easy to use and is run from the command line. You have to give it a URL link of the webpage and it starts crawling away! A very simple and effective way of fetching stuff off of the web. 
+
 
 
 # Features
