@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 spidy Web Crawler
 Built by rivermont and FalconWarriorr
@@ -16,6 +16,7 @@ from copy import copy
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href
 from reppy.robots import Robots
+
 try:
     from spidy import __version__
 except ImportError:
