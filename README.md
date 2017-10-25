@@ -82,9 +82,14 @@ It can also save each page, because datahoarding 😜.
 
 
 # Why It's Different
-What sets spidy apart from other web crawling solutions written in Python?<br>
-Most of the other options out there are not web crawlers themselves, simply frameworks and libraries through which one can create and deploy a web spider.<br>
-With spidy, everything runs right out of the box.
+What sets spidy apart from other web crawling solutions written in Python?
+
+Most of the other options out there are not web crawlers themselves, simply frameworks and libraries through which one can create and deploy a web spider for example Scrapy and BeautifulSoup.
+Scrapy is a Web crawling framework, written in Python, specifically created for downloading, cleaning and saving data from the web whereas BeautifulSoup is a parsing library that allows a programmer to get specific elements out of a webpage but BeautifulSoup alone is not enough because you have to actually get the webpage in the first place.
+
+But with Spidy, everything runs right out of the box.
+Spidy is a Web Crawler which is easy to use and is run from the command line. You have to give it a URL link of the webpage and it starts crawling away! A very simple and effective way of fetching stuff off of the web. 
+
 
 
 # Features
@@ -92,7 +97,7 @@ We built a lot of the functionality in spidy by watching the console scroll by a
 Here are some features we figure are worth noting.
 
   - Error Handling: We have tried to recognize all of the errors spidy runs into and create custom error messages and logging for each. There is a set cap so that after accumulating too many errors the crawler will stop itself.
-  - Cross-Platform compatability: spidy will work on all three major operating systems, Windows, Mac OS/X, and Linux!
+  - Cross-Platform compatibility: spidy will work on all three major operating systems, Windows, Mac OS/X, and Linux!
   - Frequent Timestamp Logging: Spidy logs almost every action it takes to both the console and one of two log files.
   - Browser Spoofing: Make requests using User Agents from 4 popular web browsers, use a custom spidy bot one, or create your own!
   - Portability: Move spidy's folder and its contents somewhere else and it will run right where it left off. *Note*: This only works if you run it from source code.
