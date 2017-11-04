@@ -1,6 +1,7 @@
 language: python
 
 python:
+#  - "3.2"
   - "3.3"
   - "3.4"
   - "3.5"
@@ -12,11 +13,11 @@ python:
 
 # Install dependencies
 install:
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 
 # Run all tests
 script:
   - make
   # Test PyPI package
-  - pip install spidy-web-crawler
-  - pip show spidy-web-crawler | grep Version
+  - pip3 install spidy-web-crawler
+  - pip3 show spidy-web-crawler | grep Version
