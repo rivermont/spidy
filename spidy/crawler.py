@@ -146,7 +146,7 @@ class Counter(object):
     def increment(self):
         with self.lock:
             self.val += 1
-    
+
     def decrement(self):
         with self.lock:
             self.val -= 1
@@ -180,6 +180,46 @@ class ThreadSafeSet(list):
     def clear(self):
         with self.lock:
             self._set.clear()
+
+
+class RobotsIndex(object):
+    """
+    Thread Safe Robots Index
+    """
+    def __init__(self, respect_robots, user_agent):
+        self.respect_robots = respect_robots
+        self.user_agent = user_agent
+        self.lock = threading.Lock()
+        self.index = {}
+
+    def is_allowed(self, start_url):
+        if self.respect_robots:
+            return self._lookup(start_url)
+        else:
+            return True
+
+    def size(self):
+        return len(self.index)
+
+    def _lookup(self, url):
+        hostname = urllib.parse.urlparse(url).hostname
+        if hostname not in self.index.keys():
+            with self.lock:
+                # check again to be sure
+                if hostname not in self.index.keys():
+                    self._remember(url)
+
+        return self.index[hostname].allowed(url)
+
+    def _remember(self, url):
+        urlparsed = urllib.parse.urlparse(url)
+        robots_url = url.replace(urlparsed.path, '/robots.txt')
+        write_log('ROBOTS',
+                  'Reading robots.txt file at: {0}'.format(robots_url),
+                  package='reppy')
+        robots = Robots.fetch(robots_url)
+        checker = robots.agent(self.user_agent)
+        self.index[urlparsed.hostname] = checker
 
 
 #############
@@ -227,7 +267,7 @@ def crawl(url, thread_id=0):
     return links
 
 
-def crawl_worker(thread_id):
+def crawl_worker(thread_id, robots_index):
     """
     Crawler worker thread method
     """
@@ -292,9 +332,7 @@ def crawl_worker(thread_id):
                 except queue.Empty:
                     continue
                 else:
-                    robots_allowed = init_robot_checker(
-                        RESPECT_ROBOTS, HEADER['User-Agent'], url)
-                    if check_link(url, robots_allowed):  # If the link is invalid
+                    if check_link(url, robots_index):  # If the link is invalid
                         continue
                     links = crawl(url, thread_id)
                     for link in links:
@@ -386,26 +424,14 @@ def crawl_worker(thread_id):
     write_log('CRAWL', 'Thread execution stopped.', worker=thread_id)
 
 
-def init_robot_checker(respect_robots, user_agent, start_url):
-    if respect_robots:
-        start_path = urllib.parse.urlparse(start_url).path
-        robots_url = start_url.replace(start_path, '/robots.txt')
-        write_log('ROBOTS', 'Reading robots.txt file at: {0}'.format(robots_url), package='reppy')
-        robots = Robots.fetch(robots_url)
-        checker = robots.agent(user_agent)
-        return checker.allowed
-    else:
-        return True
-
-
-def check_link(item, robots_allowed=True):
+def check_link(item, robots_index=None):
     """
     Returns True if item is not a valid url.
     Returns False if item passes all inspections (is valid url).
     """
     # Shortest possible url being 'http://a.b', and
     # Links longer than 255 characters are usually too long for the filesystem to handle.
-    if not robots_allowed:
+    if robots_index and not robots_index.is_allowed(item):
         return True
     if RESTRICT:
         if DOMAIN not in item:
@@ -1091,14 +1117,14 @@ def init():
             TODO.put(start)
 
 
-def spawn_threads():
+def spawn_threads(robots_index):
     """
     Spawn the crawler threads
     """
     try:
         write_log('INIT', 'Spawning {0} worker threads...'.format(THREAD_COUNT))
         for i in range(THREAD_COUNT):
-            t = threading.Thread(target=crawl_worker, args=(i+1,))
+            t = threading.Thread(target=crawl_worker, args=(i+1, robots_index))
             write_log('INIT', 'Starting crawl...', worker=i+1)
             t.daemon = True
             t.start()
@@ -1159,7 +1185,7 @@ def main():
     try:
         init()
     except Exception:
-        raise SystemExit(1) 
+        raise SystemExit(1)
 
     # Create required saved/ folder
     try:
@@ -1176,8 +1202,10 @@ def main():
 
     write_log('INIT', 'Using headers: {0}'.format(HEADER))
 
+    robots_index = RobotsIndex(RESPECT_ROBOTS, HEADER['User-Agent'])
+
     # Spawn threads here
-    spawn_threads()
+    spawn_threads(robots_index)
 
 
 if __name__ == '__main__':

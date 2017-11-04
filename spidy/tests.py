@@ -6,11 +6,11 @@ from crawler import (
     check_link,
     check_word,
     check_path,
-    init_robot_checker,
     make_words,
     make_file_path,
     mime_lookup,
-    HeaderError
+    HeaderError,
+    RobotsIndex
 )
 
 
@@ -39,30 +39,38 @@ class CrawlerTestCase(unittest.TestCase):
     def test_robots_given_allowed_url(self):
         # allowed expliticly
         url = "https://www.google.com/m/finance"
-        checker = init_robot_checker(True, 'duckduckbot', url)
+        checker = RobotsIndex(True, 'duckduckbot')
 
         self.assertFalse(check_link(url, checker))
 
     def test_robots_given_asterisk_path_allowed_url(self):
         # allowed by /*/*/tree/master
         url = "https://github.com/rivermont/spidy/tree/master"
-        checker = init_robot_checker(True, 'duckduckbot', url)
+        checker = RobotsIndex(True, 'duckduckbot')
 
         self.assertFalse(check_link(url, checker))
 
     def test_robots_given_lower_path_allowed_url(self):
         # allowed by /search/about after /search is forbidden
         url = "https://google.com/search/about"
-        checker = init_robot_checker(True, 'duckduckbot', url)
+        checker = RobotsIndex(True, 'duckduckbot')
+        self.assertEqual(checker.size(), 0)
 
         self.assertFalse(check_link(url, checker))
+        self.assertEqual(checker.size(), 1)
 
-    # def test_robots_given_forbidden_url(self):
-        # # prohibited explicitly
-        # url = "https://github.com/search/"
-        # checker = init_robot_checker(True, 'duckduckbot', url)
-        #
-        # self.assertTrue(check_link(url, checker))
+        # subsequent checks should reuse known robots.txt file
+        self.assertFalse(check_link(url + '/more', checker))
+        self.assertFalse(check_link(url + '/plus', checker))
+        self.assertFalse(check_link(url + '/extra', checker))
+        self.assertEqual(checker.size(), 1)
+
+    def test_robots_given_forbidden_url(self):
+        # prohibited explicitly
+        url = "https://github.com/search/"
+        checker = RobotsIndex(True, 'duckduckbot')
+
+        self.assertTrue(check_link(url, checker))
 
     # Tests for check_word
 
