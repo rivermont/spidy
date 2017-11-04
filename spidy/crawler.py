@@ -110,6 +110,7 @@ def write_log(operation, message, package='spidy', status='INFO', worker=0):
 
 
 write_log('INIT', 'Starting spidy Web Crawler version {0}'.format(VERSION))
+write_log('INIT', 'Report any problems to GitHub at https://github.com/rivermont/spidy')
 
 
 ###########
@@ -953,7 +954,7 @@ def init():
         else:
             handle_invalid_input()
 
-        write_log('INIT', ' Should spidy scrape words and save them? (y/n) (Default: Yes):', status='INPUT')
+        write_log('INIT', 'Should spidy scrape words and save them? (y/n) (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):
             SAVE_WORDS = True
@@ -985,7 +986,7 @@ def init():
             except KeyError:
                 handle_invalid_input('string')
 
-        write_log('INIT', ' Should spidy respect sites\' robots.txt? (y/n) (Default: Yes):', status='INPUT')
+        write_log('INIT', 'Should spidy respect sites\' robots.txt? (y/n) (Default: Yes):', status='INPUT')
         input_ = input()
         if not bool(input_):
             RESPECT_ROBOTS = True
