@@ -1,4 +1,5 @@
-# spidy Web Crawler
+# spidy Web Crawler [![Mentioned in awesome-crawler](https://awesome.re/mentioned-badge.svg)](https://github.com/BruceDone/awesome-crawler)
+
 Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses Python [`requests`](http://docs.python-requests.org) to query the webpages, and [`lxml`](http://lxml.de/index.html) to extract all links from the page.<br>
 Pretty simple!
