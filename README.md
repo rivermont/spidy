@@ -24,7 +24,7 @@ Pretty simple!
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
 
-Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/FalconWarriorr) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
 Looking for technical documentation? Check out [`DOCS.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/CONTRIBUTING.md), then check out the docs.
 
