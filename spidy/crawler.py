@@ -749,7 +749,8 @@ MIME_TYPES = {
     'video/webm': '.webp',
     'video/mpeg': '.mpeg',
     'video/x-flv': '.flv',
-    'vnd.ms-fontobject': '.eot'  # Incorrect
+    'vnd.ms-fontobject': '.eot',  # Incorrect
+    'image/vnd.microsoft.icon': '.ico' # favicon files
 }
 
 # User-Agent Header Strings
