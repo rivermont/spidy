@@ -243,6 +243,8 @@ def crawl(url, thread_id=0):
     # If the SizeError is raised it will be caught in the except block in the run section,
     # and the following code will not be run.
     page = requests.get(url, headers=HEADER)  # Get page
+    doctype = get_mime_type(page)
+    if doctype.find('image') < 0 and doctype.find('video') < 0:
     word_list = []
     if SAVE_WORDS:
         word_list = make_words(page)
@@ -250,11 +252,13 @@ def crawl(url, thread_id=0):
             WORDS.put(word)
     try:
         # Pull out all links after resolving them using any <base> tags found in the document.
-        links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(page.content))]
+            links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(make_links_absolute(page.content, url)))]
     except etree.ParseError:
         # If the document is not HTML content this will return an empty list.
         links = []
     links = list(set(links))
+    else:
+        links = []
     if SAVE_PAGES:
         save_page(url, page)
     if SAVE_WORDS:
