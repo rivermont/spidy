@@ -243,9 +243,9 @@ def crawl(url, thread_id=0):
     # If the SizeError is raised it will be caught in the except block in the run section,
     # and the following code will not be run.
     page = requests.get(url, headers=HEADER)  # Get page
+    word_list = []
     doctype = get_mime_type(page)
     if doctype.find('image') < 0 and doctype.find('video') < 0:
-        word_list = []
         if SAVE_WORDS:
             word_list = make_words(page)
             for word in word_list:
