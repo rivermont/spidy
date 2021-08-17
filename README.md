@@ -16,7 +16,7 @@ Pretty simple!
 ![Lines of Code: 1553](https://img.shields.io/badge/lines%20of%20code-1553-brightgreen.svg)
 ![Lines of Docs: 605](https://img.shields.io/badge/lines%20of%20docs-605-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
-[![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
+[![Travis CI Status](https://img.shields.io/travis/com/rivermont/spidy)](https://travis-ci.com/github/rivermont/spidy)
 [![PyPI Wheel](https://img.shields.io/pypi/wheel/spidy-web-crawler.svg)](https://pypi.org/project/spidy-web-crawler/)
 [![PyPI Status](https://img.shields.io/pypi/status/spidy-web-crawler.svg)](https://pypi.org/project/spidy-web-crawler/)
 <br>
