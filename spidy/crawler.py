@@ -14,7 +14,7 @@ import logging
 from os import path, makedirs
 from copy import copy
 from lxml import etree
-from lxml.html import iterlinks, resolve_base_href
+from lxml.html import iterlinks, resolve_base_href, make_links_absolute
 from reppy.robots import Robots
 
 try:
@@ -214,7 +214,7 @@ class RobotsIndex(object):
 
     def _remember(self, url):
         urlparsed = urllib.parse.urlparse(url)
-        robots_url = url.replace(urlparsed.path, '/robots.txt')
+        robots_url = urlparsed.scheme + '://' + urlparsed.netloc + '/robots.txt'
         write_log('ROBOTS',
                   'Reading robots.txt file at: {0}'.format(robots_url),
                   package='reppy')
@@ -244,17 +244,21 @@ def crawl(url, thread_id=0):
     # and the following code will not be run.
     page = requests.get(url, headers=HEADER)  # Get page
     word_list = []
-    if SAVE_WORDS:
-        word_list = make_words(page)
-        for word in word_list:
-            WORDS.put(word)
-    try:
-        # Pull out all links after resolving them using any <base> tags found in the document.
-        links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(page.content))]
-    except etree.ParseError:
-        # If the document is not HTML content this will return an empty list.
+    doctype = get_mime_type(page)
+    if doctype.find('image') < 0 and doctype.find('video') < 0:
+        if SAVE_WORDS:
+            word_list = make_words(page)
+            for word in word_list:
+                WORDS.put(word)
+        try:
+            # Pull out all links after resolving them using any <base> tags found in the document.
+            links = [link for element, attribute, link, pos in iterlinks(resolve_base_href(make_links_absolute(page.content, url)))]
+        except etree.ParseError:
+            # If the document is not HTML content this will return an empty list.
+            links = []
+        links = list(set(links))
+    else:
         links = []
-    links = list(set(links))
     if SAVE_PAGES:
         save_page(url, page)
     if SAVE_WORDS:
@@ -340,12 +344,8 @@ def crawl_worker(thread_id, robots_index):
                         # Skip empty links
                         if len(link) <= 0 or link == "/":
                             continue
-                        # If link is relative, make it absolute
-                        if link[0] == '/':
-                            if url[-1] == '/':
-                                link = url[:-1] + link
-                            else:
-                                link = url + link
+                        if link.find('://', 4, 8) < 0:
+                            continue
                         TODO.put(link)
                     DONE.put(url)
                     COUNTER.increment()
@@ -749,7 +749,8 @@ MIME_TYPES = {
     'video/webm': '.webp',
     'video/mpeg': '.mpeg',
     'video/x-flv': '.flv',
-    'vnd.ms-fontobject': '.eot'  # Incorrect
+    'vnd.ms-fontobject': '.eot',  # Incorrect
+    'image/vnd.microsoft.icon': '.ico' # favicon files
 }
 
 # User-Agent Header Strings
