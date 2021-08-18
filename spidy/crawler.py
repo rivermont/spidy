@@ -181,6 +181,10 @@ class ThreadSafeSet(list):
         with self.lock:
             self._set.clear()
 
+    def remove(self, o):
+        with self.lock:
+            self._set -= o
+
 
 class RobotsIndex(object):
     """
@@ -319,16 +323,22 @@ def crawl_worker(thread_id, robots_index):
                 with save_mutex:
                     if COUNTER.val > 0:
                         try:
-                            write_log('CRAWL', 'Queried {0} links.'.format(str(COUNTER.val)), worker=thread_id)
+                            # Get copy of state so that it isn't changed while
+                            # saving
+                            todo = copy(TODO.queue)
+                            words = copy(WORDS.get_all())
+                            done = copy(DONE.queue)
+                            counter = len(done)
+                            write_log('CRAWL', 'Queried {0} links.'.format(str(counter)), worker=thread_id)
                             info_log()
                             write_log('SAVE', 'Saving files...')
-                            save_files()
+                            save_files(todo, done, words)
                             if ZIP_FILES:
                                 zip_saved_files(time.time(), 'saved')
                         finally:
                             # Reset variables
-                            COUNTER = Counter(0)
-                            WORDS.clear()
+                            COUNTER = Counter(COUNTER.val - counter)
+                            WORDS.remove(words)
             # Crawl the page
             else:
                 try:
@@ -484,24 +494,22 @@ def make_words(site):
     return word_list
 
 
-def save_files():
+def save_files(todo, done, words):
     """
     Saves the TODO, done, and word lists into their respective files.
     Also logs the action to the console.
     """
 
-    global TODO, DONE
-
-    with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todoList:
-        for site in copy(TODO.queue):
+    with open(TODO_FILE, 'w', encoding='utf-8', errors='ignore') as todo_list:
+        for site in todo:
             try:
-                todoList.write(site + '\n')  # Save TODO list
+                todo_list.write(site + '\n')  # Save TODO list
             except UnicodeError:
                 continue
     write_log('SAVE', 'Saved TODO list to {0}'.format(TODO_FILE))
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
-        for site in copy(DONE.queue):
+        for site in done:
             try:
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
@@ -509,7 +517,7 @@ def save_files():
     write_log('SAVE', 'Saved DONE list to {0}'.format(TODO_FILE))
 
     if SAVE_WORDS:
-        update_file(WORD_FILE, WORDS.get_all(), 'words')
+        update_file(WORD_FILE, words, 'words')
 
 
 def make_file_path(url, ext):
@@ -1221,7 +1229,7 @@ def done_crawling(keyboard_interrupt=False):
         else:
             write_log('CRAWL', 'I think you\'ve managed to download the entire internet. '
                                'I guess you\'ll want to save your files...')
-        save_files()
+        save_files(TODO.queue, DONE.queue, WORDS.get_all())
         LOG_FILE.close()
 
 
