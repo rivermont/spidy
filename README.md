@@ -1,11 +1,12 @@
-# spidy Web Crawler
+# spidy Web Crawler [![Mentioned in awesome-crawler](https://awesome.re/mentioned-badge.svg)](https://github.com/BruceDone/awesome-crawler)
+
 Spidy (/spˈɪdi/) is the simple, easy to use command line web crawler.<br>
 Given a list of web links, it uses Python [`requests`](http://docs.python-requests.org) to query the webpages, and [`lxml`](http://lxml.de/index.html) to extract all links from the page.<br>
 Pretty simple!
 
 [![spidy Logo](https://raw.githubusercontent.com/rivermont/spidy/master/media/spidy_logo.png)](https://github.com/rivermont/spidy#contributors)
 
-![Version: 1.6.2](https://img.shields.io/badge/version-1.6.2-brightgreen.svg)
+![Version: 1.6.5](https://img.shields.io/badge/version-1.6.5-brightgreen.svg)
 [![Release: 1.4.0](https://img.shields.io/github/release/rivermont/spidy.svg)](https://github.com/rivermont/spidy/releases)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3.0-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.3+](https://img.shields.io/badge/python-3.3+-brightgreen.svg)](https://docs.python.org/3/)
@@ -15,7 +16,7 @@ Pretty simple!
 ![Lines of Code: 1553](https://img.shields.io/badge/lines%20of%20code-1553-brightgreen.svg)
 ![Lines of Docs: 605](https://img.shields.io/badge/lines%20of%20docs-605-orange.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/rivermont/spidy.svg)](https://github.com/rivermont/spidy/graphs/punch-card)
-[![Travis CI Status](https://img.shields.io/travis/rivermont/spidy/master.svg)](https://travis-ci.org/rivermont/spidy)
+[![Travis CI Status](https://img.shields.io/travis/com/rivermont/spidy)](https://travis-ci.com/github/rivermont/spidy)
 [![PyPI Wheel](https://img.shields.io/pypi/wheel/spidy-web-crawler.svg)](https://pypi.org/project/spidy-web-crawler/)
 [![PyPI Status](https://img.shields.io/pypi/status/spidy-web-crawler.svg)](https://pypi.org/project/spidy-web-crawler/)
 <br>
@@ -23,7 +24,7 @@ Pretty simple!
 [![Forks](https://img.shields.io/github/forks/rivermont/spidy.svg?style=social&label=Forks)](https://github.com/rivermont/spidy/network)
 [![Stars](https://img.shields.io/github/stars/rivermont/spidy.svg?style=social&label=Stars)](https://github.com/rivermont/spidy/stargazers)
 
-Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/Casillas-) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
+Created by [rivermont](https://github.com/rivermont) (/rɪvɜːrmɒnt/) and [FalconWarriorr](https://github.com/FalconWarriorr) (/fælcʌnraɪjɔːr/), and developed with help from [these awesome people](https://github.com/rivermont/spidy#contributors).<br>
 Looking for technical documentation? Check out [`DOCS.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/DOCS.md)<br>
 Looking to contribute to this project? Have a look at [`CONTRIBUTING.md`](https://github.com/rivermont/spidy/blob/master/spidy/docs/CONTRIBUTING.md), then check out the docs.
 

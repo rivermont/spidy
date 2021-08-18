@@ -7,16 +7,21 @@ python:
   - "3.5-dev"
   - "3.6"
   - "3.6-dev"
-#  - "3.7-dev"
-#  - "nightly"
+  - "3.7"
+  - "3.7-dev"
+  - "3.8"
+  - "3.8-dev"
+  - "3.9"
+  - "3.9-dev"
+  - "nightly"
 
 # Install dependencies
 install:
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 
 # Run all tests
 script:
   - make
   # Test PyPI package
-  - pip install spidy-web-crawler
-  - pip show spidy-web-crawler | grep Version
+  - pip3 install spidy-web-crawler
+  - pip3 show spidy-web-crawler | grep Version

@@ -8,6 +8,7 @@ test:
 	rm -rf ./logs ./saved
 
 clean-pyc:
+	rm -rf ./spidy/__pycache__
 	find . -name "*.pyc" -delete
 	find . -name "*.pyo" -delete
 
@@ -20,6 +21,7 @@ clean-crawler:
 	-rm -rf ./spidy/logs
 	-rm -rf ./spidy/saved
 	find . -name "*.txt" -not -name "requirements.txt" -delete
+	find . -name "None" -delete
 
 help:
 	@echo "    lint"
