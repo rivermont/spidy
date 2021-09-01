@@ -9,8 +9,7 @@ from crawler import (
     make_words,
     make_file_path,
     mime_lookup,
-    HeaderError,
-    RobotsIndex
+    HeaderError
 )
 
 
@@ -33,44 +32,6 @@ class CrawlerTestCase(unittest.TestCase):
     def test_check_link_given_short_url(self):
         url = "http://a"
         self.assertTrue(check_link(url))
-
-    # Tests for check_link respecting robots.txt
-
-    def test_robots_given_allowed_url(self):
-        # allowed expliticly
-        url = "https://www.google.com/m/finance"
-        checker = RobotsIndex(True, 'duckduckbot')
-
-        self.assertFalse(check_link(url, checker))
-
-#    def test_robots_given_asterisk_path_allowed_url(self):
-#        # allowed by /*/*/tree/master
-#        url = "https://github.com/rivermont/spidy/tree/master"
-#        checker = RobotsIndex(True, 'duckduckbot')
-
-#        self.assertFalse(check_link(url, checker))
-
-    def test_robots_given_lower_path_allowed_url(self):
-        # allowed by /search/about after /search is forbidden
-        url = "https://google.com/search/about"
-        checker = RobotsIndex(True, 'duckduckbot')
-        self.assertEqual(checker.size(), 0)
-
-        self.assertFalse(check_link(url, checker))
-        self.assertEqual(checker.size(), 1)
-
-        # subsequent checks should reuse known robots.txt file
-        self.assertFalse(check_link(url + '/more', checker))
-        self.assertFalse(check_link(url + '/plus', checker))
-        self.assertFalse(check_link(url + '/extra', checker))
-        self.assertEqual(checker.size(), 1)
-
-    def test_robots_given_forbidden_url(self):
-        # prohibited explicitly
-        url = "https://github.com/search/"
-        checker = RobotsIndex(True, 'duckduckbot')
-
-        self.assertTrue(check_link(url, checker))
 
     # Tests for check_word
 

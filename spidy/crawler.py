@@ -15,7 +15,6 @@ from os import path, makedirs
 from copy import copy
 from lxml import etree
 from lxml.html import iterlinks, resolve_base_href, make_links_absolute
-from reppy.robots import Robots
 
 try:
     from spidy import __version__
@@ -182,46 +181,6 @@ class ThreadSafeSet(list):
             self._set.clear()
 
 
-class RobotsIndex(object):
-    """
-    Thread Safe Robots Index
-    """
-    def __init__(self, respect_robots, user_agent):
-        self.respect_robots = respect_robots
-        self.user_agent = user_agent
-        self.lock = threading.Lock()
-        self.index = {}
-
-    def is_allowed(self, start_url):
-        if self.respect_robots:
-            return self._lookup(start_url)
-        else:
-            return True
-
-    def size(self):
-        return len(self.index)
-
-    def _lookup(self, url):
-        hostname = urllib.parse.urlparse(url).hostname
-        if hostname not in self.index.keys():
-            with self.lock:
-                # check again to be sure
-                if hostname not in self.index.keys():
-                    self._remember(url)
-
-        return self.index[hostname].allowed(url)
-
-    def _remember(self, url):
-        urlparsed = urllib.parse.urlparse(url)
-        robots_url = urlparsed.scheme + '://' + urlparsed.netloc + '/robots.txt'
-        write_log('ROBOTS',
-                  'Reading robots.txt file at: {0}'.format(robots_url),
-                  package='reppy')
-        robots = Robots.fetch(robots_url)
-        checker = robots.agent(self.user_agent)
-        self.index[urlparsed.hostname] = checker
-
-
 #############
 # FUNCTIONS #
 #############
@@ -271,7 +230,7 @@ def crawl(url, thread_id=0):
     return links
 
 
-def crawl_worker(thread_id, robots_index):
+def crawl_worker(thread_id):
     """
     Crawler worker thread method
     """
@@ -284,7 +243,7 @@ def crawl_worker(thread_id, robots_index):
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
-    global RESPECT_ROBOTS, RESTRICT, DOMAIN
+    global RESTRICT, DOMAIN
     global WORDS, TODO, DONE, THREAD_RUNNING
 
     while THREAD_RUNNING:
@@ -336,7 +295,7 @@ def crawl_worker(thread_id, robots_index):
                 except queue.Empty:
                     continue
                 else:
-                    if check_link(url, robots_index):  # If the link is invalid
+                    if check_link(url):  # If the link is invalid
                         continue
                     links = crawl(url, thread_id)
                     for link in links:
@@ -424,15 +383,13 @@ def crawl_worker(thread_id, robots_index):
     write_log('CRAWL', 'Thread execution stopped.', worker=thread_id)
 
 
-def check_link(item, robots_index=None):
+def check_link(item):
     """
     Returns True if item is not a valid url.
     Returns False if item passes all inspections (is valid url).
     """
     # Shortest possible url being 'http://a.b', and
     # Links longer than 255 characters are usually too long for the filesystem to handle.
-    if robots_index and not robots_index.is_allowed(item):
-        return True
     if RESTRICT:
         if DOMAIN not in item:
             return True
@@ -820,7 +777,7 @@ no = ['n', 'no', 'N', 'No', 'False', 'false']
 HEADER = {}
 SAVE_COUNT, MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS = 0, 0, 0, 0
 MAX_NEW_MIMES = 0
-RESPECT_ROBOTS, RESTRICT, DOMAIN = False, False, ''
+RESTRICT, DOMAIN = False, False, ''
 USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE = False, False, False, False, False
 SAVE_PAGES, SAVE_WORDS = False, False
 TODO_FILE, DONE_FILE, WORD_FILE = '', '', ''
@@ -845,7 +802,7 @@ def init():
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
-    global RESPECT_ROBOTS, RESTRICT, DOMAIN
+    global RESTRICT, DOMAIN
     global WORDS, TODO, DONE, THREAD_COUNT
 
     # Getting Arguments
@@ -1024,21 +981,6 @@ def init():
                 except KeyError:
                     handle_invalid_input('string.')
 
-        write_log('INIT', 'Should spidy respect sites\' robots.txt? (y/n) (Default: Yes):', status='INPUT')
-        while True:
-            input_ = input()
-            if not bool(input_):
-                RESPECT_ROBOTS = True
-                break
-            elif input_ in yes:
-                RESPECT_ROBOTS = True
-                break
-            elif input_ in no:
-                RESPECT_ROBOTS = False
-                break
-            else:
-                handle_invalid_input()
-
         write_log('INIT', 'What HTTP browser headers should spidy imitate?', status='INPUT')
         write_log('INIT', 'Choices: spidy (default), Chrome, Firefox, IE, Edge, Custom:', status='INPUT')
         while True:
@@ -1180,14 +1122,14 @@ def init():
             TODO.put(start)
 
 
-def spawn_threads(robots_index):
+def spawn_threads():
     """
     Spawn the crawler threads
     """
     try:
         write_log('INIT', 'Spawning {0} worker threads...'.format(THREAD_COUNT))
         for i in range(THREAD_COUNT):
-            t = threading.Thread(target=crawl_worker, args=(i+1, robots_index))
+            t = threading.Thread(target=crawl_worker, args=(i+1,))
             write_log('INIT', 'Starting crawl...', worker=i+1)
             t.daemon = True
             t.start()
@@ -1242,7 +1184,7 @@ def main():
     global MAX_NEW_ERRORS, MAX_KNOWN_ERRORS, MAX_HTTP_ERRORS, MAX_NEW_MIMES
     global USE_CONFIG, OVERWRITE, RAISE_ERRORS, ZIP_FILES, OVERRIDE_SIZE, SAVE_WORDS, SAVE_PAGES, SAVE_COUNT
     global TODO_FILE, DONE_FILE, ERR_LOG_FILE, WORD_FILE
-    global RESPECT_ROBOTS, RESTRICT, DOMAIN
+    global RESTRICT, DOMAIN
     global WORDS, TODO, DONE
 
     try:
@@ -1265,10 +1207,8 @@ def main():
 
     write_log('INIT', 'Using headers: {0}'.format(HEADER))
 
-    robots_index = RobotsIndex(RESPECT_ROBOTS, HEADER['User-Agent'])
-
     # Spawn threads here
-    spawn_threads(robots_index)
+    spawn_threads()
 
 
 if __name__ == '__main__':
