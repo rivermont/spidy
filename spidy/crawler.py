@@ -217,7 +217,7 @@ class RobotsIndex(object):
     def _remember(self, url):
         urlparsed = urllib.parse.urlparse(url)
         robots_url = urlparsed.scheme + '://' + urlparsed.netloc + '/robots.txt'
-        write_log('ROBOTS', f'Reading robots.txt file at: {robots_url}'),
+        write_log('ROBOTS', f'Reading robots.txt file at: {robots_url}',
                   package='reppy')
         robots = Robots.fetch(robots_url)
         checker = robots.agent(self.user_agent)
