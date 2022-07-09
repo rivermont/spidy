@@ -10,7 +10,7 @@ from crawler import (
     make_file_path,
     mime_lookup,
     HeaderError,
-    RobotsIndex
+    RobotsIndex,
 )
 
 
@@ -39,36 +39,36 @@ class CrawlerTestCase(unittest.TestCase):
     def test_robots_given_allowed_url(self):
         # allowed expliticly
         url = "https://www.google.com/m/finance"
-        checker = RobotsIndex(True, 'duckduckbot')
+        checker = RobotsIndex(True, "duckduckbot")
 
         self.assertFalse(check_link(url, checker))
 
-#    def test_robots_given_asterisk_path_allowed_url(self):
-#        # allowed by /*/*/tree/master
-#        url = "https://github.com/rivermont/spidy/tree/master"
-#        checker = RobotsIndex(True, 'duckduckbot')
+    #    def test_robots_given_asterisk_path_allowed_url(self):
+    #        # allowed by /*/*/tree/master
+    #        url = "https://github.com/rivermont/spidy/tree/master"
+    #        checker = RobotsIndex(True, 'duckduckbot')
 
-#        self.assertFalse(check_link(url, checker))
+    #        self.assertFalse(check_link(url, checker))
 
     def test_robots_given_lower_path_allowed_url(self):
         # allowed by /search/about after /search is forbidden
         url = "https://google.com/search/about"
-        checker = RobotsIndex(True, 'duckduckbot')
+        checker = RobotsIndex(True, "duckduckbot")
         self.assertEqual(checker.size(), 0)
 
         self.assertFalse(check_link(url, checker))
         self.assertEqual(checker.size(), 1)
 
         # subsequent checks should reuse known robots.txt file
-        self.assertFalse(check_link(url + '/more', checker))
-        self.assertFalse(check_link(url + '/plus', checker))
-        self.assertFalse(check_link(url + '/extra', checker))
+        self.assertFalse(check_link(url + "/more", checker))
+        self.assertFalse(check_link(url + "/plus", checker))
+        self.assertFalse(check_link(url + "/extra", checker))
         self.assertEqual(checker.size(), 1)
 
     def test_robots_given_forbidden_url(self):
         # prohibited explicitly
         url = "https://github.com/search/"
-        checker = RobotsIndex(True, 'duckduckbot')
+        checker = RobotsIndex(True, "duckduckbot")
 
         self.assertTrue(check_link(url, checker))
 
@@ -89,18 +89,23 @@ class CrawlerTestCase(unittest.TestCase):
         self.assertTrue(check_path(path))
 
     def test_check_path_given_invalid_path(self):
-        path = "C:\\useraccount\\documents\\pictures\\subdirectory\\subdirectory\\subdirectory\\" \
-            "subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\" \
-            "subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\" \
+        path = (
+            "C:\\useraccount\\documents\\pictures\\subdirectory\\subdirectory\\subdirectory\\"
+            "subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\"
+            "subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\"
             "subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\subdirectory\\.jpg"
+        )
         self.assertFalse(check_path(path))
 
     # Test make_words
 
     def test_make_words_given_string(self):
         from requests.models import Response
+
         input_string = Response()
-        input_string._content = bytes("This is a supercalifragilistic test string!", 'utf-8')
+        input_string._content = bytes(
+            "This is a supercalifragilistic test string!", "utf-8"
+        )
         expected_result = "This is a test string!".split()
         self.assertEqual(make_words(input_string).sort(), expected_result.sort(), "woo")
 
@@ -171,5 +176,5 @@ class CrawlerTestCase(unittest.TestCase):
         self.assertTrue(raised)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
