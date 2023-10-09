@@ -50,13 +50,13 @@ try:
 except OSError:
     pass  # Assumes only OSError will complain if /logs already exists
 
-LOG_FILE = open(path.join(WORKING_DIR, 'logs', 'spidy_log_{0}.txt'.format(START_TIME)),
+LOG_FILE = open(path.join(WORKING_DIR, 'logs', f'spidy_log_{START_TIME}.txt'),
                 'w+', encoding='utf-8', errors='ignore')
-LOG_FILE_NAME = path.join('logs', 'spidy_log_{0}'.format(START_TIME))
+LOG_FILE_NAME = path.join('logs', f'spidy_log_{START_TIME}')
 
 # Error log location
-ERR_LOG_FILE = path.join(WORKING_DIR, 'logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
-ERR_LOG_FILE_NAME = path.join('logs', 'spidy_error_log_{0}.txt'.format(START_TIME))
+ERR_LOG_FILE = path.join(WORKING_DIR, 'logs', f'spidy_error_log_{START_TIME}.txt')
+ERR_LOG_FILE_NAME = path.join('logs', f'spidy_error_log_{START_TIME}.txt')
 
 LOGGER = logging.getLogger('SPIDY')
 LOGGER.setLevel(logging.DEBUG)
@@ -101,15 +101,14 @@ def write_log(operation, message, package='spidy', status='INFO', worker=0):
     """
     global LOG_FILE, log_mutex
     with log_mutex:
-        message = '[{0}] [{1}] [WORKER #{2}] [{3}] [{4}]: {5}'\
-                  .format(get_time(), package, str(worker), operation, status, message)
+        message = f'[{get_time()}] [{package}] [WORKER #{str(worker)}] [{operation}] [{status}]: {message}'
         print(message)
         if not LOG_FILE.closed:
             LOG_FILE.write('\n' + message)
 
 
-write_log('INIT', 'Starting spidy Web Crawler version {0}'.format(VERSION))
-write_log('INIT', 'Report any problems to GitHub at https://github.com/rivermont/spidy')
+write_log('INIT', f'Starting spidy Web Crawler version {VERSION}')
+write_log('INIT', 'Report any problems on GitHub at https://github.com/rivermont/spidy/issues')
 
 
 ###########
@@ -218,8 +217,7 @@ class RobotsIndex(object):
     def _remember(self, url):
         urlparsed = urllib.parse.urlparse(url)
         robots_url = urlparsed.scheme + '://' + urlparsed.netloc + '/robots.txt'
-        write_log('ROBOTS',
-                  'Reading robots.txt file at: {0}'.format(robots_url),
+        write_log('ROBOTS', f'Reading robots.txt file at: {robots_url}',
                   package='reppy')
         robots = Robots.fetch(robots_url)
         checker = robots.agent(self.user_agent)
@@ -266,12 +264,11 @@ def crawl(url, thread_id=0):
         save_page(url, page)
     if SAVE_WORDS:
         # Announce which link was crawled
-        write_log('CRAWL', 'Found {0} links and {1} words on {2}'.format(len(links), len(word_list), url),
+        write_log('CRAWL', f'Found {len(links)} links and {len(word_list)} words on {url}',
                   worker=thread_id)
     else:
         # Announce which link was crawled
-        write_log('CRAWL', 'Found {0} links on {1}'.format(len(links), url),
-                  worker=thread_id)
+        write_log('CRAWL', f'Found {len(links)} links on {url}', worker=thread_id)
     return links
 
 
@@ -366,8 +363,8 @@ def crawl_worker(thread_id, robots_index):
 
         except Exception as e:
             link = url
-            write_log('CRAWL', 'An error was raised trying to process {0}'
-                      .format(link), status='ERROR', worker=thread_id)
+            write_log('CRAWL', f'An error was raised trying to process {link}',
+                      status='ERROR', worker=thread_id)
             err_mro = type(e).mro()
 
             if SizeError in err_mro:
@@ -416,7 +413,7 @@ def crawl_worker(thread_id, robots_index):
 
             elif 'Unknown MIME type' in str(e):
                 NEW_MIME_COUNT.increment()
-                write_log('ERROR', 'Unknown MIME type: {0}'.format(str(e)[18:]), worker=thread_id)
+                write_log('ERROR', f'Unknown MIME type: {str(e)[18:]}', worker=thread_id)
                 err_log(link, 'Unknown MIME', e)
 
             else:  # Any other error
@@ -506,7 +503,7 @@ def save_files(todo, done, words):
                 todo_list.write(site + '\n')  # Save TODO list
             except UnicodeError:
                 continue
-    write_log('SAVE', 'Saved TODO list to {0}'.format(TODO_FILE))
+    write_log('SAVE', f'Saved TODO list to {TODO_FILE}')
 
     with open(DONE_FILE, 'w', encoding='utf-8', errors='ignore') as done_list:
         for site in done:
@@ -514,7 +511,7 @@ def save_files(todo, done, words):
                 done_list.write(site + '\n')  # Save done list
             except UnicodeError:
                 continue
-    write_log('SAVE', 'Saved DONE list to {0}'.format(TODO_FILE))
+    write_log('SAVE', f'Saved DONE list to {TODO_FILE}')
 
     if SAVE_WORDS:
         update_file(WORD_FILE, words, 'words')
@@ -557,7 +554,7 @@ def mime_lookup(value):
     elif value == '':
         return '.html'
     else:
-        raise HeaderError('Unknown MIME type: {0}'.format(value))
+        raise HeaderError(f'Unknown MIME type: {value}')
 
 
 def save_page(url, page):
@@ -567,15 +564,15 @@ def save_page(url, page):
     # Make file path
     ext = mime_lookup(get_mime_type(page))
     cropped_url = make_file_path(url, ext)
-    file_path = path.join(WORKING_DIR, 'saved', '{0}'.format(cropped_url))
+    file_path = path.join(WORKING_DIR, 'saved', cropped_url)
 
     # Save file
     with open(file_path, 'w', encoding='utf-8', errors='ignore') as file:
         if ext == '.html':
-            file.write('''<!-- "{0}" -->
+            file.write(f'''<!-- "{url}" -->
 <!-- Downloaded with the spidy Web Crawler -->
 <!-- https://github.com/rivermont/spidy -->
-'''.format(url))
+''')
         file.write(page.text)
 
 
@@ -591,7 +588,7 @@ def update_file(file, content, file_type):
         for item in content:
             open_file.write('\n' + str(item))  # Write all words to file
         open_file.truncate()  # Delete everything in file beyond what has been written (old stuff)
-    write_log('SAVE', 'Saved {0} {1} to {2}'.format(len(content), file_type, file))
+    write_log('SAVE', f'Saved {len(content)} {file_type} to {file}')
 
 
 def info_log():
@@ -599,16 +596,16 @@ def info_log():
     Logs important information to the console and log file.
     """
     # Print to console
-    write_log('LOG', 'Started at {0}'.format(START_TIME_LONG))
-    write_log('LOG', 'Log location: {0}'.format(LOG_FILE_NAME))
-    write_log('LOG', 'Error log location: {0}'.format(ERR_LOG_FILE_NAME))
-    write_log('LOG', '{0} links in TODO'.format(TODO.qsize()))
-    write_log('LOG', '{0} links in DONE'.format(DONE.qsize()))
-    write_log('LOG', 'TODO/DONE: {0}'.format(TODO.qsize() / DONE.qsize()))
-    write_log('LOG', '{0}/{1} new errors caught.'.format(NEW_ERROR_COUNT.val, MAX_NEW_ERRORS))
-    write_log('LOG', '{0}/{1} HTTP errors encountered.'.format(HTTP_ERROR_COUNT.val, MAX_HTTP_ERRORS))
-    write_log('LOG', '{0}/{1} new MIMEs found.'.format(NEW_MIME_COUNT.val, MAX_NEW_MIMES))
-    write_log('LOG', '{0}/{1} known errors caught.'.format(KNOWN_ERROR_COUNT.val, MAX_KNOWN_ERRORS))
+    write_log('LOG', f'Started at {START_TIME_LONG}')
+    write_log('LOG', f'Log location: {LOG_FILE_NAME}')
+    write_log('LOG', f'Error log location: {ERR_LOG_FILE_NAME}')
+    write_log('LOG', f'{TODO.qsize()} links in TODO')
+    write_log('LOG', f'{DONE.qsize()} links in DONE')
+    write_log('LOG', f'TODO/DONE: {TODO.qsize() / DONE.qsize()}')
+    write_log('LOG', f'{NEW_ERROR_COUNT.val}/{MAX_NEW_ERRORS} new errors caught.')
+    write_log('LOG', f'{HTTP_ERROR_COUNT.val}/{MAX_HTTP_ERRORS} HTTP errors encountered.')
+    write_log('LOG', f'{NEW_MIME_COUNT.val}/{MAX_NEW_MIMES} new MIMEs found.')
+    write_log('LOG', f'{KNOWN_ERROR_COUNT.val}/{MAX_KNOWN_ERRORS} known errors caught.')
 
 
 def log(message, level=logging.DEBUG):
@@ -630,7 +627,7 @@ def handle_invalid_input(type_='input. (yes/no)'):
     """
     Handles an invalid user input, usually from the input() function.
     """
-    write_log('INIT', 'Please enter a valid {0}'.format(type_), status='ERROR')
+    write_log('INIT', f'Please enter a valid {type_}', status='ERROR')
     # could raise InputError but this means the user must go through the whole init process again
 
 
@@ -640,7 +637,7 @@ def err_log(url, error1, error2):
     error1 is the trimmed error source.
     error2 is the extended text of the error.
     """
-    LOGGER.error("\nURL: {0}\nERROR: {1}\nEXT: {2}\n\n".format(url, error1, str(error2)))
+    LOGGER.error(f"\nURL: {url}\nERROR: {error1}\nEXT: {str(error2)}\n\n")
 
 
 def zip_saved_files(out_file_name, directory):
@@ -650,7 +647,7 @@ def zip_saved_files(out_file_name, directory):
     shutil.make_archive(str(out_file_name), 'zip', directory)  # Zips files
     shutil.rmtree(directory)  # Deletes folder
     makedirs(directory)  # Creates empty folder of same name
-    write_log('SAVE', 'Zipped documents to {0}.zip'.format(out_file_name))
+    write_log('SAVE', f'Zipped documents to {out_file_name}.zip')
 
 
 ########
@@ -1268,10 +1265,10 @@ def main():
     with open(WORD_FILE, 'w', encoding='utf-8', errors='ignore'):
         pass
 
-    write_log('INIT', 'Successfully started spidy Web Crawler version {0}...'.format(VERSION))
+    write_log('INIT', f'Successfully started spidy Web Crawler version {VERSION}...')
     LOGGER.log(logging.INFO, 'Successfully started crawler.')
 
-    write_log('INIT', 'Using headers: {0}'.format(HEADER))
+    write_log('INIT', f'Using headers: {HEADER}')
 
     robots_index = RobotsIndex(RESPECT_ROBOTS, HEADER['User-Agent'])
 
@@ -1282,6 +1279,6 @@ def main():
 if __name__ == '__main__':
     main()
 else:
-    write_log('INIT', 'Successfully imported spidy Web Crawler version {0}.'.format(VERSION))
+    write_log('INIT', f'Successfully imported spidy Web Crawler version {VERSION}.')
     write_log('INIT',
               'Call `crawler.main()` to start crawling, or refer to DOCS.md to see use of specific functions.')
