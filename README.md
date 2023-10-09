@@ -114,10 +114,11 @@ Spidy can be easily run in a Docker container.<br>
 
 - First, build the [`Dockerfile`](dockerfile): `docker build -t spidy .`
   - Verify that the Docker image has been created: `docker images`
-- Then, run it: `docker run --rm -it -v $PWD:/data spidy`
+- Then, run it with a data path mount (where you wish files to be written to on your local disk). For example, if you wish to have results written to your local `/tmp` directory, run spidy with this command: `docker run --rm -it -v /tmp:/data spidy`
   - `--rm` tells Docker to clean up after itself by removing stopped containers.
   - `-it` tells Docker to run the container interactively and allocate a pseudo-TTY.
-  - `-v $PWD:/data` tells Docker to mount the current working directory as `/data` directory inside the container. This is needed if you want Spidy's files (e.g. `crawler_done.txt`, `crawler_words.txt`, `crawler_todo.txt`) written back to your host filesystem.
+  - `-v /tmp:/data` tells Docker to mount the a host path/directory as `/data` directory inside the container. This is needed if you want Spidy's files (e.g. `crawler_done.txt`, `crawler_words.txt`, `crawler_todo.txt`) written back to your host filesystem.
+- To use custom spidy configurations, mount the configuration files from your host into any path inside the container. For example, assuming your config files are in `$HOME/.spidy`, mount them into `/config` inside the container with `-v ~/.spidy:/config/`. Then, when prompted for the custom config, provide the container path, like `/config/test.cfg`.
 
 ### Spidy Docker Demo
 
